@@ -1,0 +1,10 @@
+/* 
+ * FILE: 01-base.css
+ * PURPOSE: Global resets, CSS variables, and base typography.
+ * * DESCRIPTION:
+ * This file is the foundation of our design system. It includes:
+ * - CSS Reset (removing default browser margins/padding).
+ * - Root variables (--primary-color, fonts, spacing).
+ * - Base HTML tag styling (body, h1-h6, p, a) without specific classes.
+ * * IMPORTANT: Do not add layout rules or component classes here!
+*/

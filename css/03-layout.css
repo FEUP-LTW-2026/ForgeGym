@@ -1,0 +1,12 @@
+/* 
+ * FILE: 03-layout.css
+ * PURPOSE: Global structural elements and macro-layouts.
+ * * DESCRIPTION:
+ * This file handles the major structural pieces of the website that are 
+ * shared across multiple pages.
+ * Examples include:
+ * - The main Navigation Bar / Header (.main-header, .nav-menu)
+ * - The Global Footer (.main-footer)
+ * - General grid or wrapper containers (.container, .main-content)
+ * * IMPORTANT: Focus on Flexbox/Grid structures and mobile-first media queries.
+*/

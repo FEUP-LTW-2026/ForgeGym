@@ -1,0 +1,13 @@
+/* 
+ * FILE: 02-components.css
+ * PURPOSE: Reusable UI elements and design patterns.
+ * * DESCRIPTION:
+ * This file contains independent, reusable visual elements that can be 
+ * placed anywhere on the website to maintain design consistency.
+ * Examples include:
+ * - Buttons (.btn, .btn-primary)
+ * - Form inputs and labels (.form-group, .input-field)
+ * - Cards (.trainer-card, .class-card)
+ * - Badges/Tags (.badge-active, .badge-full)
+ * * IMPORTANT: Use class selectors only. No page-specific IDs!
+*/

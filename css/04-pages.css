@@ -1,0 +1,12 @@
+/* 
+ * FILE: 04-pages.css
+ * PURPOSE: Highly specific styles unique to individual pages.
+ * * DESCRIPTION:
+ * This file is the last step in the CSS cascade. It should only contain 
+ * styles that are impossible to achieve using our standard components.
+ * * SECTIONS:
+ * - Main Page (Hero banner tweaks, specific homepage sections)
+ * - Profile Page (User avatar positioning, specific grids)
+ * - Training Plan Page (Specific calendar/schedule adjustments)
+ * * IMPORTANT: Please leave comments separating each page's code.
+ */

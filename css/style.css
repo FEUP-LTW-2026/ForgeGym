@@ -1,0 +1,10 @@
+/* 
+ * PROJECT: Gym Management Platform 
+ * DESCRIPTION: Main stylesheet that imports our CSS architecture in the 
+ * correct cascading order (ITCSS approach).
+*/
+
+@import url('01-base.css');
+@import url('02-components.css');
+@import url('03-layout.css');
+@import url('04-pages.css');
