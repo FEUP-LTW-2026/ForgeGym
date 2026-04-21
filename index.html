@@ -8,3 +8,51 @@
 -->
 <!DOCTYPE html>
 <html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FORGE GYM — Forge Your Best Self</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+
+      <a href="index.html" class="logo" aria-label="FORGE GYM homepage">
+        <img src="images/logo.png" alt="FORGE GYM" class="logo__img" />
+        <span class="logo__text">FORGE GYM</span>
+      </a>
+
+      <button class="nav__toggle" id="nav-toggle"
+              aria-controls="main-nav"
+              aria-expanded="false"
+              aria-label="Open navigation menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="nav" id="main-nav" aria-label="Primary navigation">
+        <ul class="nav__list">
+          <li><a href="#classes"   class="nav__link">Classes</a></li>
+          <li><a href="#equipment" class="nav__link">Equipment</a></li>
+          <li><a href="#plans"     class="nav__link">Plans</a></li>
+          <li><a href="#reviews"   class="nav__link">Reviews</a></li>
+        </ul>
+        <div class="nav__actions">
+          <a href="pages/login.php"    class="btn btn--ghost">Log in</a>
+          <a href="pages/register.php" class="btn btn--primary">Join now</a>
+        </div>
+      </nav>
+
+    </div>
+  </header>
+
+  <script src="js/main.js"></script>
+</body>
+</html>l
