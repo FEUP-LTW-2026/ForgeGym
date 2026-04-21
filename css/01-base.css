@@ -8,3 +8,11 @@
  * - Base HTML tag styling (body, h1-h6, p, a) without specific classes.
  * * IMPORTANT: Do not add layout rules or component classes here!
 */
+
+/* ── Colour palette (FORGE branding) ──
+     #1C1C1A  near-black    → backgrounds
+     #16336F  deep blue     → primary actions, highlights
+     #F0EEDF  off-white     → body text, light surfaces
+     #B1BFE2  periwinkle    → muted text, secondary surfaces
+     #FE492A  vivid red     → accent, CTAs, badges
+  */
