@@ -239,8 +239,8 @@ select.form-control {
 /* ── Novo Estilo de Badge (Escuro) ── */
 .badge--dark {
   background-color: var(--color-bg);
-  color: var(--color-text-muted);
-  border: 1px solid var(--color-border);
+  color: var(--color-gold);
+  border: 1px solid var(--color-gold);
 }
 
 /* ── Trainer Card ── */
