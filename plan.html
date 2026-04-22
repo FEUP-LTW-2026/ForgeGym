@@ -1,7 +1,292 @@
-<!--
-  schedule.html — Workout Planning Page
-  Purpose: Allows members to browse the full class schedule and plan their weekly
-  workout routine. Users can filter classes by type, trainer, day, and time slot,
-  enroll in or cancel upcoming sessions, and view capacity and availability in
-  real time. Trainers can also use this page to review their assigned class roster.
--->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Schedule & Plans — FORGE GYM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+
+      <a href="index.html" class="logo" aria-label="FORGE GYM homepage">
+        <img src="images/logo.png" alt="FORGE GYM" class="logo__img" />
+        <span class="logo__text">FORGE GYM</span>
+      </a>
+
+      <input type="checkbox" id="nav-toggle" class="sr-only peer-nav" />
+      <label for="nav-toggle" class="nav__toggle" aria-label="Open navigation menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </label>
+
+      <nav class="nav" id="main-nav" aria-label="Primary navigation">
+        <ul class="nav__list">
+          <li><a href="index.html#classes"   class="nav__link">Classes</a></li>
+          <li><a href="index.html#equipment" class="nav__link">Equipment</a></li>
+          <li><a href="index.html#plans"     class="nav__link">Plans</a></li>
+          <li><a href="index.html#reviews"   class="nav__link">Reviews</a></li>
+        </ul>
+        <div class="nav__actions">
+          <a href="pages/login.html"    class="btn btn--ghost">Log in</a>
+          <a href="pages/register.html" class="btn btn--primary">Join now</a>
+        </div>
+      </nav>
+
+      <div class="quick-menu">
+        <input type="checkbox" id="quick-menu-toggle" class="sr-only peer-quick" />
+        <label for="quick-menu-toggle" class="quick-menu__btn" aria-label="Quick access menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+        
+        <div class="quick-menu__dropdown" id="quick-menu-dropdown">
+          <a href="plan.html" class="quick-menu__item">
+            <span class="quick-menu__icon" aria-hidden="true">📅</span>
+            <div>
+              <strong>Workout Planner</strong>
+              <span>Browse &amp; plan your schedule</span>
+            </div>
+          </a>
+          <a href="pages/profile.html" class="quick-menu__item">
+            <span class="quick-menu__icon" aria-hidden="true">👤</span>
+            <div>
+              <strong>My Profile</strong>
+              <span>Account, bookings &amp; progress</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-spacing">
+    
+    <header class="page-header container">
+      <p class="eyebrow">Plan your week</p>
+      <h1 class="page-title">
+        CLASS <span class="page-title--outline">SCHEDULE</span>
+      </h1>
+    </header>
+
+    <section class="filters container" aria-label="Filter classes">
+      <form class="filters__form" action="#" method="GET">
+        
+        <div class="input-group">
+          <label for="filter-day" class="sr-only">Select Day</label>
+          <input type="date" id="filter-day" class="form-control" value="2026-04-24" />
+        </div>
+
+        <div class="input-group">
+          <label for="filter-type" class="sr-only">Class Type</label>
+          <select id="filter-type" class="form-control">
+            <option value="all">All Classes</option>
+            <option value="hiit">HIIT & Conditioning</option>
+            <option value="strength">Strength Forge</option>
+            <option value="mobility">Mobility & Flow</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="filter-trainer" class="sr-only">Trainer</label>
+          <select id="filter-trainer" class="form-control">
+            <option value="all">All Trainers</option>
+            <option value="luis">Luis Torrao</option>
+            <option value="diogo">Diogo Quaresma</option>
+            <option value="mafalda">Mafalda Pacheco</option>
+            <option value="david">David Pinto</option>
+            <option value="joao">Joao Lage</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn--primary">Filter</button>
+      </form>
+    </section>
+
+    <section class="schedule-grid container" aria-label="Available classes">
+      
+      <article class="class-card" data-type="strength" data-trainer="luis">
+        <div class="class-card__time">
+          <span class="time-start">07:00</span>
+          <span class="time-end">08:00</span>
+        </div>
+        <div class="class-card__info">
+          <h2 class="class-title">Strength Forge</h2>
+          <p class="class-trainer">with Luis Torrao</p>
+        </div>
+        <div class="class-card__status">
+          <span class="badge badge--success">Available</span>
+          <span class="capacity">12 / 20 spots</span>
+        </div>
+        <div class="class-card__action">
+          <button class="btn btn--ghost">Enroll Now</button>
+        </div>
+      </article>
+
+      <article class="class-card" data-type="mobility" data-trainer="mafalda">
+        <div class="class-card__time">
+          <span class="time-start">08:30</span>
+          <span class="time-end">09:30</span>
+        </div>
+        <div class="class-card__info">
+          <h2 class="class-title">Morning Flow Yoga</h2>
+          <p class="class-trainer">with Mafalda Pacheco</p>
+        </div>
+        <div class="class-card__status">
+          <span class="badge badge--success">Available</span>
+          <span class="capacity">8 / 15 spots</span>
+        </div>
+        <div class="class-card__action">
+          <button class="btn btn--ghost">Enroll Now</button>
+        </div>
+      </article>
+
+      <article class="class-card" data-type="hiit" data-trainer="diogo">
+        <div class="class-card__time">
+          <span class="time-start">12:30</span>
+          <span class="time-end">13:15</span>
+        </div>
+        <div class="class-card__info">
+          <h2 class="class-title">HIIT Express</h2>
+          <p class="class-trainer">with Diogo Quaresma</p>
+        </div>
+        <div class="class-card__status">
+          <span class="badge badge--warning">Few Spots</span>
+          <span class="capacity">18 / 20 spots</span>
+        </div>
+        <div class="class-card__action">
+          <button class="btn btn--primary">Enroll Now</button>
+        </div>
+      </article>
+
+      <article class="class-card class-card--full" data-type="strength" data-trainer="david">
+        <div class="class-card__time">
+          <span class="time-start">18:00</span>
+          <span class="time-end">19:00</span>
+        </div>
+        <div class="class-card__info">
+          <h2 class="class-title">Powerlifting Basics</h2>
+          <p class="class-trainer">with David Pinto</p>
+        </div>
+        <div class="class-card__status">
+          <span class="badge badge--danger">Full</span>
+          <span class="capacity">15 / 15 spots</span>
+        </div>
+        <div class="class-card__action">
+          <button class="btn btn--ghost" disabled>Join Waitlist</button>
+        </div>
+      </article>
+
+      <article class="class-card" data-type="hiit" data-trainer="joao">
+        <div class="class-card__time">
+          <span class="time-start">19:30</span>
+          <span class="time-end">20:15</span>
+        </div>
+        <div class="class-card__info">
+          <h2 class="class-title">Cardio Burn</h2>
+          <p class="class-trainer">with Joao Lage</p>
+        </div>
+        <div class="class-card__status">
+          <span class="badge badge--success">Available</span>
+          <span class="capacity">5 / 25 spots</span>
+        </div>
+        <div class="class-card__action">
+          <button class="btn btn--ghost">Enroll Now</button>
+        </div>
+      </article>
+
+    </section>
+
+    <section class="trainers-section container" aria-labelledby="trainers-title">
+      
+      <header class="section-header">
+        <h2 class="section-title" id="trainers-title">MEET YOUR <span class="text-outline">FORGERS</span></h2>
+        <p class="section-sub">Expert coaches dedicated to pushing your limits.</p>
+      </header>
+
+      <div class="trainers-grid">
+        
+        <article class="trainer-card">
+          <figure class="trainer-card__img-wrapper">
+            <img src="images/pt-luis.jpg" alt="Luis Torrao" class="trainer-card__img" />
+          </figure>
+          <div class="trainer-card__info">
+            <h3 class="trainer-name">Luis Torrao</h3>
+            <p class="trainer-role">Head of Strength & Conditioning</p>
+            <div class="trainer-tags">
+              <span class="badge badge--dark">Strength</span>
+              <span class="badge badge--dark">Powerlifting</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="trainer-card">
+          <figure class="trainer-card__img-wrapper">
+            <img src="images/pt-diogo.jpg" alt="Diogo Quaresma" class="trainer-card__img" />
+          </figure>
+          <div class="trainer-card__info">
+            <h3 class="trainer-name">Diogo Quaresma</h3>
+            <p class="trainer-role">HIIT & Cardio Specialist</p>
+            <div class="trainer-tags">
+              <span class="badge badge--dark">HIIT</span>
+              <span class="badge badge--dark">Endurance</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="trainer-card">
+          <figure class="trainer-card__img-wrapper">
+            <img src="images/pt-mafalda.jpg" alt="Mafalda Pacheco" class="trainer-card__img" />
+          </figure>
+          <div class="trainer-card__info">
+            <h3 class="trainer-name">Mafalda Pacheco</h3>
+            <p class="trainer-role">Mobility & Yoga Master</p>
+            <div class="trainer-tags">
+              <span class="badge badge--dark">Yoga</span>
+              <span class="badge badge--dark">Recovery</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="trainer-card">
+          <figure class="trainer-card__img-wrapper">
+            <img src="images/pt-david.jpg" alt="David Pinto" class="trainer-card__img" />
+          </figure>
+          <div class="trainer-card__info">
+            <h3 class="trainer-name">David Pinto</h3>
+            <p class="trainer-role">Pilates & Core Expert</p>
+            <div class="trainer-tags">
+              <span class="badge badge--dark">Pilates</span>
+              <span class="badge badge--dark">Core</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="trainer-card">
+          <figure class="trainer-card__img-wrapper">
+            <img src="images/pt-joao.jpg" alt="Joao Lage" class="trainer-card__img" />
+          </figure>
+          <div class="trainer-card__info">
+            <h3 class="trainer-name">Joao Lage</h3>
+            <p class="trainer-role">Functional & Kettlebell</p>
+            <div class="trainer-tags">
+              <span class="badge badge--dark">Functional</span>
+              <span class="badge badge--dark">CrossFit</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>
