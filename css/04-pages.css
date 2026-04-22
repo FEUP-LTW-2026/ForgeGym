@@ -176,7 +176,7 @@
   padding-bottom: var(--sp-10);
 }
 
-.profile-header {
+.profile-header {   
   margin-bottom: var(--sp-8);
 }
 
@@ -217,8 +217,8 @@
 }
 
 .profile-avatar-wrapper {
-  width: 120px;
-  height: 120px;
+  width: 150px;
+  height: 150px;
   border-radius: var(--radius-full);
   overflow: hidden;
   border: 3px solid var(--color-primary);
@@ -237,10 +237,10 @@
   margin-bottom: var(--sp-2);
 }
 
-/* Cartão do Código QR */
+/* Código QR */
 .qr-card {
   text-align: center;
-  border-top: 4px solid var(--color-accent); /* Linha vermelha no topo para destaque */
+  border-top: 4px solid var(--color-accent); 
 }
 
 .qr-card__title {
@@ -259,7 +259,7 @@
 }
 
 .qr-code-wrapper {
-  background-color: #F0EEDF; /* Fundo claro OBRIGATÓRIO para o leitor ler bem o QR */
+  background-color: #F0EEDF; 
   padding: 12px;
   border-radius: var(--radius-sm);
   display: inline-block;
@@ -267,8 +267,8 @@
 }
 
 .qr-img {
-  width: 150px;
-  height: 150px;
+  width: 200px;
+  height: 200px;
   display: block;
 }
 
