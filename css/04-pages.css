@@ -276,11 +276,6 @@
   justify-content: center;
 }
 
-.price-decimals {
-  font-size: var(--text-2xl);
-  margin-bottom: 8px; /* Aligns the decimal with the top/middle of the big number */
-}
-
 .price-period {
   font-family: var(--font-body);
   font-size: var(--text-sm);
@@ -321,6 +316,38 @@
   color: var(--color-on-accent);
   margin-bottom: var(--sp-4);
 }
+
+.plan-features {
+  list-style: none;
+  margin: 0 0 var(--sp-8) 0;
+  padding: 0;
+  width: 100%;
+  flex-grow: 1; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+}
+
+.plan-features li {
+  padding: var(--sp-3) 0;
+  border-bottom: 1px solid var(--color-border); 
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--color-text-muted); 
+  text-align: center; 
+}
+
+.plan-card--highlight .plan-features li {
+  border-color: rgba(240, 238, 223, 0.2); 
+  color: rgba(240, 238, 223, 0.9); 
+}
+
+.invisible-line {
+  visibility: hidden;
+  border: none !important;
+  pointer-events: none; 
+}
+
 
 /* A custom white button for the red card to create contrast */
 .btn--white {
