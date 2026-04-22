@@ -505,6 +505,15 @@ body:has(#filter-trainer option[value="joao"]:checked) .class-card:not([data-tra
   gap: var(--sp-6);
 }
 
+.card {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-6);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: transform var(--t-fast), box-shadow var(--t-fast), border-color var(--t-fast);
+}
+
 /* Cartão do Utilizador (Avatar) */
 .profile-card {
   text-align: center;
@@ -518,7 +527,7 @@ body:has(#filter-trainer option[value="joao"]:checked) .class-card:not([data-tra
   height: 150px;
   border-radius: var(--radius-full);
   overflow: hidden;
-  border: 3px solid var(--color-primary);
+  border: 3px solid var(--color-gold);
   margin-bottom: var(--sp-4);
 }
 
@@ -532,6 +541,22 @@ body:has(#filter-trainer option[value="joao"]:checked) .class-card:not([data-tra
   font-family: var(--font-display);
   font-size: var(--text-2xl);
   margin-bottom: var(--sp-2);
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge--member {
+  background-color: rgba(203, 160, 82, 0.1); /* Subtle gold background */
+  color: var(--color-gold);
+  border: 1px solid var(--color-gold);
 }
 
 /* Código QR */
