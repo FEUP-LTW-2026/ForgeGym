@@ -65,7 +65,7 @@
   position: relative;
 }
  
-/* The 3-line trigger button */
+/* The 3-line trigger button (now a label) */
 .quick-menu__btn {
   display: flex;
   flex-direction: column;
@@ -91,9 +91,9 @@
   border-radius: 1px;
 }
  
-/* Dropdown panel — hidden by default, shown when JS adds .is-open */
+/* Dropdown panel — hidden by default */
 .quick-menu__dropdown {
-  display: none;                          /* hidden by default */
+  display: none;
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
@@ -105,8 +105,15 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   z-index: 200;
 }
-.quick-menu__dropdown.is-open {
-  display: block;                         /* visible when .is-open is added by JS */
+
+/* ── CSS-Only Logic for Quick Menu ── */
+.peer-quick:checked ~ .quick-menu__dropdown {
+  display: block;
+}
+
+.peer-quick:checked + .quick-menu__btn {
+  border-color: var(--color-text-muted);
+  background-color: rgba(177, 191, 226, 0.08);
 }
  
 /* Each link row inside the dropdown */
@@ -141,4 +148,3 @@
   color: var(--color-text-muted);
   margin-top: 2px;
 }
- 
