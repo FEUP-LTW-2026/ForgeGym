@@ -276,11 +276,6 @@
   justify-content: center;
 }
 
-.price-decimals {
-  font-size: var(--text-2xl);
-  margin-bottom: 8px; /* Aligns the decimal with the top/middle of the big number */
-}
-
 .price-period {
   font-family: var(--font-body);
   font-size: var(--text-sm);
@@ -322,6 +317,38 @@
   margin-bottom: var(--sp-4);
 }
 
+.plan-features {
+  list-style: none;
+  margin: 0 0 var(--sp-8) 0;
+  padding: 0;
+  width: 100%;
+  flex-grow: 1; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+}
+
+.plan-features li {
+  padding: var(--sp-3) 0;
+  border-bottom: 1px solid var(--color-border); 
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--color-text-muted); 
+  text-align: center; 
+}
+
+.plan-card--highlight .plan-features li {
+  border-color: rgba(240, 238, 223, 0.2); 
+  color: rgba(240, 238, 223, 0.9); 
+}
+
+.invisible-line {
+  visibility: hidden;
+  border: none !important;
+  pointer-events: none; 
+}
+
+
 /* A custom white button for the red card to create contrast */
 .btn--white {
   background-color: var(--color-on-accent);
@@ -332,6 +359,107 @@
 .btn--white:hover {
   background-color: transparent;
   color: var(--color-on-accent);
+}
+
+/* ── Reviews Section ── */
+
+#reviews {
+  background-color: var(--color-bg-alt);
+  border-top: 1px solid var(--color-border);
+  padding-block: 5rem;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  /* Aumentamos o espaçamento vertical para a foto não bater no cartão de cima */
+  gap: var(--sp-10) var(--sp-6); 
+  margin-top: 5rem; 
+}
+
+.review-card {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-6);
+  padding-top: 3.5rem; /* Espaço extra no topo para a bola da foto caber */
+  position: relative; /* Necessário para prender a foto ao topo */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra todo o conteúdo do cartão */
+  text-align: center;
+  gap: var(--sp-4);
+  transition: transform var(--t-fast), border-color var(--t-fast), box-shadow var(--t-fast);
+}
+
+.review-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+  border-color: var(--color-gold); 
+}
+
+/* ── Bola da Foto de Perfil ── */
+.review-card__avatar {
+  position: absolute;
+  top: -2.5rem; /* Metade da foto fica para fora do cartão */
+  left: 50%;
+  transform: translateX(-50%); /* Centra a bola perfeitamente */
+  width: 5rem;
+  height: 5rem;
+  border-radius: var(--radius-full); /* Torna-a numa bola */
+  border: 4px solid var(--color-bg-surface); /* Borda da mesma cor do cartão para um recorte limpo */
+  overflow: hidden;
+  background-color: var(--color-bg-alt);
+  transition: border-color var(--t-fast);
+}
+
+/* A borda da foto também fica dourada quando passas o rato no cartão! */
+.review-card:hover .review-card__avatar {
+  border-color: var(--color-gold);
+}
+
+.review-card__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── Estilos de Texto das Reviews ── */
+.review-card__stars {
+  color: var(--color-gold);
+  font-size: var(--text-lg);
+  letter-spacing: 2px;
+}
+
+.review-card__quote {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  font-style: italic;
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+.review-card__author {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--sp-3);
+  width: 100%; /* Garante que a linha divisória vai de uma ponta à outra */
+}
+
+.review-card__author strong {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.review-card__author span {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
 }
 
 
