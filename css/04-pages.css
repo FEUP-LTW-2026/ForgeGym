@@ -165,7 +165,42 @@
   .stat:nth-child(3) { border-right: 1px solid var(--color-border); }
 }
 
+/* ── Equipment section ── */
+ 
+/* Slightly darker background to visually separate from the hero */
+#equipment {
+  background-color: var(--color-bg-alt);
+  border-top: 1px solid var(--color-border);
+  padding-block: 5rem;
+}
+
+.section__header {
+  margin-bottom: 3.5rem;
+}
+
+.equipment__title {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 12vw, 9rem); /* scales between 4rem on mobile and 9rem on desktop */
+  font-weight: 900;
+  line-height: 0.9;
+  color: var(--color-text);
+  margin-bottom: var(--sp-6);
+}
+
+.equipment__title--outline {
+  -webkit-text-stroke: 3px var(--color-text-muted);
+  color: transparent;
+}
+
+
+
 
 /* Profile Page */
 
 /* Training Plan page */
+
+@media (max-width: 480px) {
+  .equip-grid {
+    grid-template-columns: 1fr;
+  }
+}
