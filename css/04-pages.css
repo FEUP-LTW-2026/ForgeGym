@@ -74,7 +74,7 @@
 
 /* The "YOUR" word is rendered as an outline only */
 .hero__title--outline {
-  -webkit-text-stroke: 3px var(--color-text-muted);
+  -webkit-text-stroke: 3px var(--color-gold);
   color: transparent;
 }
 
@@ -188,10 +188,156 @@
 }
 
 .equipment__title--outline {
-  -webkit-text-stroke: 3px var(--color-text-muted);
+  -webkit-text-stroke: 3px var(--color-gold); 
   color: transparent;
 }
 
+/* ── Membership Plans Section ── */
+
+#plans {
+  padding-block: 5rem;
+}
+
+.plans-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  align-items: center; /* Centers cards on mobile */
+  margin-top: var(--sp-8);
+}
+
+/* On larger screens, put them side by side */
+@media (min-width: 850px) {
+  .plans-grid {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+/* Individual Plan Card */
+.plan-card {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-8) var(--sp-6);
+  text-align: center;
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: none !important; 
+  outline: none !important;
+  
+  transition: transform var(--t-fast); 
+}
+
+.plan-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+  border-color: var(--color-gold);
+}
+
+.plan-card--highlight {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  transform: scale(1.08); 
+  position: relative;
+  z-index: 2; 
+}
+
+/* ── Hover Effect for Highlighted Card ── */
+.plan-card--highlight:hover {
+  transform: scale(1.08) translateY(-6px); 
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6); 
+  border-color: var(--color-gold);
+}
+
+/* The pill-shaped plan name (like the black outlines in your image) */
+.plan-card__name {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  border: 2px solid var(--color-text);
+  padding: var(--sp-2) var(--sp-8);
+  border-radius: var(--radius-full); /* Pill shape */
+  margin-bottom: var(--sp-6);
+}
+
+/* The giant price text */
+.plan-card__price {
+  font-family: var(--font-display);
+  font-size: 5rem; /* Huge number */
+  font-weight: 900;
+  line-height: 0.8;
+  color: var(--color-text);
+  margin-bottom: var(--sp-8);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.price-decimals {
+  font-size: var(--text-2xl);
+  margin-bottom: 8px; /* Aligns the decimal with the top/middle of the big number */
+}
+
+.price-period {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-left: var(--sp-2);
+  margin-bottom: 8px;
+}
+
+/* ── The Highlighted Card (Middle) ── */
+.plan-card--highlight {
+  background-color: var(--color-accent); /* Uses your vibrant red */
+  border-color: var(--color-accent);
+  transform: scale(1.08); /* Makes it slightly bigger than the others */
+  box-shadow: 0 15px 40px rgba(254, 73, 42, 0.4); /* Glowing red shadow */
+  position: relative;
+  z-index: 2; /* Ensures it stays on top of the other cards */
+}
+
+/* Overriding colors inside the red card to stay visible */
+.plan-card--highlight .plan-card__name {
+  border-color: var(--color-on-accent);
+  color: var(--color-on-accent);
+}
+
+.plan-card--highlight .plan-card__price,
+.plan-card--highlight .price-decimals,
+.plan-card--highlight .price-period {
+  color: var(--color-on-accent);
+}
+
+/* The "Recommended" text at the top */
+.plan-card__badge {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-on-accent);
+  margin-bottom: var(--sp-4);
+}
+
+/* A custom white button for the red card to create contrast */
+.btn--white {
+  background-color: var(--color-on-accent);
+  color: var(--color-accent);
+  border-color: var(--color-on-accent);
+}
+
+.btn--white:hover {
+  background-color: transparent;
+  color: var(--color-on-accent);
+}
 
 
 

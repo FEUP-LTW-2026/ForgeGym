@@ -84,7 +84,9 @@
 }
 
 /* Hover effect for the navigation links */
-.nav__link:hover { color: var(--color-text); }
+.nav__link:hover { 
+  color: var(--color-gold); /* Destaque dourado no menu */
+}
 
 /* Wrapper for the "Log in" and "Join now" buttons */
 .nav__actions { display: flex; gap: var(--sp-3); }
