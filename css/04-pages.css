@@ -487,24 +487,38 @@ body:has(#filter-trainer option[value="joao"]:checked) .class-card:not([data-tra
   z-index: 10;
 }
 
-/* Layout em Grelha */
+/* Layout em Grelha Perfeito (Alinhamento Automático) */
 .profile-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--sp-6);
 }
 
-@media (min-width: 992px) {
-  .profile-grid {
-    grid-template-columns: 320px 1fr;
-    align-items: start;
-  }
-}
-
-.profile-sidebar {
+.profile-sidebar, .profile-main-content {
   display: flex;
   flex-direction: column;
   gap: var(--sp-6);
+}
+
+@media (min-width: 992px) {
+  .profile-grid {
+    grid-template-columns: 320px 1fr;
+    /* Criamos "zonas" na grelha para forçar o alinhamento linha a linha */
+    grid-template-areas: 
+      "avatar planner"
+      "qr     info";
+    align-items: stretch;
+  }
+  
+  /* Permite que os cartões internos ignorem as divs originais e se alinhem na grelha principal */
+  .profile-sidebar, .profile-main-content {
+    display: contents;
+  }
+
+  .profile-card { grid-area: avatar; }
+  .planner-card { grid-area: planner; }
+  .qr-card      { grid-area: qr; }
+  .info-card    { grid-area: info; }
 }
 
 /* Cartões Aesthetic / Glassmorphism */
@@ -513,7 +527,6 @@ body:has(#filter-trainer option[value="joao"]:checked) .class-card:not([data-tra
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--color-border);
-  /* Borda superior cinzenta mais grossa (desligada) */
   border-top: 4px solid rgba(177, 191, 226, 0.2); 
   border-radius: var(--radius-lg);
   padding: var(--sp-6);
@@ -522,10 +535,8 @@ body:has(#filter-trainer option[value="joao"]:checked) .class-card:not([data-tra
 }
 
 .profile-card:hover, .qr-card:hover, .info-card:hover, .planner-card:hover {
-  /* Levanta um bocadinho o cartão ao passar o rato */
   transform: translateY(-3px); 
   border-color: rgba(255, 255, 255, 0.15);
-  /* A borda de cima fica com o Laranja/Vermelho do teu tema */
   border-top-color: var(--color-accent); 
 }
 
@@ -535,6 +546,7 @@ body:has(#filter-trainer option[value="joao"]:checked) .class-card:not([data-tra
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
 .profile-avatar-wrapper {
@@ -573,7 +585,10 @@ body:has(#filter-trainer option[value="joao"]:checked) .class-card:not([data-tra
 /* QR Code Section */
 .qr-card {
   text-align: center;
-  /* A borda fixa que estava aqui foi removida para usar o efeito global do hover */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .qr-card__title {
@@ -610,6 +625,12 @@ body:has(#filter-trainer option[value="joao"]:checked) .class-card:not([data-tra
 }
 
 /* Main Content Area */
+.info-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .info-card h3, .password-section h3 {
   font-family: var(--font-display);
   font-size: var(--text-xl);
@@ -647,9 +668,11 @@ body:has(#filter-trainer option[value="joao"]:checked) .class-card:not([data-tra
 /* Planner Link Card */
 .planner-card {
   background: linear-gradient(135deg, rgba(254, 73, 42, 0.1) 0%, rgba(22, 51, 111, 0.05) 100%);
-  margin-bottom: var(--sp-6);
-  /* A borda lateral que estava aqui foi removida a favor da borda superior global */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
+
 .button-aesthetic {
   display: inline-flex;
   align-items: center;
