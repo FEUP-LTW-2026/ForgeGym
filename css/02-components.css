@@ -56,3 +56,89 @@
 .btn--ghost:hover {
   border-color: var(--color-text-muted);
 }
+
+
+/* ── Quick-access dropdown menu ──*/
+ 
+/* Wrapper — relative so the dropdown is anchored to this button */
+.quick-menu {
+  position: relative;
+}
+ 
+/* The 3-line trigger button */
+.quick-menu__btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color var(--t-fast);
+  flex-shrink: 0;
+}
+.quick-menu__btn:hover {
+  border-color: var(--color-text-muted);
+}
+.quick-menu__btn span {
+  display: block;
+  height: 2px;
+  background: var(--color-text);
+  border-radius: 1px;
+}
+ 
+/* Dropdown panel — hidden by default, shown when JS adds .is-open */
+.quick-menu__dropdown {
+  display: none;                          /* hidden by default */
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 260px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--sp-2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  z-index: 200;
+}
+.quick-menu__dropdown.is-open {
+  display: block;                         /* visible when .is-open is added by JS */
+}
+ 
+/* Each link row inside the dropdown */
+.quick-menu__item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  transition: background-color var(--t-fast);
+}
+.quick-menu__item:hover {
+  background-color: rgba(177, 191, 226, 0.08);
+}
+ 
+.quick-menu__icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+ 
+.quick-menu__item strong {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+.quick-menu__item span:not(.quick-menu__icon) {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+ 

@@ -15,7 +15,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
-  
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -23,11 +22,13 @@
   <header class="header">
     <div class="container header__inner">
 
+      <!-- Logo -->
       <a href="index.html" class="logo" aria-label="FORGE GYM homepage">
         <img src="images/logo.png" alt="FORGE GYM" class="logo__img" />
         <span class="logo__text">FORGE GYM</span>
       </a>
 
+      <!-- Mobile hamburger (opens full-screen nav) -->
       <button class="nav__toggle" id="nav-toggle"
               aria-controls="main-nav"
               aria-expanded="false"
@@ -37,6 +38,7 @@
         <span></span>
       </button>
 
+      <!-- Main navigation links + login/register buttons -->
       <nav class="nav" id="main-nav" aria-label="Primary navigation">
         <ul class="nav__list">
           <li><a href="#classes"   class="nav__link">Classes</a></li>
@@ -50,9 +52,40 @@
         </div>
       </nav>
 
+      <!-- Quick-access menu -->
+      <div class="quick-menu">
+        <button class="quick-menu__btn" id="quick-menu-btn"
+                aria-expanded="false"
+                aria-controls="quick-menu-dropdown"
+                aria-label="Quick access menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="quick-menu__dropdown" id="quick-menu-dropdown">
+          <a href="pages/schedule.php" class="quick-menu__item">
+            <span class="quick-menu__icon" aria-hidden="true">📅</span>
+            <div>
+              <strong>Workout Planner</strong>
+              <span>Browse &amp; plan your schedule</span>
+            </div>
+          </a>
+          <a href="pages/profile.php" class="quick-menu__item">
+            <span class="quick-menu__icon" aria-hidden="true">👤</span>
+            <div>
+              <strong>My Profile</strong>
+              <span>Account, bookings &amp; progress</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
     </div>
   </header>
 
-  <script src="js/main.js"></script>
+  <main>
+  </main>
+
+  <script src="main.js"></script>
 </body>
-</html>l
+</html>
