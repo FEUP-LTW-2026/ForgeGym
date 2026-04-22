@@ -1,7 +1,117 @@
-<!--
-  profile.html — User Profile Page
-  Purpose: Displays and manages the personal information of the logged-in user.
-  Members can update their name, username, password, and profile photo, as well
-  as view their enrolled classes and booking history. Trainers additionally manage
-  their public bio, specializations, and certifications from this page.
--->
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>O Meu Perfil — FORGE GYM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo" aria-label="FORGE GYM homepage">
+        <img src="images/logo.png" alt="FORGE GYM" class="logo__img" />
+        <span class="logo__text">FORGE GYM</span>
+      </a>
+
+      <button class="nav__toggle" id="nav-toggle" aria-controls="main-nav" aria-expanded="false" aria-label="Abrir menu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav" id="main-nav" aria-label="Navegação Principal">
+        <ul class="nav__list">
+          <li><a href="plan.html" class="nav__link">Horário</a></li>
+          <li><a href="#equipment" class="nav__link">Equipamento</a></li>
+          <li><a href="profile.html" class="nav__link">Perfil</a></li>
+        </ul>
+        <div class="nav__actions">
+          <a href="pages/logout.php" class="btn btn--ghost">Terminar Sessão</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container profile-page">
+    
+    <header class="profile-header">
+      <h1 class="page-title">O Meu Perfil</h1>
+      <p class="text-muted">Gere as tuas informações pessoais e o teu passe de acesso ao ginásio.</p>
+    </header>
+
+    <div class="profile-grid">
+      
+      <aside class="profile-sidebar">
+        
+        <div class="card profile-card">
+          <div class="profile-avatar-wrapper">
+            <img src="https://via.placeholder.com/150" alt="Foto de Perfil" class="profile-avatar-img">
+          </div>
+          <h2 class="profile-name">João Silva</h2>
+          <span class="badge badge--member">Membro Ativo</span>
+          <button class="btn btn--ghost btn--small u-margin-top-md">Alterar Foto</button>
+        </div>
+
+        <div class="card qr-card">
+          <h3 class="qr-card__title">Passe de Entrada</h3>
+          <p class="qr-card__desc">Apresenta este código no leitor à entrada do ginásio.</p>
+          <div class="qr-code-wrapper">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=member_1234_joaosilva&color=1C1C1A&bgcolor=F0EEDF" alt="Código QR de Acesso" class="qr-img">
+          </div>
+          <p class="qr-card__id">ID: #1234-5678</p>
+        </div>
+
+      </aside>
+
+      <section class="profile-content">
+        <div class="card">
+          <h3 class="card-title">Detalhes da Conta</h3>
+          
+          <form class="form" action="#" method="POST">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="fullName" class="form-label">Nome Completo</label>
+                <input type="text" id="fullName" name="fullName" class="form-input" value="João Silva" required>
+              </div>
+              <div class="form-group">
+                <label for="username" class="form-label">Nome de Utilizador</label>
+                <input type="text" id="username" name="username" class="form-input" value="joaosilva99" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" id="email" name="email" class="form-input" value="joao.silva@email.com" required>
+            </div>
+
+            <h4 class="form-section-title">Segurança</h4>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="newPassword" class="form-label">Nova Palavra-passe</label>
+                <input type="password" id="newPassword" name="newPassword" class="form-input" placeholder="Deixar em branco para manter">
+              </div>
+              <div class="form-group">
+                <label for="confirmPassword" class="form-label">Confirmar Palavra-passe</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" placeholder="Confirmar nova senha">
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn--primary">Guardar Alterações</button>
+            </div>
+          </form>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

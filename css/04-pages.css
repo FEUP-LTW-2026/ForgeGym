@@ -10,3 +10,116 @@
  * - Training Plan Page (Specific calendar/schedule adjustments)
  * * IMPORTANT: Please leave comments separating each page's code.
  */
+
+ /* * PROFILE PAGE
+ */
+
+/* Afastar o conteúdo do header fixo */
+.profile-page {
+  padding-top: calc(var(--header-h) + var(--sp-10));
+  padding-bottom: var(--sp-10);
+}
+
+.profile-header {
+  margin-bottom: var(--sp-8);
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: var(--text-4xl);
+  color: var(--color-accent); /* Título em destaque vermelho FORGE */
+  text-transform: uppercase;
+  margin-bottom: var(--sp-2);
+}
+
+/* Layout em Grelha (Sidebar com QR + Formulário) */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-8);
+}
+
+@media (min-width: 992px) {
+  .profile-grid {
+    grid-template-columns: 300px 1fr; /* Coluna do lado esquerdo fixa, a direita expande */
+    align-items: start;
+  }
+}
+
+.profile-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+
+/* Cartão do Utilizador (Avatar) */
+.profile-card {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-avatar-wrapper {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 3px solid var(--color-primary);
+  margin-bottom: var(--sp-3);
+}
+
+.profile-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-name {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  margin-bottom: var(--sp-2);
+}
+
+/* Cartão do Código QR */
+.qr-card {
+  text-align: center;
+  background-color: var(--color-primary); /* Destaque com o azul do ginásio */
+  border-color: var(--color-primary);
+}
+
+.qr-card__title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  color: var(--color-on-primary);
+  text-transform: uppercase;
+  margin-bottom: var(--sp-2);
+}
+
+.qr-card__desc {
+  font-size: var(--text-xs);
+  color: var(--color-text-dim);
+  margin-bottom: var(--sp-4);
+  line-height: 1.4;
+}
+
+.qr-code-wrapper {
+  background-color: #F0EEDF; /* Fundo claro para o leitor ler bem o QR */
+  padding: 10px;
+  border-radius: var(--radius-md);
+  display: inline-block;
+  margin-bottom: var(--sp-3);
+}
+
+.qr-img {
+  width: 160px;
+  height: 160px;
+  display: block;
+}
+
+.qr-card__id {
+  font-family: monospace;
+  font-size: var(--text-sm);
+  color: var(--color-on-primary);
+  opacity: 0.8;
+}
