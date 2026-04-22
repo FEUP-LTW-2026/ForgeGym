@@ -28,6 +28,7 @@
   /* ── FORGE GYM Colors (Gym) ── */
   --color-primary:      #16336F; /* Main brand color (Deep Blue) */
   --color-primary-hover:#1a3d87; /* Color when mouse is over */
+  --color-gold:         #CBA052;
 
   --color-accent:       #FE492A; /* Highlight color for buttons and badges*/
   --color-accent-hover: #e03e22; /* Color when mouse is over */
