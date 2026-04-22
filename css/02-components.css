@@ -149,6 +149,84 @@
   margin-top: 2px;
 }
 
+/* ── Equipment catalogue card (Element Gyms Style) ── */
+ 
+.equip-grid {
+  display: grid;
+  /* Ajustado para ter ~4 colunas em ecrãs grandes, como na tua imagem */
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--sp-6);
+}
+ 
+.equip-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-surface);
+  border: none; /* Removemos a borda para ficar mais limpo */
+  border-radius: var(--radius-lg); /* Cantos mais redondos como na referência */
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4); /* Sombra base estilo Element Gyms */
+  transition: transform var(--t-fast), box-shadow var(--t-fast);
+  height: 100%; /* Garante que todos os cartões da mesma linha têm a mesma altura */
+}
+
+.equip-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6); /* Sombra mais forte no hover */
+}
+ 
+.equip-card__image {
+  width: 100%;
+  height: 200px;
+  background-color: var(--color-bg-alt);
+}
+
+.equip-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+ 
+.equip-card__info {
+  display: flex;
+  flex-direction: column;
+  padding: var(--sp-6);
+  flex-grow: 1; /* Preenche o espaço restante do cartão */
+}
+
+.equip-card__name {
+  font-family: var(--font-body);
+  font-size: var(--text-2xl); /* Título grande e destacado */
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--sp-2);
+}
+ 
+.equip-card__detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--sp-6);
+}
+
+/* Novo Link de Acção (O "Saber Mais" em Vermelho/Accent) */
+.equip-card__link {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--text-base);
+  color: var(--color-accent); /* Usa a tua cor vermelha definida no base.css */
+  margin-top: auto; /* A magia que empurra o link sempre para o fundo do cartão */
+  transition: color var(--t-fast);
+}
+
+.equip-card__link:hover {
+  color: var(--color-text); /* Fica branco ao passar o rato */
+}
+
+
 /* profile */
 
 /* profile */
