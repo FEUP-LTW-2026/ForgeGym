@@ -1,11 +1,3 @@
-<!--
-  profile.html — User Profile Page
-  Purpose: Displays and manages the personal information of the logged-in user.
-  Members can update their name, username, password, and profile photo, as well
-  as view their enrolled classes and booking history. Trainers additionally manage
-  their public bio, specializations, and certifications from this page.
--->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
@@ -46,7 +39,7 @@
           <span></span><span></span><span></span>
         </label>
         <div class="quick-menu__dropdown" id="quick-menu-dropdown">
-          <a href="schedule.html" class="quick-menu__item">
+          <a href="../plan.html" class="quick-menu__item">
             <span class="quick-menu__icon" aria-hidden="true">📅</span>
             <div>
               <strong>Workout Planner</strong>
@@ -65,79 +58,76 @@
     </div>
   </header>
 
-  <main class="container profile-page">
-    
-    <header class="profile-header">
-      <h1 class="page-title">My Profile</h1>
-      <p class="text-muted">Manage your personal information and gym access pass.</p>
-    </header>
+  <main class="profile-page">
+    <div class="container">
+      <header class="page-header">
+        <p class="eyebrow">Visão Geral da Conta</p>
+        <h1 class="page-title">O TEU <span class="page-title--outline">PERFIL</span></h1>
+      </header>
 
-    <div class="profile-grid">
-      
-      <aside class="profile-sidebar">
-        
-        <div class="card profile-card">
-          <div class="profile-avatar-wrapper">
-            <img src="../images/therock.png" alt="Profile Photo" class="profile-avatar-img">
-          </div>
-          <h2 class="profile-name">Dwayne Johnson</h2>
-          <span class="badge badge--member">Active Member</span>
-          <button class="btn btn--ghost btn--small u-margin-top-md">Change Photo</button>
+      <div class="profile-grid">
+        <aside class="profile-sidebar">
+          <section class="profile-card">
+            <div class="profile-avatar-wrapper">
+              <img src="../images/therock.png" alt="Dwayne Johnson" class="profile-avatar-img">
+            </div>
+            <h2 class="profile-name">Dwayne Johnson</h2>
+            <p class="user-handle">@the_rock</p>
+          </section>
+
+          <section class="qr-card">
+            <h3 class="qr-card__title">Gym Access</h3>
+            <p class="qr-card__desc">Scan this code at the entrance to enter the forge.</p>
+            <div class="qr-code-wrapper">
+              <img src="../images/qrtherock.png" alt="Access QR Code" class="qr-img">
+            </div>
+            <p class="qr-card__id">ID: FORGE-8829-2026</p>
+          </section>
+        </aside>
+
+        <div class="profile-main-content">
+          <section class="planner-card">
+            <div class="planner-card__content">
+              <h3>Next Session</h3>
+              <p>You have a <strong>Strength Forge</strong> class today at 18:00.</p>
+              <a href="../plan.html" class="button-aesthetic">
+                <i class="fas fa-calendar-alt"></i> Open Workout Planner
+              </a>
+            </div>
+          </section>
+
+          <section class="info-card">
+            <h3>Account Settings</h3>
+            <div class="profile-details-grid">
+              <div class="info-box">
+                <label>Full Name</label>
+                <p>Dwayne Johnson</p>
+              </div>
+              <div class="info-box">
+                <label>Email Address</label>
+                <p>dwayne.rock@gym.com</p>
+              </div>
+              <div class="info-box">
+                <label>Member Since</label>
+                <p>January 2024</p>
+              </div>
+              <div class="info-box">
+                <label>Current Weight</label>
+                <p>85 kg</p>
+              </div>
+            </div>
+
+            <div class="password-section">
+              <h3>Security</h3>
+              <div class="info-box">
+                <label>Password</label>
+                <p>••••••••••••</p>
+              </div>
+              <button class="btn btn--ghost btn--small u-margin-top-md">Change Password</button>
+            </div>
+          </section>
         </div>
-
-        <div class="card qr-card">
-          <h3 class="qr-card__title">Gym Pass</h3>
-          <p class="qr-card__desc">Scan this code at the entrance to access the gym.</p>
-          <div class="qr-code-wrapper">
-            <img src="../images/qrtherock.png" alt="Access QR Code" class="qr-img">
-          </div>
-          <p class="qr-card__id">ID: #1234-5678</p>
-        </div>
-
-      </aside>
-
-      <section class="profile-content">
-        <div class="card">
-          <h3 class="card-title">Account Details</h3>
-          
-          <form class="form" action="#" method="POST">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="fullName" class="form-label">Full Name</label>
-                <input type="text" id="fullName" name="fullName" class="form-input" value="Dwayne Johnson" required>
-              </div>
-              <div class="form-group">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" id="username" name="username" class="form-input" value="The Rock" required>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="email" class="form-label">Email Address</label>
-              <input type="email" id="email" name="email" class="form-input" value="TheRockJhonson@gmail.com" required>
-            </div>
-
-            <h4 class="form-section-title">Security</h4>
-            
-            <div class="form-row">
-              <div class="form-group">
-                <label for="newPassword" class="form-label">New Password</label>
-                <input type="password" id="newPassword" name="newPassword" class="form-input" placeholder="Leave blank to keep current">
-              </div>
-              <div class="form-group">
-                <label for="confirmPassword" class="form-label">Confirm Password</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" placeholder="Confirm new password">
-              </div>
-            </div>
-
-            <div class="form-actions">
-              <button type="submit" class="btn btn--primary">Save Changes</button>
-            </div>
-          </form>
-
-        </div>
-      </section>
-
+      </div>
     </div>
   </main>
 
