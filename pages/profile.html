@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -26,35 +27,15 @@
 
       <nav class="nav" id="main-nav" aria-label="Primary navigation">
         <ul class="nav__list">
-          <li><a href="../index.html#classes" class="nav__link">Classes</a></li>
-          <li><a href="../index.html#equipment" class="nav__link">Equipment</a></li>
-          <li><a href="../index.html#plans" class="nav__link">Plans</a></li>
-          <li><a href="../index.html#reviews" class="nav__link">Reviews</a></li>
+          <li><a href="plan.html" class="nav__link">Classes</a></li>
+          <li><a href="profile.html" class="nav__link">Profile</a></li>
         </ul>
-      </nav>
-
-      <div class="quick-menu">
-        <input type="checkbox" id="quick-menu-toggle" class="sr-only peer-quick" />
-        <label for="quick-menu-toggle" class="quick-menu__btn" aria-label="Quick access menu">
-          <span></span><span></span><span></span>
-        </label>
-        <div class="quick-menu__dropdown" id="quick-menu-dropdown">
-          <a href="../plan.html" class="quick-menu__item">
-            <span class="quick-menu__icon" aria-hidden="true">📅</span>
-            <div>
-              <strong>Workout Planner</strong>
-              <span>Browse &amp; plan your schedule</span>
-            </div>
-          </a>
-          <a href="profile.html" class="quick-menu__item">
-            <span class="quick-menu__icon" aria-hidden="true">👤</span>
-            <div>
-              <strong>My Profile</strong>
-              <span>Account, bookings &amp; progress</span>
-            </div>
-          </a>
+        <div class="nav__actions">
+          <a href="login.html" class="btn btn--ghost">Log in</a>
+          <a href="register.html" class="btn btn--primary">Join now</a>
         </div>
-      </div>
+      </nav>
+      
     </div>
   </header>
 
@@ -69,7 +50,7 @@
         <aside class="profile-sidebar">
           <section class="profile-card">
             <div class="profile-avatar-wrapper">
-              <img src="../images/therock.png" alt="Dwayne Johnson" class="profile-avatar-img">
+              <img src="../images/profiles/therock.png" alt="Dwayne Johnson" class="profile-avatar-img">
             </div>
             <h2 class="profile-name">Dwayne Johnson</h2>
             <p class="user-handle">@the_rock</p>
@@ -79,7 +60,7 @@
             <h3 class="qr-card__title">Gym Access</h3>
             <p class="qr-card__desc">Scan this code at the entrance to enter the forge.</p>
             <div class="qr-code-wrapper">
-              <img src="../images/qrtherock.png" alt="Access QR Code" class="qr-img">
+              <img src="../images/profiles/qrtherock.png" alt="Access QR Code" class="qr-img">
             </div>
             <p class="qr-card__id">ID: FORGE-8829-2026</p>
           </section>
@@ -90,7 +71,7 @@
             <div class="planner-card__content">
               <h3>Next Session</h3>
               <p>You have a <strong>Strength Forge</strong> class today at 18:00.</p>
-              <a href="../plan.html" class="button-aesthetic">
+              <a href="plan.html" class="button-aesthetic">
                 <i class="fas fa-calendar-alt"></i> Open Workout Planner
               </a>
             </div>
@@ -130,6 +111,31 @@
       </div>
     </div>
   </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      
+      <a href="../index.html" class="logo footer__logo" aria-label="FORGE GYM homepage">
+        <img src="../images/logo.png" alt="FORGE GYM" class="logo__img" />
+      </a>
+
+      <ul class="footer__nav">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../index.html#equipment">Equipment</a></li>
+        <li><a href="../index.html#plans">Plans</a></li>
+        <li><a href="../index.html#reviews">Reviews</a></li>
+      </ul>
+
+      <p class="footer__address">
+        Rua Dr. Roberto Frias, 4200-465 Porto &nbsp;|&nbsp; info@forgegym.pt
+      </p>
+
+    </div>
+    
+    <div class="footer__bottom">
+      <p>&copy; 2026 FORGE GYM. All rights reserved.</p>
+    </div>
+  </footer>
 
 </body>
 </html>
