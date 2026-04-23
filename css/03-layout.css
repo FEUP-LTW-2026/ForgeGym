@@ -83,8 +83,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--sp-6);
-  padding-bottom: var(--sp-10);
+  gap: var(--sp-8);
+  padding-bottom: var(--sp-8);
 }
 
 /* Make the logo stand out */
@@ -141,7 +141,7 @@
 .logo { display: flex; align-items: center; flex-shrink: 0;}
 
 /* The actual logo image */
-.logo__img { height: 115px; width: auto; object-fit: contain; margin-top: 15px;}
+.logo__img { height: 60px; width: auto; object-fit: contain; margin-top: 0px;}
 
 /* The brand name text next to the logo */
 .logo__text {
@@ -151,7 +151,8 @@
   color: var(--color-logo);            /* Uses the standard off-white color */
   letter-spacing: 0.05em;              /* Adds a tiny bit of space between letters */
   line-height: 1;                      /* Keeps the text block tight */
-  margin-top: 0px;                     /* Adjust this slightly if the text doesn't look perfectly centered with the image */
+  margin-top: -5px;                     /* Adjust this slightly if the text doesn't look perfectly centered with the image */
+  margin-left: 10px;
 }
 
 /* ── Navigation ── */
