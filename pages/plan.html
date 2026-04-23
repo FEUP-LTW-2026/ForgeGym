@@ -7,15 +7,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
+  
+  <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
 
   <header class="header">
     <div class="container header__inner">
 
-      <a href="index.html" class="logo" aria-label="FORGE GYM homepage">
-        <img src="images/logo.png" alt="FORGE GYM" class="logo__img" />
+      <a href="../index.html" class="logo" aria-label="FORGE GYM homepage">
+        <img src="../images/logo.png" alt="FORGE GYM" class="logo__img" />
         <span class="logo__text">FORGE GYM</span>
       </a>
 
@@ -28,43 +29,15 @@
 
       <nav class="nav" id="main-nav" aria-label="Primary navigation">
         <ul class="nav__list">
-          <li><a href="index.html#classes"   class="nav__link">Classes</a></li>
-          <li><a href="index.html#equipment" class="nav__link">Equipment</a></li>
-          <li><a href="index.html#plans"     class="nav__link">Plans</a></li>
-          <li><a href="index.html#reviews"   class="nav__link">Reviews</a></li>
+          <li><a href="plan.html" class="nav__link">Classes</a></li>
+          <li><a href="profile.html" class="nav__link">Profile</a></li>
         </ul>
         <div class="nav__actions">
-          <a href="pages/login.html"    class="btn btn--ghost">Log in</a>
-          <a href="pages/register.html" class="btn btn--primary">Join now</a>
+          <a href="login.html" class="btn btn--ghost">Log in</a>
+          <a href="register.html" class="btn btn--primary">Join now</a>
         </div>
       </nav>
-
-      <div class="quick-menu">
-        <input type="checkbox" id="quick-menu-toggle" class="sr-only peer-quick" />
-        <label for="quick-menu-toggle" class="quick-menu__btn" aria-label="Quick access menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </label>
-        
-        <div class="quick-menu__dropdown" id="quick-menu-dropdown">
-          <a href="plan.html" class="quick-menu__item">
-            <span class="quick-menu__icon" aria-hidden="true">📅</span>
-            <div>
-              <strong>Workout Planner</strong>
-              <span>Browse &amp; plan your schedule</span>
-            </div>
-          </a>
-          <a href="pages/profile.html" class="quick-menu__item">
-            <span class="quick-menu__icon" aria-hidden="true">👤</span>
-            <div>
-              <strong>My Profile</strong>
-              <span>Account, bookings &amp; progress</span>
-            </div>
-          </a>
-        </div>
       </div>
-    </div>
   </header>
 
   <main class="page-spacing">
@@ -215,7 +188,7 @@
         
         <article class="trainer-card">
           <figure class="trainer-card__img-wrapper">
-            <img src="images/personal trainers/pt-torrao.jpeg" alt="Luis Torrao" class="trainer-card__img" />
+            <img src="../images/personal trainers/pt-torrao.jpeg" alt="Luis Torrao" class="trainer-card__img" />
           </figure>
           <div class="trainer-card__info">
             <h3 class="trainer-name">Luis Torrao</h3>
@@ -229,7 +202,7 @@
 
         <article class="trainer-card">
           <figure class="trainer-card__img-wrapper">
-            <img src="images/personal trainers/pt-quaresma.jpeg" alt="Diogo Quaresma" class="trainer-card__img" />
+            <img src="../images/personal trainers/pt-quaresma.jpeg" alt="Diogo Quaresma" class="trainer-card__img" />
           </figure>
           <div class="trainer-card__info">
             <h3 class="trainer-name">Diogo Quaresma</h3>
@@ -243,7 +216,7 @@
 
         <article class="trainer-card">
           <figure class="trainer-card__img-wrapper">
-            <img src="images/personal trainers/pt-mafalda.jpeg" alt="Mafalda Pacheco" class="trainer-card__img" />
+            <img src="../images/personal trainers/pt-mafalda.jpeg" alt="Mafalda Pacheco" class="trainer-card__img" />
           </figure>
           <div class="trainer-card__info">
             <h3 class="trainer-name">Mafalda Pacheco</h3>
@@ -257,7 +230,7 @@
 
         <article class="trainer-card">
           <figure class="trainer-card__img-wrapper">
-            <img src="images/personal trainers/pt-david.jpeg" alt="David Pinto" class="trainer-card__img" />
+            <img src="../images/personal trainers/pt-david.jpeg" alt="David Pinto" class="trainer-card__img" />
           </figure>
           <div class="trainer-card__info">
             <h3 class="trainer-name">David Pinto</h3>
@@ -271,7 +244,7 @@
 
         <article class="trainer-card">
           <figure class="trainer-card__img-wrapper">
-            <img src="images/personal trainers/pt-lage.jpeg" alt="Joao Lage" class="trainer-card__img" />
+            <img src="../images/personal trainers/pt-lage.jpeg" alt="Joao Lage" class="trainer-card__img" />
           </figure>
           <div class="trainer-card__info">
             <h3 class="trainer-name">Joao Lage</h3>
@@ -287,6 +260,31 @@
     </section>
 
   </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      
+      <a href="../index.html" class="logo footer__logo" aria-label="FORGE GYM homepage">
+        <img src="../images/logo.png" alt="FORGE GYM" class="logo__img" />
+      </a>
+
+      <ul class="footer__nav">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../index.html#equipment">Equipment</a></li>
+        <li><a href="../index.html#plans">Plans</a></li>
+        <li><a href="../index.html#reviews">Reviews</a></li>
+      </ul>
+
+      <p class="footer__address">
+        Rua Dr. Roberto Frias, 4200-465 Porto &nbsp;|&nbsp; info@forgegym.pt
+      </p>
+
+    </div>
+    
+    <div class="footer__bottom">
+      <p>&copy; 2026 FORGE GYM. All rights reserved.</p>
+    </div>
+  </footer>
 
 </body>
 </html>
