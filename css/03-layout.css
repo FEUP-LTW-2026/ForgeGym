@@ -1,29 +1,20 @@
-/* 
- * FILE: 03-layout.css
- * PURPOSE: Global structural elements and macro-layouts.
- * * DESCRIPTION:
- * This file handles the major structural pieces of the website that are 
- * shared across multiple pages.
- * Examples include:
- * - The main Navigation Bar / Header (.main-header, .nav-menu)
- * - The Global Footer (.main-footer)
- * - General grid or wrapper containers (.container, .main-content)
- * * IMPORTANT: Focus on Flexbox/Grid structures and mobile-first media queries.
-*/
+/* * 03-LAYOUT.CSS
+ * Global structural elements (Header, Footer, Containers).
+ */
 
-/* ── Container ── */
-/* The main wrapper that keeps your website content centered and stops it from stretching too far on huge screens */
+/* Container */
 .container {
   max-width: var(--container-max);
   margin-inline: auto;
   padding-inline: var(--container-pad);
 }
 
-/* ── Header ── */
-/* The top navigation bar of the website */
+/* Header */
 .header {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 0; 
+  left: 0; 
+  right: 0;
   z-index: 100;
   height: var(--header-h);
   background-color: rgba(28, 28, 26, 0.9);
@@ -32,7 +23,6 @@
   border-bottom: 1px solid var(--color-border);
 }
 
-/* The inner wrapper of the header that aligns the logo and the navigation */
 .header__inner {
   height: 100%;
   display: flex;
@@ -41,122 +31,32 @@
   gap: var(--sp-8);
 }
 
-/* ── Footer ── */
-
-.footer {
-  background-color: var(--color-bg-alt); /* Slightly darker background than the main page */
-  border-top: 1px solid var(--color-border);
-  padding-top: var(--sp-10);
+/* Logo */
+.logo { 
+  display: flex; 
+  align-items: center; 
+  flex-shrink: 0;
 }
 
-.footer__inner {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-8);
-  padding-bottom: var(--sp-8);
+.logo__img { 
+  height: 60px; 
+  width: auto; 
+  object-fit: contain; 
+  margin-top: 0;
 }
 
-/* Desktop layout: Logo on the left, links on the right */
-@media (min-width: 850px) {
-  .footer__inner {
-    flex-direction: row;
-    justify-content: center; 
-    align-items: flex-start;
-    gap: 6rem; 
-  }
-
-  .footer__links {
-    margin: 0; 
-  }
-}
-
-/* ── Minimalist Centered Footer ── */
-
-.footer {
-  background-color: var(--color-bg-alt);
-  border-top: 1px solid var(--color-border);
-  padding-top: var(--sp-10);
-  text-align: center; /* Forces everything to center */
-}
-
-.footer__inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--sp-8);
-  padding-bottom: var(--sp-8);
-}
-
-/* Make the logo stand out */
-.footer__logo .logo__img {
-  height: 210px; /* Big and bold */
-  margin: 0;
-}
-
-/* Horizontal links using your Gym Font */
-.footer__nav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--sp-8);
-  margin-top: var(--sp-2);
-}
-
-.footer__nav a {
-  font-family: var(--font-display);
-  font-size: var(--text-2xl); /* Big text */
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-text);
-  transition: color var(--t-fast);
-}
-
-.footer__nav a:hover {
-  color: var(--color-gold); /* Turns gold on hover */
-}
-
-/* Address line */
-.footer__address {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  letter-spacing: 0.05em;
-}
-
-/* Bottom copyright bar */
-.footer__bottom {
-  border-top: 1px solid var(--color-border);
-  padding-block: var(--sp-6);
-}
-
-.footer__bottom p {
-  font-size: var(--text-xs);
-  color: var(--color-text-dim);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-/* ── Logo ── */
-/* Wrapper for the logo image */
-.logo { display: flex; align-items: center; flex-shrink: 0;}
-
-/* The actual logo image */
-.logo__img { height: 60px; width: auto; object-fit: contain; margin-top: 0px;}
-
-/* The brand name text next to the logo */
 .logo__text {
-  font-family: var( --font-display);    /* Uses the bold, condensed font */
-  font-size: var(--text-3xl);          /* Makes the text reasonably large */
-  font-weight: 900;                    /* Makes the text extra thick/bold */
-  color: var(--color-logo);            /* Uses the standard off-white color */
-  letter-spacing: 0.05em;              /* Adds a tiny bit of space between letters */
-  line-height: 1;                      /* Keeps the text block tight */
-  margin-top: -5px;                     /* Adjust this slightly if the text doesn't look perfectly centered with the image */
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 900;
+  color: var(--color-logo);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  margin-top: -5px;
   margin-left: 10px;
 }
 
-/* ── Navigation ── */
-/* The main wrapper for the links and buttons */
+/* Desktop Navigation */
 .nav {
   display: flex;
   align-items: center;
@@ -165,10 +65,11 @@
   justify-content: flex-end;
 }
 
-/* The list (<ul>) containing the navigation links */
-.nav__list { display: flex; gap: var(--sp-6); }
+.nav__list { 
+  display: flex; 
+  gap: var(--sp-6); 
+}
 
-/* The individual navigation links (<a>) */
 .nav__link {
   font-family: var(--font-body);
   font-size: var(--text-sm);
@@ -179,26 +80,23 @@
   transition: color var(--t-fast);
 }
 
-/* Hover effect for the navigation links */
 .nav__link:hover { 
-  color: var(--color-gold); /* Destaque dourado no menu */
+  color: var(--color-gold); 
 }
 
-/* Wrapper for the "Log in" and "Join now" buttons */
-.nav__actions { display: flex; gap: var(--sp-3); }
+.nav__actions { 
+  display: flex; 
+  gap: var(--sp-3); 
+}
 
-/* ── Mobile Navigation (CSS-Only) ────────────────────────────── */
-
-/* Hide hamburger on desktop */
+/* Mobile Navigation (CSS-Only) */
 @media (min-width: 769px) {
   .nav__toggle {
     display: none;
   }
 }
 
-/* Mobile rules */
 @media (max-width: 768px) {
-  
   .nav__toggle {
     display: flex;
     flex-direction: column;
@@ -230,7 +128,6 @@
     justify-content: flex-start;
     padding: var(--sp-10) var(--container-pad);
     
-    /* Hidden state */
     opacity: 0;
     visibility: hidden;
     transform: translateY(-100%);
@@ -259,7 +156,6 @@
     width: 100%;
   }
 
-  /* ── CSS-Only Logic for Mobile Menu ── */
   .peer-nav:checked ~ .nav {
     opacity: 1;
     visibility: visible;
@@ -277,4 +173,65 @@
   .peer-nav:checked ~ .nav__toggle span:nth-child(3) {
     transform: translateY(-11px) rotate(-45deg);
   }
+}
+
+/* Footer (Minimalist Centered) */
+.footer {
+  background-color: var(--color-bg-alt);
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--sp-6);
+  text-align: center;
+}
+
+.footer__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-4);
+  padding-bottom: var(--sp-6);
+}
+
+.footer__logo .logo__img {
+  height: 210px;
+  margin: 0;
+}
+
+.footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-8);
+  margin-top: var(--sp-2);
+}
+
+.footer__nav a {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  transition: color var(--t-fast);
+}
+
+.footer__nav a:hover {
+  color: var(--color-gold);
+}
+
+.footer__address {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  letter-spacing: 0.05em;
+}
+
+.footer__bottom {
+  border-top: 1px solid var(--color-border);
+  padding-block: var(--sp-3);
+}
+
+.footer__bottom p {
+  font-size: var(--text-xs);
+  color: var(--color-text-dim);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }

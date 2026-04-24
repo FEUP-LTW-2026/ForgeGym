@@ -1,24 +1,10 @@
-/* * FILE: 04-pages.css
- * PURPOSE: Highly specific styles unique to individual pages.
- *
- * DESCRIPTION:
- * This file is the last step in the CSS cascade. It should only contain 
- * styles that are impossible to achieve using our standard components.
- *
- * SECTIONS:
- * - Main Page (Hero banner, stats bar, CTA banner)
- * - Profile Page (styles to be added when building profile.html)
- * - Training Plan Page (styles to be added when building plan.html)
- *
- * IMPORTANT: Please leave comments separating each page's code.
+/* * 04-PAGES.CSS
+ * Page-specific layouts (Home, Schedule, Profile).
  */
 
-/* ==========================================================================
-   MAIN PAGE (index.html)
-   ========================================================================== */
+/* 1. HOME PAGE (index.html) */
 
-/* ── Hero ── */
-/* Full-screen section that fills the viewport */
+/* Hero Section */
 .hero {
   position: relative;
   min-height: 100svh;
@@ -29,7 +15,6 @@
   overflow: hidden;
 }
 
-/* Decorative background: blue glow top-right, red hint bottom-left, dot grid */
 .hero__bg {
   position: absolute;
   inset: 0;
@@ -42,14 +27,12 @@
   background-size: auto, auto, 40px 40px;
 }
 
-/* Content sits above the background */
 .hero__content {
   position: relative;
   z-index: 1;
   padding-block: 5rem;
 }
 
-/* Small label above the main heading */
 .eyebrow {
   display: inline-block;
   font-family: var(--font-body);
@@ -61,23 +44,20 @@
   margin-bottom: var(--sp-4);
 }
 
-/* Main heading — very large, using the display font */
 .hero__title {
   font-family: var(--font-display);
-  font-size: clamp(4rem, 12vw, 9rem); /* scales between 4rem on mobile and 9rem on desktop */
+  font-size: clamp(4rem, 12vw, 9rem);
   font-weight: 900;
   line-height: 0.9;
   color: var(--color-text);
   margin-bottom: var(--sp-6);
 }
 
-/* The "YOUR" word is rendered as an outline only */
 .hero__title--outline {
   -webkit-text-stroke: 3px var(--color-gold);
   color: transparent;
 }
 
-/* Subtitle paragraph below the heading */
 .hero__sub {
   max-width: 500px;
   font-size: var(--text-lg);
@@ -85,15 +65,13 @@
   margin-bottom: var(--sp-8);
 }
 
-/* Row of CTA buttons */
 .hero__cta {
   display: flex;
   flex-wrap: wrap;
   gap: var(--sp-3);
 }
 
-/* ── Stats bar ───────────────────────────────────────────────── */
-/* Dark bar that sits at the very bottom of the hero section */
+/* Stats Bar */
 .stats {
   position: relative;
   z-index: 1;
@@ -101,14 +79,12 @@
   border-top: 1px solid var(--color-border);
 }
 
-/* Inner row of stat items */
 .stats__inner {
   display: flex;
   flex-wrap: wrap;
   padding-block: var(--sp-8);
 }
 
-/* Individual stat item */
 .stat {
   flex: 1;
   min-width: 130px;
@@ -120,7 +96,6 @@
 }
 .stat:last-child { border-right: none; }
 
-/* The large number (e.g. "40+") */
 .stat__number {
   font-family: var(--font-display);
   font-size: var(--text-4xl);
@@ -128,10 +103,8 @@
   color: var(--color-accent);
   line-height: 1;
 }
-/* The "+" or "%" suffix is slightly smaller */
 .stat__number span { font-size: var(--text-3xl); }
 
-/* The label below the number */
 .stat__label {
   font-size: var(--text-xs);
   color: var(--color-text-muted);
@@ -140,16 +113,12 @@
   text-align: center;
 }
 
-/* ── Hero responsive adjustments ────────────────────────────── */
+/* Hero Responsive */
 @media (max-width: 640px) {
-  /* Reduce outline stroke thickness on small screens */
   .hero__title--outline { -webkit-text-stroke-width: 2px; }
-
-  /* Stack CTA buttons vertically */
   .hero__cta { flex-direction: column; }
   .hero__cta .btn { width: 100%; justify-content: center; }
 
-  /* Stats become a 2×2 grid */
   .stats__inner {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -160,9 +129,7 @@
   .stat:nth-child(3) { border-right: 1px solid var(--color-border); }
 }
 
-/* ── Equipment section ── */
- 
-/* Slightly darker background to visually separate from the hero */
+/* Equipment Section */
 #equipment {
   background-color: var(--color-bg-alt);
   border-top: 1px solid var(--color-border);
@@ -175,7 +142,7 @@
 
 .equipment__title {
   font-family: var(--font-display);
-  font-size: clamp(4rem, 12vw, 9rem); /* scales between 4rem on mobile and 9rem on desktop */
+  font-size: clamp(4rem, 12vw, 9rem);
   font-weight: 900;
   line-height: 0.9;
   color: var(--color-text);
@@ -187,8 +154,7 @@
   color: transparent;
 }
 
-/* ── Membership Plans Section ── */
-
+/* Plans Section */
 #plans {
   padding-block: 5rem;
 }
@@ -197,11 +163,10 @@
   display: flex;
   flex-direction: column;
   gap: var(--sp-6);
-  align-items: center; /* Centers cards on mobile */
+  align-items: center;
   margin-top: var(--sp-8);
 }
 
-/* On larger screens, put them side by side */
 @media (min-width: 850px) {
   .plans-grid {
     flex-direction: row;
@@ -210,7 +175,6 @@
   }
 }
 
-/* Individual Plan Card */
 .plan-card {
   background-color: var(--color-bg-surface);
   border: 1px solid var(--color-border);
@@ -224,7 +188,6 @@
   align-items: center;
   box-shadow: none !important; 
   outline: none !important;
-  
   transition: transform var(--t-fast); 
 }
 
@@ -234,22 +197,6 @@
   border-color: var(--color-gold);
 }
 
-.plan-card--highlight {
-  background-color: var(--color-accent);
-  border-color: var(--color-accent);
-  transform: scale(1.08); 
-  position: relative;
-  z-index: 2; 
-}
-
-/* ── Hover Effect for Highlighted Card ── */
-.plan-card--highlight:hover {
-  transform: scale(1.08) translateY(-6px); 
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6); 
-  border-color: var(--color-gold);
-}
-
-/* The pill-shaped plan name (like the black outlines in your image) */
 .plan-card__name {
   font-family: var(--font-body);
   font-size: var(--text-base);
@@ -259,14 +206,13 @@
   color: var(--color-text);
   border: 2px solid var(--color-text);
   padding: var(--sp-2) var(--sp-8);
-  border-radius: var(--radius-full); /* Pill shape */
+  border-radius: var(--radius-full);
   margin-bottom: var(--sp-6);
 }
 
-/* The giant price text */
 .plan-card__price {
   font-family: var(--font-display);
-  font-size: 5rem; /* Huge number */
+  font-size: 5rem;
   font-weight: 900;
   line-height: 0.8;
   color: var(--color-text);
@@ -283,38 +229,6 @@
   color: var(--color-text-muted);
   margin-left: var(--sp-2);
   margin-bottom: 8px;
-}
-
-/* ── The Highlighted Card (Middle) ── */
-.plan-card--highlight {
-  background-color: var(--color-accent); /* Uses your vibrant red */
-  border-color: var(--color-accent);
-  transform: scale(1.08); /* Makes it slightly bigger than the others */
-  box-shadow: 0 15px 40px rgba(254, 73, 42, 0.4); /* Glowing red shadow */
-  position: relative;
-  z-index: 2; /* Ensures it stays on top of the other cards */
-}
-
-/* Overriding colors inside the red card to stay visible */
-.plan-card--highlight .plan-card__name {
-  border-color: var(--color-on-accent);
-  color: var(--color-on-accent);
-}
-
-.plan-card--highlight .plan-card__price,
-.plan-card--highlight .price-decimals,
-.plan-card--highlight .price-period {
-  color: var(--color-on-accent);
-}
-
-/* The "Recommended" text at the top */
-.plan-card__badge {
-  font-family: var(--font-body);
-  font-size: var(--text-sm);
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--color-on-accent);
-  margin-bottom: var(--sp-4);
 }
 
 .plan-features {
@@ -337,19 +251,52 @@
   text-align: center; 
 }
 
-.plan-card--highlight .plan-features li {
-  border-color: rgba(240, 238, 223, 0.2); 
-  color: rgba(240, 238, 223, 0.9); 
-}
-
 .invisible-line {
   visibility: hidden;
   border: none !important;
   pointer-events: none; 
 }
 
+/* Highlighted Plan Card */
+.plan-card--highlight {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  transform: scale(1.08); 
+  position: relative;
+  z-index: 2; 
+}
 
-/* A custom white button for the red card to create contrast */
+.plan-card--highlight:hover {
+  transform: scale(1.08) translateY(-6px); 
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6); 
+  border-color: var(--color-gold);
+}
+
+.plan-card--highlight .plan-card__name {
+  border-color: var(--color-on-accent);
+  color: var(--color-on-accent);
+}
+
+.plan-card--highlight .plan-card__price,
+.plan-card--highlight .price-decimals,
+.plan-card--highlight .price-period {
+  color: var(--color-on-accent);
+}
+
+.plan-card__badge {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-on-accent);
+  margin-bottom: var(--sp-4);
+}
+
+.plan-card--highlight .plan-features li {
+  border-color: rgba(240, 238, 223, 0.2); 
+  color: rgba(240, 238, 223, 0.9); 
+}
+
 .btn--white {
   background-color: var(--color-on-accent);
   color: var(--color-accent);
@@ -361,8 +308,7 @@
   color: var(--color-on-accent);
 }
 
-/* ── Reviews Section ── */
-
+/* Reviews Section */
 #reviews {
   background-color: var(--color-bg-alt);
   border-top: 1px solid var(--color-border);
@@ -372,7 +318,6 @@
 .reviews-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  /* Aumentamos o espaçamento vertical para a foto não bater no cartão de cima */
   gap: var(--sp-10) var(--sp-6); 
   margin-top: 5rem; 
 }
@@ -382,11 +327,11 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: var(--sp-6);
-  padding-top: 3.5rem; /* Espaço extra no topo para a bola da foto caber */
-  position: relative; /* Necessário para prender a foto ao topo */
+  padding-top: 3.5rem;
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centra todo o conteúdo do cartão */
+  align-items: center;
   text-align: center;
   gap: var(--sp-4);
   transition: transform var(--t-fast), border-color var(--t-fast), box-shadow var(--t-fast);
@@ -398,22 +343,20 @@
   border-color: var(--color-gold); 
 }
 
-/* ── Bola da Foto de Perfil ── */
 .review-card__avatar {
   position: absolute;
-  top: -2.5rem; /* Metade da foto fica para fora do cartão */
+  top: -2.5rem;
   left: 50%;
-  transform: translateX(-50%); /* Centra a bola perfeitamente */
+  transform: translateX(-50%);
   width: 5rem;
   height: 5rem;
-  border-radius: var(--radius-full); /* Torna-a numa bola */
-  border: 4px solid var(--color-bg-surface); /* Borda da mesma cor do cartão para um recorte limpo */
+  border-radius: var(--radius-full);
+  border: 4px solid var(--color-bg-surface);
   overflow: hidden;
   background-color: var(--color-bg-alt);
   transition: border-color var(--t-fast);
 }
 
-/* A borda da foto também fica dourada quando passas o rato no cartão! */
 .review-card:hover .review-card__avatar {
   border-color: var(--color-gold);
 }
@@ -424,7 +367,6 @@
   object-fit: cover;
 }
 
-/* ── Estilos de Texto das Reviews ── */
 .review-card__stars {
   color: var(--color-gold);
   font-size: var(--text-lg);
@@ -445,7 +387,7 @@
   flex-direction: column;
   border-top: 1px solid var(--color-border);
   padding-top: var(--sp-3);
-  width: 100%; /* Garante que a linha divisória vai de uma ponta à outra */
+  width: 100%;
 }
 
 .review-card__author strong {
@@ -463,27 +405,17 @@
 }
 
 
+/* 2. SCHEDULE PAGE (plan.html) */
 
-/* ==========================================================================
-   PROFILE PAGE (profile.html)
-   ========================================================================== */
-/* Styles to be added later */
-
-
-/* ==========================================================================
-   TRAINING PLAN PAGE (plan.html)
-   ========================================================================== */
-
-/* ── Spacing Wrapper for Inner Pages ── */
 .page-spacing {
   padding-top: calc(var(--header-h) + var(--sp-10));
   padding-bottom: var(--sp-10);
 }
 
-/* ── Page Headers (Similar to Hero, but smaller) ── */
 .page-header {
   margin-bottom: var(--sp-8);
 }
+
 .page-title {
   font-family: var(--font-display);
   font-size: clamp(3rem, 8vw, 5rem);
@@ -491,15 +423,16 @@
   line-height: 0.9;
   text-transform: uppercase;
 }
+
 .page-title--outline {
   -webkit-text-stroke: 2px var(--color-gold);
   color: transparent;
 }
 
-/* ── Filters Bar ── */
 .filters {
   margin-bottom: var(--sp-8);
 }
+
 .filters__form {
   display: flex;
   flex-direction: column;
@@ -509,6 +442,7 @@
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
 }
+
 @media (min-width: 768px) {
   .filters__form {
     flex-direction: row;
@@ -518,23 +452,19 @@
   .filters__form .btn { flex-shrink: 0; height: 100%; }
 }
 
-/* ── Schedule Grid ── */
 .schedule-grid {
   display: flex;
   flex-direction: column;
   gap: var(--sp-4);
 }
 
-/* ── CSS-Only Filter Logic ── */
-
-/* 1. Lógica do filtro de Tipo de Aula */
+/* CSS-Only Filter Logic */
 body:has(#filter-type option[value="hiit"]:checked) .class-card:not([data-type="hiit"]),
 body:has(#filter-type option[value="strength"]:checked) .class-card:not([data-type="strength"]),
 body:has(#filter-type option[value="mobility"]:checked) .class-card:not([data-type="mobility"]) {
   display: none;
 }
 
-/* 2. Lógica do filtro de Treinadores (ATUALIZADA) */
 body:has(#filter-trainer option[value="luis"]:checked) .class-card:not([data-trainer="luis"]),
 body:has(#filter-trainer option[value="diogo"]:checked) .class-card:not([data-trainer="diogo"]),
 body:has(#filter-trainer option[value="mafalda"]:checked) .class-card:not([data-trainer="mafalda"]),
@@ -543,16 +473,16 @@ body:has(#filter-trainer option[value="joao"]:checked) .class-card:not([data-tra
   display: none;
 }
 
-/* ── Trainers Section (Plan Page) ── */
+/* Trainers Section */
 .trainers-section {
   margin-top: calc(var(--sp-10) * 2);
   padding-top: var(--sp-10);
-  border-top: 1px solid var(--color-border); /* Uma linha subtil a separar da agenda */
+  border-top: 1px solid var(--color-border);
 }
 
 .section-header {
   margin-bottom: var(--sp-8);
-  text-align: center; /* Centra o título */
+  text-align: center;
 }
 
 .section-title {
@@ -572,34 +502,25 @@ body:has(#filter-trainer option[value="joao"]:checked) .class-card:not([data-tra
   margin-top: var(--sp-2);
 }
 
-/* A grelha responsiva dos treinadores */
 .trainers-grid {
   display: grid;
   gap: var(--sp-4);
-  /* Telemóvel: 1 cartão por linha */
   grid-template-columns: 1fr; 
 }
 
-/* Tablet: 2 cartões por linha */
 @media (min-width: 640px) {
-  .trainers-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .trainers-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* Computador (Ecrãs largos): 5 cartões LADO A LADO */
 @media (min-width: 1024px) {
-  .trainers-grid {
-    grid-template-columns: repeat(5, 1fr);
-  }
+  .trainers-grid { grid-template-columns: repeat(5, 1fr); }
 }
 
 
-/* ── Profile Page ── */
+/* 3. PROFILE PAGE (profile.html) */
 
 .profile-page {
-  /* Aumento do padding-top para o título não ficar debaixo do header */
-  padding-top: calc(var(--header-h) + var(--sp-10) + 3rem); 
+  padding-top: calc(var(--header-h) + var(--sp-10));
   padding-bottom: var(--sp-10);
   background: 
     radial-gradient(circle at 10% 10%, rgba(254, 73, 42, 0.12), transparent 40%),
@@ -608,14 +529,6 @@ body:has(#filter-trainer option[value="joao"]:checked) .class-card:not([data-tra
   min-height: 100vh;
 }
 
-/* Espaçamento do cabeçalho */
-.page-header {
-  margin-bottom: var(--sp-8);
-  position: relative;
-  z-index: 10;
-}
-
-/* Layout em Grelha Perfeito (Alinhamento Automático) */
 .profile-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -631,25 +544,20 @@ body:has(#filter-trainer option[value="joao"]:checked) .class-card:not([data-tra
 @media (min-width: 992px) {
   .profile-grid {
     grid-template-columns: 320px 1fr;
-    /* Criamos "zonas" na grelha para forçar o alinhamento linha a linha */
     grid-template-areas: 
       "avatar planner"
       "qr     info";
     align-items: stretch;
   }
   
-  /* Permite que os cartões internos ignorem as divs originais e se alinhem na grelha principal */
-  .profile-sidebar, .profile-main-content {
-    display: contents;
-  }
-
+  .profile-sidebar, .profile-main-content { display: contents; }
   .profile-card { grid-area: avatar; }
   .planner-card { grid-area: planner; }
   .qr-card      { grid-area: qr; }
   .info-card    { grid-area: info; }
 }
 
-/* Cartões Aesthetic / Glassmorphism */
+/* Glassmorphism Cards */
 .profile-card, .qr-card, .info-card, .planner-card {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(12px);
@@ -752,7 +660,7 @@ body:has(#filter-trainer option[value="joao"]:checked) .class-card:not([data-tra
   color: var(--color-gold);
 }
 
-/* Main Content Area */
+/* Info & Settings Section */
 .info-card {
   display: flex;
   flex-direction: column;
@@ -821,14 +729,4 @@ body:has(#filter-trainer option[value="joao"]:checked) .class-card:not([data-tra
 .button-aesthetic:hover {
   background: var(--color-gold);
   transform: translateY(-2px);
-}
-
-/* Profile end */
-
-/* Training Plan page */
-
-@media (max-width: 480px) {
-  .equip-grid {
-    grid-template-columns: 1fr;
-  }
 }
