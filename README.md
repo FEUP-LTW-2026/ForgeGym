@@ -3,14 +3,14 @@
 ## Features
 
 **All users:**
-- [x] Register a new account.
+- [ ] Register a new account.
 - [ ] Log in and out.
-- [x] Edit their profile, including name, username, password, and profile photo.
+- [ ] Edit their profile, including name, username, password, and profile photo.
 
 **Members:**
-- [ ] Browse the schedule of available fitness classes, filtering by type, trainer, day, or time.
+- [X] Browse the schedule of available fitness classes, filtering by type, trainer, day, or time.
 - [ ] Enroll in and cancel enrollment from upcoming classes, subject to capacity limits.
-- [ ] View trainer profiles, including their specializations and the classes they teach.
+- [X] View trainer profiles, including their specializations and the classes they teach.
 - [ ] Check the current availability of equipment in the main training area.
 - [ ] Leave ratings and reviews for classes they have attended.
 
@@ -30,6 +30,14 @@
 - [ ] Something extra (e.g., personal training bookings, membership plans, waitlist, ...).
 
 ## Running
+
+**Locating the HTML files:**
+- The main landing page is `index.html` (located in the root folder).
+- The workout schedule page is `plan.html` (located in the `pages/` folder).
+- The profile page is `profile.html` (located in the `pages/` folder).
+
+**Starting the server:**
+To see the rendered result properly via PHP, open your terminal in the root folder of the project and run the following commands:
 
     sqlite3 database/database.db < database/database.sql
     php -S localhost:9000
