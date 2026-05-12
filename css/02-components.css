@@ -349,3 +349,178 @@ select.form-control { color-scheme: dark; }
 /* Utilities */
 .u-margin-top-md { margin-top: var(--sp-4); }
 .text-muted { color: var(--color-text-muted); }
+
+
+/* =============================================================================
+   COMPONENT: Equipment Status Panel
+   Paleta: #1C1C1A (bg), #FE492A (accent), #CBA052 (gold)
+   ============================================================================= */
+
+/* --- Painel deslizante (slide-in da direita) --- */
+.equip-status-panel {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 300px;
+  background: #242422;
+  border: 1px solid rgba(203, 160, 82, 0.25);
+  border-radius: 12px;
+  padding: 1.5rem;
+  z-index: 200;
+
+  /* Animação: começa invisível e deslocado */
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.equip-status-panel--visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+/* --- Botão fechar --- */
+.equip-status-panel__close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+
+.equip-status-panel__close:hover {
+  color: #fff;
+}
+
+/* --- Conteúdo --- */
+.equip-status-panel__zone {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #CBA052;
+  margin: 0 0 0.25rem;
+}
+
+.equip-status-panel__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 1.25rem;
+}
+
+/* --- Número grande --- */
+.equip-status-panel__stat {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.equip-status-panel__number {
+  font-size: 42px;
+  font-weight: 700;
+  color: #FE492A;
+  line-height: 1;
+}
+
+.equip-status-panel__label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* --- Barra de progresso --- */
+.equip-status-panel__bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.equip-status-panel__bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.equip-status-panel__bar-fill--free     { background: #4caf82; }
+.equip-status-panel__bar-fill--moderate { background: #CBA052; }
+.equip-status-panel__bar-fill--busy     { background: #FE492A; }
+
+/* --- Footer: badge + disponíveis --- */
+.equip-status-panel__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.equip-status-panel__badge {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 99px;
+}
+
+.equip-status-panel__badge--free     { background: rgba(76, 175, 130, 0.15); color: #4caf82; }
+.equip-status-panel__badge--moderate { background: rgba(203, 160, 82, 0.15); color: #CBA052; }
+.equip-status-panel__badge--busy     { background: rgba(254, 73, 42, 0.15);  color: #FE492A; }
+
+.equip-status-panel__available {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* --- Loading state --- */
+.equip-status-panel__loading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  padding: 0.5rem 0;
+}
+
+.equip-status-panel__spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #CBA052;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- Erro --- */
+.equip-status-panel__error {
+  color: #FE492A;
+  font-size: 14px;
+}
+
+/* --- Estado ativo no cartão --- */
+.equip-card--active {
+  outline: 2px solid #CBA052;
+  outline-offset: 3px;
+}
+
+/* --- Responsivo: em mobile ocupa full width na base --- */
+@media (max-width: 480px) {
+  .equip-status-panel {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    width: auto;
+  }
+}
+
+/* Machine status end*/
