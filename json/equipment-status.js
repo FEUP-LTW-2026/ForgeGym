@@ -1,129 +1,92 @@
-// js/equipment-status.js
-// Gere o clique nos cartões de equipamento e mostra a disponibilidade.
+// json/equipment-status.js
+// Carrega a disponibilidade de todos os equipamentos ao iniciar a página
+// e injeta os dados diretamente nos cartões. Sem painel lateral.
 
 (function () {
   'use strict';
 
   const API_ENDPOINT = 'api/equipment_status.php';
 
-  // --- Injetar o painel de disponibilidade no DOM ---
-  function createStatusPanel() {
-    const panel = document.createElement('div');
-    panel.className = 'equip-status-panel';
-    panel.setAttribute('aria-live', 'polite');
-    panel.setAttribute('role', 'status');
-    panel.innerHTML = `
-      <button class="equip-status-panel__close" aria-label="Fechar">✕</button>
-      <div class="equip-status-panel__content"></div>
-    `;
-    document.body.appendChild(panel);
+  const STATUS_LABEL = {
+    free:     'Available',
+    moderate: 'Moderate',
+    busy:     'Busy',
+  };
 
-    panel.querySelector('.equip-status-panel__close')
-      .addEventListener('click', () => closePanel(panel));
+  // --- Injeta os dados num cartão específico ---
+  function updateCard(card, data) {
+    const infoEl = card.querySelector('.equip-card__info');
+    if (!infoEl) return;
 
-    return panel;
-  }
+    // Remove injeção anterior (evita duplicados em chamadas futuras)
+    const existing = infoEl.querySelector('.equip-card__availability');
+    if (existing) existing.remove();
 
-  // --- Renderizar os dados no painel ---
-  function renderStatus(panel, data) {
-    const { name, total_units, in_use, available, percentage, status, zone } = data;
+    // Cria o bloco de disponibilidade
+    const block = document.createElement('div');
+    block.className = 'equip-card__availability';
 
-    const statusLabel = { free: 'Disponível', moderate: 'Moderado', busy: 'Ocupado' };
-    const usedWidth   = `${percentage}%`;
-
-    panel.querySelector('.equip-status-panel__content').innerHTML = `
-      <p class="equip-status-panel__zone">${zone}</p>
-      <h3 class="equip-status-panel__title">${name}</h3>
-
-      <div class="equip-status-panel__stat">
-        <span class="equip-status-panel__number">${in_use}</span>
-        <span class="equip-status-panel__label">de ${total_units} em uso</span>
+    block.innerHTML = `
+      <div class="equip-avail__bar" aria-label="${data.percentage}% in use">
+        <div class="equip-avail__bar-fill equip-avail__bar-fill--${data.status}"
+             style="width: ${data.percentage}%"></div>
       </div>
-
-      <div class="equip-status-panel__bar" aria-label="${percentage}% em uso">
-        <div class="equip-status-panel__bar-fill equip-status-panel__bar-fill--${status}"
-             style="width: ${usedWidth}"></div>
-      </div>
-
-      <div class="equip-status-panel__footer">
-        <span class="equip-status-panel__badge equip-status-panel__badge--${status}">
-          ${statusLabel[status]}
+      <div class="equip-avail__row">
+        <span class="equip-avail__badge equip-avail__badge--${data.status}">
+          ${STATUS_LABEL[data.status]}
         </span>
-        <span class="equip-status-panel__available">${available} máquinas livres</span>
+        <span class="equip-avail__text">
+          ${data.in_use} of ${data.total_units} in use
+        </span>
       </div>
     `;
+
+    infoEl.appendChild(block);
   }
 
-  // --- Mostrar estado de loading ---
-  function renderLoading(panel) {
-    panel.querySelector('.equip-status-panel__content').innerHTML = `
-      <div class="equip-status-panel__loading">
-        <span class="equip-status-panel__spinner"></span>
-        A verificar disponibilidade…
-      </div>
-    `;
+  // --- Mostra erro subtil no cartão ---
+  function markCardError(card) {
+    const infoEl = card.querySelector('.equip-card__info');
+    if (!infoEl) return;
+    const existing = infoEl.querySelector('.equip-card__availability');
+    if (existing) existing.remove();
+
+    const err = document.createElement('p');
+    err.className = 'equip-card__availability equip-avail__error';
+    err.textContent = 'Status unavailable';
+    infoEl.appendChild(err);
   }
 
-  // --- Abrir/fechar painel ---
-  function openPanel(panel) {
-    panel.classList.add('equip-status-panel--visible');
-  }
+  // --- Fetch único para todos os equipamentos ---
+  async function loadAllStatus() {
+    let data;
+    try {
+      const res = await fetch(API_ENDPOINT);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      data = await res.json();
+    } catch {
+      // Se a API falhar, marca todos os cartões com erro
+      document.querySelectorAll('.equip-card[data-id]').forEach(markCardError);
+      return;
+    }
 
-  function closePanel(panel) {
-    panel.classList.remove('equip-status-panel--visible');
-    // Remove o estado ativo do cartão
-    document.querySelectorAll('.equip-card--active')
-      .forEach(c => c.classList.remove('equip-card--active'));
-  }
+    // Cria um mapa id → dados para acesso rápido
+    const byId = {};
+    data.forEach(item => { byId[item.id] = item; });
 
-  // --- Fetch à API ---
-  async function fetchEquipmentStatus(id) {
-    const res = await fetch(`${API_ENDPOINT}?id=${encodeURIComponent(id)}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json();
-  }
-
-  // --- Inicialização ---
-  function init() {
-    const panel = createStatusPanel();
-
+    // Atualiza cada cartão
     document.querySelectorAll('.equip-card[data-id]').forEach(card => {
-      card.addEventListener('click', async () => {
-        const id = card.dataset.id;
-
-        // Marcar cartão como ativo
-        document.querySelectorAll('.equip-card--active')
-          .forEach(c => c.classList.remove('equip-card--active'));
-        card.classList.add('equip-card--active');
-
-        openPanel(panel);
-        renderLoading(panel);
-
-        try {
-          const data = await fetchEquipmentStatus(id);
-          renderStatus(panel, data);
-        } catch {
-          panel.querySelector('.equip-status-panel__content').innerHTML = `
-            <p class="equip-status-panel__error">
-              Não foi possível carregar a disponibilidade.
-            </p>
-          `;
-        }
-      });
-    });
-
-    // Fechar ao clicar fora do painel
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.equip-card') && !e.target.closest('.equip-status-panel')) {
-        closePanel(panel);
-      }
+      const id   = parseInt(card.dataset.id, 10);
+      const item = byId[id];
+      item ? updateCard(card, item) : markCardError(card);
     });
   }
 
-  // Aguardar o DOM
+  // --- Arranque ---
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', loadAllStatus);
   } else {
-    init();
+    loadAllStatus();
   }
+
 })();

@@ -1,22 +1,11 @@
 <?php
 // api/equipment_status.php
-// Devolve a disponibilidade de um equipamento em JSON.
+// Devolve a disponibilidade de TODOS os equipamentos em JSON.
 
 header('Content-Type: application/json; charset=utf-8');
-// Permite chamadas do mesmo domínio (ajustar em produção)
 header('Access-Control-Allow-Origin: *');
 
-// --- Configuração ---
 define('DB_PATH', __DIR__ . '/../database/forge_gym.db');
-
-// --- Validação do input ---
-$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-
-if (!$id || $id <= 0) {
-    http_response_code(400);
-    echo json_encode(['error' => 'ID de equipamento inválido.']);
-    exit;
-}
 
 // --- Ligação à base de dados ---
 try {
@@ -30,33 +19,28 @@ try {
     exit;
 }
 
-// --- Consulta ---
-$stmt = $pdo->prepare(
-    'SELECT id, name, zone, total_units, in_use FROM equipment WHERE id = :id'
-);
-$stmt->execute([':id' => $id]);
-$equipment = $stmt->fetch();
+// --- Consulta: todos os equipamentos de uma vez ---
+$stmt = $pdo->query('SELECT id, name, zone, total_units, in_use FROM equipment');
+$rows = $stmt->fetchAll();
 
-if (!$equipment) {
-    http_response_code(404);
-    echo json_encode(['error' => 'Equipamento não encontrado.']);
-    exit;
+// --- Calcular disponibilidade para cada um ---
+$result = [];
+foreach ($rows as $eq) {
+    $available  = $eq['total_units'] - $eq['in_use'];
+    $percentage = $eq['total_units'] > 0
+        ? round(($eq['in_use'] / $eq['total_units']) * 100)
+        : 0;
+
+    $result[] = [
+        'id'          => (int) $eq['id'],
+        'name'        => $eq['name'],
+        'zone'        => $eq['zone'],
+        'total_units' => (int) $eq['total_units'],
+        'in_use'      => (int) $eq['in_use'],
+        'available'   => (int) $available,
+        'percentage'  => $percentage,
+        'status'      => $percentage >= 80 ? 'busy' : ($percentage >= 50 ? 'moderate' : 'free'),
+    ];
 }
 
-// --- Cálculo de disponibilidade ---
-$available  = $equipment['total_units'] - $equipment['in_use'];
-$percentage = $equipment['total_units'] > 0
-    ? round(($equipment['in_use'] / $equipment['total_units']) * 100)
-    : 0;
-
-// --- Resposta ---
-echo json_encode([
-    'id'          => (int) $equipment['id'],
-    'name'        => $equipment['name'],
-    'zone'        => $equipment['zone'],
-    'total_units' => (int) $equipment['total_units'],
-    'in_use'      => (int) $equipment['in_use'],
-    'available'   => (int) $available,
-    'percentage'  => $percentage,
-    'status'      => $percentage >= 80 ? 'busy' : ($percentage >= 50 ? 'moderate' : 'free'),
-]);
+echo json_encode($result);
