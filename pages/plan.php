@@ -1,3 +1,37 @@
+<?php
+define('DB_PATH', __DIR__ . '/../database/forge_gym.db');
+
+try {
+    $pdo = new PDO('sqlite:' . DB_PATH);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Database connection failed.");
+}
+
+// Lógica de Filtros (Opcional para agora, mas já fica preparada)
+$typeFilter = $_GET['type'] ?? '';
+$dayFilter = $_GET['day'] ?? '';
+
+$query = "SELECT c.*, t.name as trainer_name 
+          FROM classes c 
+          JOIN trainers t ON c.trainer_id = t.id 
+          WHERE 1=1";
+
+if ($typeFilter) $query .= " AND c.type = " . $pdo->quote($typeFilter);
+if ($dayFilter) $query .= " AND c.day_of_week = " . $pdo->quote($dayFilter);
+
+$query .= " ORDER BY CASE 
+            WHEN day_of_week = 'Monday' THEN 1 
+            WHEN day_of_week = 'Tuesday' THEN 2 
+            WHEN day_of_week = 'Wednesday' THEN 3 
+            WHEN day_of_week = 'Thursday' THEN 4 
+            WHEN day_of_week = 'Friday' THEN 5 
+            WHEN day_of_week = 'Saturday' THEN 6 
+            ELSE 7 END, start_time ASC";
+
+$classes = $pdo->query($query)->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,7 +66,7 @@
 
       <nav class="nav" id="main-nav" aria-label="Primary navigation">
         <ul class="nav__list">
-          <li><a href="plan.html" class="nav__link">Classes</a></li>
+          <li><a href="plan.php" class="nav__link">Classes</a></li>
           <li><a href="profile.html" class="nav__link">Profile</a></li>
         </ul>
         <div class="nav__actions">
@@ -84,101 +118,39 @@
 
         <button type="submit" class="btn btn--primary">Filter</button>
       </form>
-    </section>
-
-    <section class="schedule-grid container" aria-label="Available classes">
       
-      <article class="class-card" data-type="strength" data-trainer="luis">
-        <div class="class-card__time">
-          <span class="time-start">07:00</span>
-          <span class="time-end">08:00</span>
-        </div>
-        <div class="class-card__info">
-          <h2 class="class-title">Strength Forge</h2>
-          <p class="class-trainer">with Luis Torrao</p>
-        </div>
-        <div class="class-card__status">
-          <span class="badge badge--success">Available</span>
-          <span class="capacity">12 / 20 spots</span>
-        </div>
-        <div class="class-card__action">
-          <button class="btn btn--ghost">Enroll Now</button>
-        </div>
-      </article>
-
-      <article class="class-card" data-type="mobility" data-trainer="mafalda">
-        <div class="class-card__time">
-          <span class="time-start">08:30</span>
-          <span class="time-end">09:30</span>
-        </div>
-        <div class="class-card__info">
-          <h2 class="class-title">Morning Flow Yoga</h2>
-          <p class="class-trainer">with Mafalda Pacheco</p>
-        </div>
-        <div class="class-card__status">
-          <span class="badge badge--success">Available</span>
-          <span class="capacity">8 / 15 spots</span>
-        </div>
-        <div class="class-card__action">
-          <button class="btn btn--ghost">Enroll Now</button>
-        </div>
-      </article>
-
-      <article class="class-card" data-type="hiit" data-trainer="diogo">
-        <div class="class-card__time">
-          <span class="time-start">12:30</span>
-          <span class="time-end">13:15</span>
-        </div>
-        <div class="class-card__info">
-          <h2 class="class-title">HIIT Express</h2>
-          <p class="class-trainer">with Diogo Quaresma</p>
-        </div>
-        <div class="class-card__status">
-          <span class="badge badge--warning">Few Spots</span>
-          <span class="capacity">18 / 20 spots</span>
-        </div>
-        <div class="class-card__action">
-          <button class="btn btn--primary">Enroll Now</button>
-        </div>
-      </article>
-
-      <article class="class-card class-card--full" data-type="strength" data-trainer="david">
-        <div class="class-card__time">
-          <span class="time-start">18:00</span>
-          <span class="time-end">19:00</span>
-        </div>
-        <div class="class-card__info">
-          <h2 class="class-title">Powerlifting Basics</h2>
-          <p class="class-trainer">with David Pinto</p>
-        </div>
-        <div class="class-card__status">
-          <span class="badge badge--danger">Full</span>
-          <span class="capacity">15 / 15 spots</span>
-        </div>
-        <div class="class-card__action">
-          <button class="btn btn--ghost" disabled>Join Waitlist</button>
-        </div>
-      </article>
-
-      <article class="class-card" data-type="hiit" data-trainer="joao">
-        <div class="class-card__time">
-          <span class="time-start">19:30</span>
-          <span class="time-end">20:15</span>
-        </div>
-        <div class="class-card__info">
-          <h2 class="class-title">Cardio Burn</h2>
-          <p class="class-trainer">with Joao Lage</p>
-        </div>
-        <div class="class-card__status">
-          <span class="badge badge--success">Available</span>
-          <span class="capacity">5 / 25 spots</span>
-        </div>
-        <div class="class-card__action">
-          <button class="btn btn--ghost">Enroll Now</button>
-        </div>
-      </article>
-
     </section>
+    <div class="schedule-grid">
+      <?php if (count($classes) > 0): ?>
+        <?php foreach ($classes as $class): ?>
+          <article class="class-card" data-type="<?php echo strtolower($class['type']); ?>">
+            <div class="class-card__time">
+              <span class="time-start"><?php echo $class['start_time']; ?></span>
+              <span class="time-end"><?php echo $class['end_time']; ?></span>
+            </div>
+            <div class="class-card__info">
+              <div class="class-card__header">
+                <h2 class="class-title"><?php echo htmlspecialchars($class['name']); ?></h2>
+                <span class="badge badge--dark"><?php echo $class['day_of_week']; ?></span>
+              </div>
+              <p class="class-trainer">
+                with <a href="trainer.php?id=<?php echo $class['trainer_id']; ?>" style="color: var(--color-gold);">
+                  <?php echo htmlspecialchars($class['trainer_name']); ?>
+                </a>
+              </p>
+            </div>
+            <div class="class-card__footer">
+              <span class="class-capacity">
+                <i class="fas fa-users"></i> <?php echo $class['capacity']; ?> spots
+              </span>
+              <button class="btn btn--primary btn--sm">Book Now</button>
+            </div>
+      </article>
+    <?php endforeach; ?>
+  <?php else: ?>
+    <p>No classes found for the selected filters.</p>
+  <?php endif; ?>
+</div>
 
     <section class="trainers-section container" aria-labelledby="trainers-title">
       
