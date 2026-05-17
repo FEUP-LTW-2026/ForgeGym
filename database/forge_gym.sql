@@ -80,10 +80,6 @@ CREATE TABLE IF NOT EXISTS users (
     is_admin INTEGER DEFAULT 0 -- 0 para membro normal, 1 para administrador
 );
 
--- Inserir um utilizador de teste (Password é '12345' encriptada com bcrypt)
-INSERT OR IGNORE INTO users (name, username, email, password, is_admin) 
-VALUES ('John Doe', 'johndoe', 'john@forgegym.pt', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0);
-
 -- Criar a tabela de Inscrições (Enrollments)
 CREATE TABLE IF NOT EXISTS enrollments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

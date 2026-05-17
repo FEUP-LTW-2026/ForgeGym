@@ -18,8 +18,16 @@ if (!$trainer) {
     die("Trainer not found.");
 }
 
-$stmtClasses = $pdo->prepare("SELECT * FROM classes WHERE trainer_id = ?");
-$stmtClasses->execute([$id]);
+$currentDate = date('Y-m-d');
+$currentTime = date('H:i');
+
+$stmtClasses = $pdo->prepare("
+    SELECT * FROM classes 
+    WHERE trainer_id = ? 
+    AND (class_date > ? OR (class_date = ? AND end_time > ?))
+    ORDER BY class_date ASC, start_time ASC
+");
+$stmtClasses->execute([$id, $currentDate, $currentDate, $currentTime]);
 $classes = $stmtClasses->fetchAll(PDO::FETCH_ASSOC);
 
 $stmtReviews = $pdo->prepare("
@@ -195,7 +203,7 @@ $specializations = explode(',', $trainer['specializations']);
           <h3><i class="fas fa-star" style="color: var(--color-gold); margin-right: 8px;"></i> Member Reviews</h3>
           <div class="u-margin-top-md">
             <?php if (count($reviews) > 0): ?>
-              <div class="profile-scrollbar" style="display: flex; flex-direction: column; gap: var(--sp-4); max-height: 320px; overflow-y: auto; padding-right: 8px;">
+              <div class="profile-scrollbar" style="display: flex; flex-direction: column; gap: var(--sp-4); max-height: 240px; overflow-y: auto; padding-right: 8px;">
                 <?php foreach ($reviews as $review): 
                     $photoPath = $review['profile_photo'];
                     if ($photoPath === 'images/profiles/default.png' || !file_exists(__DIR__ . '/../' . $photoPath)) {
