@@ -22,6 +22,17 @@ $stmtClasses = $pdo->prepare("SELECT * FROM classes WHERE trainer_id = ?");
 $stmtClasses->execute([$id]);
 $classes = $stmtClasses->fetchAll(PDO::FETCH_ASSOC);
 
+$stmtReviews = $pdo->prepare("
+    SELECT r.rating, r.comment, r.created_at, u.name as user_name, u.profile_photo, c.name as class_name
+    FROM reviews r
+    JOIN classes c ON r.class_id = c.id
+    JOIN users u ON r.user_id = u.id
+    WHERE c.trainer_id = ?
+    ORDER BY r.created_at DESC
+");
+$stmtReviews->execute([$id]);
+$reviews = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
+
 $specializations = explode(',', $trainer['specializations']);
 ?>
 
@@ -37,6 +48,22 @@ $specializations = explode(',', $trainer['specializations']);
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .profile-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .profile-scrollbar::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02); 
+      border-radius: 10px;
+    }
+    .profile-scrollbar::-webkit-scrollbar-thumb {
+      background: var(--color-gold); 
+      border-radius: 10px;
+    }
+    .profile-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #e6b800; 
+    }
+  </style>
 </head>
 <body>
   
@@ -151,7 +178,7 @@ $specializations = explode(',', $trainer['specializations']);
                     </div>
                     <div class="class-card__info">
                       <h2 class="class-title"><?php echo htmlspecialchars($class['name']); ?></h2>
-                      <p class="class-trainer"><?php echo htmlspecialchars($class['day_of_week']); ?></p>
+                      <p class="class-trainer"><?php echo htmlspecialchars($class['day_of_week']); ?> (<?php echo date('d/m', strtotime($class['class_date'])); ?>)</p>
                     </div>
                   </article>
                 <?php endforeach; ?>
@@ -159,6 +186,51 @@ $specializations = explode(',', $trainer['specializations']);
             <?php else: ?>
               <div style="background: rgba(255,255,255,0.02); padding: var(--sp-6); border-radius: var(--radius-sm); text-align: center; border: 1px dashed var(--color-border);">
                 <p class="text-muted">This trainer doesn't have any classes assigned right now.</p>
+              </div>
+            <?php endif; ?>
+          </div>
+        </section>
+
+        <section class="info-card">
+          <h3><i class="fas fa-star" style="color: var(--color-gold); margin-right: 8px;"></i> Member Reviews</h3>
+          <div class="u-margin-top-md">
+            <?php if (count($reviews) > 0): ?>
+              <div class="profile-scrollbar" style="display: flex; flex-direction: column; gap: var(--sp-4); max-height: 320px; overflow-y: auto; padding-right: 8px;">
+                <?php foreach ($reviews as $review): 
+                    $photoPath = $review['profile_photo'];
+                    if ($photoPath === 'images/profiles/default.png' || !file_exists(__DIR__ . '/../' . $photoPath)) {
+                        $avatar_url = "https://ui-avatars.com/api/?name=" . urlencode($review['user_name']) . "&background=CBA052&color=fff&size=100&bold=true";
+                    } else {
+                        $avatar_url = '../' . $photoPath;
+                    }
+                ?>
+                  <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--color-border); border-left: 4px solid var(--color-gold); padding: 15px; border-radius: var(--radius-sm); display: flex; gap: 15px; align-items: flex-start;">
+                    
+                    <img src="<?php echo htmlspecialchars($avatar_url); ?>" alt="<?php echo htmlspecialchars($review['user_name']); ?>" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-bg);">
+                    
+                    <div style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px;">
+                            <h4 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--color-text); text-transform: uppercase; margin: 0;">
+                                <?php echo htmlspecialchars($review['user_name']); ?>
+                                <span style="font-size: 0.85rem; color: var(--color-text-muted); font-family: var(--font-body); text-transform: none; margin-left: 8px; font-weight: normal;">
+                                    in <strong style="color: var(--color-text);"><?php echo htmlspecialchars($review['class_name']); ?></strong>
+                                </span>
+                            </h4>
+                            <span style="color: var(--color-gold); font-size: 0.9rem;">
+                                <?php echo str_repeat('★', $review['rating']) . str_repeat('☆', 5 - $review['rating']); ?>
+                            </span>
+                        </div>
+                        <p style="color: var(--color-text-muted); font-size: 0.95rem; font-style: italic; line-height: 1.5; margin: 0;">
+                            "<?php echo htmlspecialchars($review['comment']); ?>"
+                        </p>
+                    </div>
+
+                  </div>
+                <?php endforeach; ?>
+              </div>
+            <?php else: ?>
+              <div style="background: rgba(255,255,255,0.02); padding: var(--sp-6); border-radius: var(--radius-sm); text-align: center; border: 1px dashed var(--color-border);">
+                <p class="text-muted">No reviews yet for this trainer's classes.</p>
               </div>
             <?php endif; ?>
           </div>

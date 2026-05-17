@@ -3,16 +3,16 @@
 ## Features
 
 **All users:**
-- [ ] Register a new account.
-- [ ] Log in and out.
-- [ ] Edit their profile, including name, username, password, and profile photo.
+- [X] Register a new account.
+- [X] Log in and out.
+- [X] Edit their profile, including name, username, password, and profile photo.
 
 **Members:**
 - [X] Browse the schedule of available fitness classes, filtering by type, trainer, day, or time.
-- [ ] Enroll in and cancel enrollment from upcoming classes, subject to capacity limits.
+- [X] Enroll in and cancel enrollment from upcoming classes, subject to capacity limits.
 - [X] View trainer profiles, including their specializations and the classes they teach.
-- [ ] Check the current availability of equipment in the main training area.
-- [ ] Leave ratings and reviews for classes they have attended.
+- [X] Check the current availability of equipment in the main training area.
+- [X] Leave ratings and reviews for classes they have attended.
 
 **Trainers:**
 - [ ] Manage their public profile, including bio, specializations, and certifications.
@@ -24,7 +24,7 @@
 - [ ] Manage the class catalog (create, edit, and remove classes) and assign trainers to them.
 - [ ] Manage equipment in the main training area (add, update availability status, and remove items).
 - [ ] Elevate a user to admin status.
-- [ ] Oversee and ensure the smooth operation of the entire system.
+- [ ] Oversee and ensure the smooth operation of the entire sys2tem.
 
 **Extra:**
 - [ ] Something extra (e.g., personal training bookings, membership plans, waitlist, ...).
