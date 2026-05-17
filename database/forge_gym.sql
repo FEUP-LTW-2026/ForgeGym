@@ -87,3 +87,29 @@ INSERT INTO classes (name, type, trainer_id, day_of_week, start_time, end_time, 
 ('Weekend Warrior Strong', 'Strength', 1, 'Saturday', '10:00', '11:30', 20),
 ('Morning Mobility', 'Yoga', 3, 'Saturday', '09:00', '10:00', 15),
 ('Kettlebell Bootcamp', 'Functional', 5, 'Saturday', '11:00', '12:00', 20);
+
+-- Criar a tabela de Utilizadores
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    username TEXT UNIQUE NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL, -- Aqui vamos guardar a password encriptada (hash)
+    profile_photo TEXT DEFAULT 'images/profiles/default.png',
+    is_admin INTEGER DEFAULT 0 -- 0 para membro normal, 1 para administrador
+);
+
+-- Inserir um utilizador de teste (Password é '12345' encriptada com bcrypt)
+INSERT OR IGNORE INTO users (name, username, email, password, is_admin) 
+VALUES ('John Doe', 'johndoe', 'john@forgegym.pt', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0);
+
+-- Criar a tabela de Inscrições (Enrollments)
+CREATE TABLE IF NOT EXISTS enrollments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    class_id INTEGER NOT NULL,
+    enrollment_date TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (class_id) REFERENCES classes(id),
+    UNIQUE(user_id, class_id) -- Impede que o mesmo membro se inscreva duas vezes na mesma aula
+);

@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +17,7 @@
   <header class="header">
     <div class="container header__inner">
 
-      <a href="index.html" class="logo" aria-label="FORGE GYM homepage">
+      <a href="index.php" class="logo" aria-label="FORGE GYM homepage">
         <img src="images/logo.png" alt="FORGE GYM" class="logo__img" />
         <span class="logo__text">FORGE GYM</span>
       </a>
@@ -31,11 +32,16 @@
       <nav class="nav" id="main-nav" aria-label="Primary navigation">
         <ul class="nav__list">
           <li><a href="pages/plan.php" class="nav__link">Classes</a></li>
-          <li><a href="pages/profile.html" class="nav__link">Profile</a></li>
+          <li><a href="pages/profile.php" class="nav__link">Profile</a></li>
         </ul>
         <div class="nav__actions">
-          <a href="pages/login.html" class="btn btn--ghost">Log in</a>
-          <a href="pages/register.html" class="btn btn--primary">Join now</a>
+          <?php if (isset($_SESSION['user_id'])): ?>
+            <a href="pages/profile.php" class="btn btn--ghost">Profile</a>
+            <a href="pages/logout.php" class="btn btn--primary">Log out</a>
+          <?php else: ?>
+            <a href="pages/login.php" class="btn btn--ghost">Log in</a>
+            <a href="pages/register.php" class="btn btn--primary">Join now</a>
+          <?php endif; ?>
         </div>
       </nav>
 
@@ -350,7 +356,7 @@
   <footer class="footer">
     <div class="container footer__inner">
       
-      <a href="index.html" class="logo footer__logo" aria-label="FORGE GYM homepage">
+      <a href="index.php" class="logo footer__logo" aria-label="FORGE GYM homepage">
         <img src="images/logo.png" alt="FORGE GYM" class="logo__img" />
       </a>
 
