@@ -18,7 +18,7 @@
 
   <header class="header">
     <div class="container header__inner">
-      <a href="../index.html" class="logo" aria-label="FORGE GYM homepage">
+      <a href="../index.php" class="logo" aria-label="FORGE GYM homepage">
         <img src="../images/logo.png" alt="FORGE GYM" class="logo__img" />
         <span class="logo__text">FORGE GYM</span>
       </a>
@@ -31,11 +31,11 @@
       <nav class="nav" id="main-nav" aria-label="Primary navigation">
         <ul class="nav__list">
           <li><a href="plan.php" class="nav__link">Classes</a></li>
-          <li><a href="profile.html" class="nav__link">Profile</a></li>
+          <li><a href="profile.php" class="nav__link">Profile</a></li>
         </ul>
         <div class="nav__actions">
-          <a href="login.html" class="btn btn--ghost">Log in</a>
-          <a href="register.html" class="btn btn--primary">Join now</a>
+          <a href="login.php" class="btn btn--ghost">Log in</a>
+          <a href="register.php" class="btn btn--primary">Join now</a>
         </div>
       </nav>
       
@@ -118,15 +118,15 @@
   <footer class="footer">
     <div class="container footer__inner">
       
-      <a href="../index.html" class="logo footer__logo" aria-label="FORGE GYM homepage">
+      <a href="../index.php" class="logo footer__logo" aria-label="FORGE GYM homepage">
         <img src="../images/logo.png" alt="FORGE GYM" class="logo__img" />
       </a>
 
       <ul class="footer__nav">
-        <li><a href="../index.html">Home</a></li>
-        <li><a href="../index.html#equipment">Equipment</a></li>
-        <li><a href="../index.html#plans">Plans</a></li>
-        <li><a href="../index.html#reviews">Reviews</a></li>
+        <li><a href="../index.php">Home</a></li>
+        <li><a href="../index.php#equipment">Equipment</a></li>
+        <li><a href="../index.php#plans">Plans</a></li>
+        <li><a href="../index.php#reviews">Reviews</a></li>
       </ul>
 
       <p class="footer__address">
