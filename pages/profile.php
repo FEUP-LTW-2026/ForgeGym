@@ -90,10 +90,11 @@ if (!$user) {
 
 // Buscar as aulas em que o utilizador está inscrito
 $stmtEnrolled = $pdo->prepare("
-    SELECT c.*, t.name as trainer_name 
+    SELECT c.*, t.name as trainer_name, r.rating, r.comment
     FROM enrollments e 
     JOIN classes c ON e.class_id = c.id 
     JOIN trainers t ON c.trainer_id = t.id 
+    LEFT JOIN reviews r ON r.class_id = c.id AND r.user_id = e.user_id
     WHERE e.user_id = ?
     ORDER BY CASE 
         WHEN day_of_week = 'Monday' THEN 1 
@@ -113,6 +114,32 @@ if ($photoPath === 'images/profiles/default.png' || !file_exists(__DIR__ . '/../
 } else {
     $avatar_url = '../' . $photoPath;
 }
+
+$currentDate = date('Y-m-d');
+$currentTime = date('H:i');
+
+$upcomingSessions = [];
+$workoutHistory = [];
+
+foreach ($enrolledClasses as $class) {
+    $hasEnded = false;
+
+    if ($class['class_date'] < $currentDate) {
+        $hasEnded = true; 
+    } elseif ($class['class_date'] === $currentDate && $currentTime >= $class['end_time']) {
+        $hasEnded = true; 
+    }
+
+    $class['formatted_date'] = date('d/m', strtotime($class['class_date']));
+
+    if ($hasEnded) {
+        $workoutHistory[] = $class;
+    } else {
+        $upcomingSessions[] = $class;
+    }
+}
+?>
+
 ?>
 
 <!DOCTYPE html>
@@ -129,7 +156,6 @@ if ($photoPath === 'images/profiles/default.png' || !file_exists(__DIR__ . '/../
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   
   <style>
-    /* Estilo da barra de scroll fina para a lista de inscrições */
     .profile-scrollbar::-webkit-scrollbar {
       width: 6px;
     }
@@ -201,45 +227,70 @@ if ($photoPath === 'images/profiles/default.png' || !file_exists(__DIR__ . '/../
         <div class="profile-main-content">
           
           <section class="planner-card" style="padding: var(--sp-6);">
-            <div class="planner-card__content">
-              <h3 style="font-family: var(--font-display); font-size: 1.5rem; text-transform: uppercase; color: var(--color-text); border-bottom: 1px solid var(--color-border); padding-bottom: 8px; margin-bottom: var(--sp-4);">
-                <i class="fas fa-list-alt" style="color: var(--color-gold); margin-right: 5px;"></i> My Schedule
-              </h3>
+            <div class="planner-card__content" style="display: flex; flex-direction: column; gap: var(--sp-6);">
               
-              <?php if (count($enrolledClasses) > 0): ?>
-                <div class="profile-scrollbar" style="display: flex; flex-direction: column; gap: 12px; max-height: 200px; overflow-y: auto; padding-right: 8px; margin-bottom: var(--sp-4);">
-                  
-                  <?php foreach ($enrolledClasses as $class): ?>
-                    <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--color-border); border-left: 4px solid var(--color-gold); padding: 15px; border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                      
-                      <div>
-                        <h4 style="font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 5px; color: var(--color-text); text-transform: uppercase;">
-                          <?php echo htmlspecialchars($class['name']); ?>
-                        </h4>
-                        <p style="font-size: 0.9rem; color: var(--color-text-muted);">
-                          <i class="far fa-calendar-alt" style="color: var(--color-gold); margin-right: 5px;"></i> <?php echo htmlspecialchars($class['day_of_week']); ?> at <?php echo htmlspecialchars($class['start_time']); ?>
-                          &nbsp;|&nbsp;
-                          <i class="fas fa-user" style="color: var(--color-gold); margin-right: 5px;"></i> <?php echo htmlspecialchars($class['trainer_name']); ?>
-                        </p>
+              <div>
+                <h3 style="font-family: var(--font-display); font-size: 1.4rem; text-transform: uppercase; color: var(--color-text); margin-bottom: var(--sp-3); display: flex; align-items: center; gap: 8px;">
+                  <i class="fas fa-calendar-check" style="color: var(--color-gold);"></i> Active Bookings
+                </h3>
+                
+                <?php if (count($upcomingSessions) > 0): ?>
+                  <div class="profile-scrollbar" style="display: flex; flex-direction: column; gap: 10px; max-height: 180px; overflow-y: auto; padding-right: 5px;">
+                    <?php foreach ($upcomingSessions as $class): ?>
+                      <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--color-border); border-left: 4px solid var(--color-gold); padding: 12px; border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                        <div>
+                          <h4 style="font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 2px; text-transform: uppercase;"><?php echo htmlspecialchars($class['name']); ?></h4>
+                          <p style="font-size: 0.85rem; color: var(--color-text-muted);">
+                            <i class="far fa-calendar-alt"></i> <?php echo htmlspecialchars($class['day_of_week']); ?> (<?php echo $class['formatted_date']; ?>) at <?php echo htmlspecialchars($class['start_time']); ?>
+                          </p>
+                        </div>
+                        <form action="enroll.php" method="POST" style="margin: 0;">
+                          <input type="hidden" name="class_id" value="<?php echo $class['id']; ?>">
+                          <input type="hidden" name="action" value="cancel">
+                          <button type="submit" class="btn btn--ghost btn--sm" style="border-color: var(--color-accent); color: var(--color-accent); font-size: 0.75rem; padding: 5px 10px;">Cancel</button>
+                        </form>
                       </div>
-                      
-                      <form action="enroll.php" method="POST" style="margin: 0;">
-                        <input type="hidden" name="class_id" value="<?php echo $class['id']; ?>">
-                        <input type="hidden" name="action" value="cancel">
-                        <button type="submit" class="btn btn--ghost btn--sm" style="border-color: var(--color-accent); color: var(--color-accent); font-size: 0.8rem; padding: 6px 12px;">
-                          Cancel Booking
-                        </button>
-                      </form>
+                    <?php endforeach; ?>
+                  </div>
+                <?php else: ?>
+                  <p style="color: var(--color-text-muted); font-size: 0.9rem;">No upcoming classes booked.</p>
+                <?php endif; ?>
+              </div>
 
-                    </div>
-                  <?php endforeach; ?>
-                  
-                </div>
-              <?php else: ?>
-                <p style="color: var(--color-text-muted); margin-bottom: var(--sp-4);">You are not enrolled in any classes yet. Ready to push your limits?</p>
-              <?php endif; ?>
+              <div style="border-top: 1px solid var(--color-border); padding-top: var(--sp-4);">
+                <h3 style="font-family: var(--font-display); font-size: 1.4rem; text-transform: uppercase; color: var(--color-text); margin-bottom: var(--sp-3); display: flex; align-items: center; gap: 8px;">
+                  <i class="fas fa-history" style="color: var(--color-gold);"></i> Workout History
+                </h3>
+                
+                <?php if (count($workoutHistory) > 0): ?>
+                  <div class="profile-scrollbar" style="display: flex; flex-direction: column; gap: 10px; max-height: 180px; overflow-y: auto; padding-right: 5px;">
+                    <?php foreach ($workoutHistory as $class): ?>
+                      <div style="background: rgba(0,0,0,0.2); border: 1px solid var(--color-border); border-left: 4px solid #4caf50; padding: 12px; border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                        <div>
+                          <h4 style="font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 2px; text-transform: uppercase; color: #e0e0e0;"><?php echo htmlspecialchars($class['name']); ?></h4>
+                          <p style="font-size: 0.85rem; color: var(--color-text-muted);">
+                            <i class="far fa-calendar-alt"></i> <?php echo htmlspecialchars($class['day_of_week']); ?> (<?php echo $class['formatted_date']; ?>) &nbsp;|&nbsp; Coach: <?php echo htmlspecialchars($class['trainer_name']); ?>
+                          </p>
+                        </div>
+                        
+                        <div>
+                          <?php if ($class['rating']): ?>
+                            <span style="color: var(--color-gold); font-size: 0.9rem; font-weight: 600;">
+                              <?php echo str_repeat('★', $class['rating']) . str_repeat('☆', 5 - $class['rating']); ?>
+                            </span>
+                          <?php else: ?>
+                            <a href="review.php?id=<?php echo $class['id']; ?>" class="btn btn--ghost btn--sm" style="border-color: var(--color-gold); color: var(--color-gold); font-size: 0.75rem; padding: 5px 10px;">Leave Review</a>
+                          <?php endif; ?>
+                        </div>
+                      </div>
+                    <?php endforeach; ?>
+                  </div>
+                <?php else: ?>
+                  <p style="color: var(--color-text-muted); font-size: 0.9rem;">No past workouts completed yet this week.</p>
+                <?php endif; ?>
+              </div>
               
-              <a href="plan.php" class="button-aesthetic" style="display: inline-flex; width: fit-content; background-color: var(--color-bg-surface); border: 1px solid var(--color-border); color: var(--color-text);">
+              <a href="plan.php" class="button-aesthetic" style="display: inline-flex; width: fit-content; background-color: var(--color-bg-surface); border: 1px solid var(--color-border); color: var(--color-text); margin-top: var(--sp-2);">
                 <i class="fas fa-calendar-plus" style="color: var(--color-gold);"></i> Book Classes
               </a>
             </div>

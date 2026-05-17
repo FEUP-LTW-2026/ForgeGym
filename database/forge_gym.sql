@@ -44,11 +44,13 @@ INSERT INTO trainers (id, name, role, bio, specializations, quote, image_path) V
 (5, 'Joao Lage', 'Functional & Kettlebell', 'Dynamic training focused on functional movements and high performance with kettlebells. Prepare your body for the demands of daily life with explosive power.', 'Functional, CrossFit', '"Train for life, not just for the mirror. Strength, speed, and agility all in one package."', 'images/personal trainers/pt-lage.jpeg');
 
 -- 4. Criar a tabela de Aulas (Schedule)
+DROP TABLE IF EXISTS classes;
 CREATE TABLE classes (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     name        TEXT NOT NULL,
     type        TEXT NOT NULL,
     trainer_id  INTEGER,
+    class_date  TEXT NOT NULL,
     day_of_week TEXT,
     start_time  TEXT,
     end_time    TEXT,
@@ -56,37 +58,16 @@ CREATE TABLE classes (
     FOREIGN KEY (trainer_id) REFERENCES trainers(id)
 );
 
-INSERT INTO classes (name, type, trainer_id, day_of_week, start_time, end_time, capacity) VALUES
--- Monday
-('Powerlifting Foundation', 'Strength', 1, 'Monday', '09:00', '10:00', 15),
-('Morning HIIT Blast', 'HIIT', 2, 'Monday', '10:30', '11:30', 20),
-('Sunrise Yoga', 'Yoga', 3, 'Monday', '08:00', '09:00', 12),
-('Functional Circle', 'Functional', 5, 'Monday', '18:00', '19:00', 15),
+INSERT INTO classes (name, type, trainer_id, class_date, day_of_week, start_time, end_time, capacity) VALUES
+-- AULAS QUE JÁ PASSARAM (Quinta a Sábado)
+('Deadlift Mastery', 'Strength', 1, '2026-05-14', 'Thursday', '18:00', '19:00', 15),
+('Fat Burn Friday', 'HIIT', 2, '2026-05-15', 'Friday', '17:30', '18:15', 20),
+('Weekend Warrior Strong', 'Strength', 1, '2026-05-16', 'Saturday', '10:00', '11:30', 20),
 
--- Tuesday
-('Core & Stability', 'Pilates', 4, 'Tuesday', '09:00', '10:00', 10),
-('Kettlebell Skills', 'Functional', 5, 'Tuesday', '17:00', '18:00', 12),
-('Hypertrophy Session', 'Strength', 1, 'Tuesday', '18:30', '19:30', 15),
-
--- Wednesday
-('Vinyasa Flow', 'Yoga', 3, 'Wednesday', '18:00', '19:00', 12),
-('Endurance Cardio', 'HIIT', 2, 'Wednesday', '19:00', '20:00', 20),
-('Posture Correction', 'Pilates', 4, 'Wednesday', '11:00', '12:00', 10),
-
--- Thursday
-('Deadlift Mastery', 'Strength', 1, 'Thursday', '18:00', '19:00', 15),
-('HIIT Express', 'HIIT', 2, 'Thursday', '08:00', '08:45', 20),
-('Restorative Yoga', 'Yoga', 3, 'Thursday', '19:30', '20:30', 12),
-
--- Friday
-('Fat Burn Friday', 'HIIT', 2, 'Friday', '17:30', '18:15', 20),
-('CrossFit WOD', 'Functional', 5, 'Friday', '18:30', '19:30', 15),
-('Advanced Pilates', 'Pilates', 4, 'Friday', '12:00', '13:00', 10),
-
--- Saturday
-('Weekend Warrior Strong', 'Strength', 1, 'Saturday', '10:00', '11:30', 20),
-('Morning Mobility', 'Yoga', 3, 'Saturday', '09:00', '10:00', 15),
-('Kettlebell Bootcamp', 'Functional', 5, 'Saturday', '11:00', '12:00', 20);
+-- AULAS FUTURAS (Segunda a Quarta)
+('Powerlifting Foundation', 'Strength', 1, '2026-05-18', 'Monday', '09:00', '10:00', 15),
+('Core & Stability', 'Pilates', 4, '2026-05-19', 'Tuesday', '09:00', '10:00', 10),
+('Vinyasa Flow', 'Yoga', 3, '2026-05-20', 'Wednesday', '18:00', '19:00', 12);
 
 -- Criar a tabela de Utilizadores
 CREATE TABLE IF NOT EXISTS users (
@@ -99,10 +80,6 @@ CREATE TABLE IF NOT EXISTS users (
     is_admin INTEGER DEFAULT 0 -- 0 para membro normal, 1 para administrador
 );
 
--- Inserir um utilizador de teste (Password é '12345' encriptada com bcrypt)
-INSERT OR IGNORE INTO users (name, username, email, password, is_admin) 
-VALUES ('John Doe', 'johndoe', 'john@forgegym.pt', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0);
-
 -- Criar a tabela de Inscrições (Enrollments)
 CREATE TABLE IF NOT EXISTS enrollments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -111,5 +88,18 @@ CREATE TABLE IF NOT EXISTS enrollments (
     enrollment_date TEXT DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (class_id) REFERENCES classes(id),
-    UNIQUE(user_id, class_id) -- Impede que o mesmo membro se inscreva duas vezes na mesma aula
+    UNIQUE(user_id, class_id) 
+);
+
+-- Criar a tabela de Avaliações (Reviews)
+CREATE TABLE IF NOT EXISTS reviews (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    class_id INTEGER NOT NULL,
+    rating INTEGER CHECK(rating >= 1 AND rating <= 5),
+    comment TEXT,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (class_id) REFERENCES classes(id),
+    UNIQUE(user_id, class_id) 
 );

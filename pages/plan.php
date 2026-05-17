@@ -15,7 +15,9 @@ $typeFilter = $_GET['type'] ?? 'all';
 $dayFilter = $_GET['day'] ?? '';
 
 $query = "SELECT c.*, t.name as trainer_name,
-                 (SELECT COUNT(*) FROM enrollments WHERE class_id = c.id) as current_spots
+                 (SELECT COUNT(*) FROM enrollments WHERE class_id = c.id) as current_spots,
+                 (SELECT AVG(rating) FROM reviews WHERE class_id = c.id) as avg_rating,
+                 (SELECT COUNT(*) FROM reviews WHERE class_id = c.id) as review_count
           FROM classes c 
           JOIN trainers t ON c.trainer_id = t.id 
           WHERE 1=1";
@@ -27,22 +29,19 @@ if ($dayFilter !== '') {
     $query .= " AND c.day_of_week = " . $pdo->quote($dayFilter);
 }
 
-$query .= " ORDER BY CASE 
-            WHEN day_of_week = 'Monday' THEN 1 
-            WHEN day_of_week = 'Tuesday' THEN 2 
-            WHEN day_of_week = 'Wednesday' THEN 3 
-            WHEN day_of_week = 'Thursday' THEN 4 
-            WHEN day_of_week = 'Friday' THEN 5 
-            WHEN day_of_week = 'Saturday' THEN 6 
-            ELSE 7 END, start_time ASC";
+$query .= " ORDER BY c.class_date ASC, c.start_time ASC";
 
 $classes = $pdo->query($query)->fetchAll(PDO::FETCH_ASSOC);
 
+$user_enrollments = [];
 if (isset($_SESSION['user_id'])) {
     $stmtUserEnrolled = $pdo->prepare("SELECT class_id FROM enrollments WHERE user_id = ?");
     $stmtUserEnrolled->execute([$_SESSION['user_id']]);
     $user_enrollments = $stmtUserEnrolled->fetchAll(PDO::FETCH_COLUMN);
 }
+
+$currentDate = date('Y-m-d');
+$currentTime = date('H:i');
 
 function getClassImage($type) {
     switch(strtolower($type)) {
@@ -131,11 +130,22 @@ function getClassImage($type) {
         <?php if (count($classes) > 0): ?>
           <div class="equip-grid">
             
-            <?php foreach ($classes as $class): ?>
-              <article class="equip-card" style="border: 1px solid var(--color-border);">
+            <?php foreach ($classes as $class): 
+                // Verificar se a aula já terminou
+                $hasEnded = false;
+                if ($class['class_date'] < $currentDate) {
+                    $hasEnded = true;
+                } elseif ($class['class_date'] === $currentDate && $currentTime >= $class['end_time']) {
+                    $hasEnded = true;
+                }
+                
+                // Formatar data real: ex: "18/05"
+                $formattedDate = date('d/m', strtotime($class['class_date']));
+            ?>
+              <article class="equip-card" style="border: 1px solid <?php echo $hasEnded ? 'rgba(255,255,255,0.1)' : 'var(--color-border)'; ?>; <?php echo $hasEnded ? 'opacity: 0.8;' : ''; ?>">
                 
                 <div class="equip-card__image" style="position: relative;">
-                  <img src="<?php echo getClassImage($class['type']); ?>" alt="<?php echo htmlspecialchars($class['name']); ?>">
+                  <img src="<?php echo getClassImage($class['type']); ?>" alt="<?php echo htmlspecialchars($class['name']); ?>" style="<?php echo $hasEnded ? 'filter: grayscale(80%);' : ''; ?>">
                   <div style="position: absolute; top: 10px; right: 10px;">
                     <span class="badge badge--dark" style="background: rgba(0,0,0,0.8); border: 1px solid var(--color-gold);"><?php echo htmlspecialchars($class['type']); ?></span>
                   </div>
@@ -152,7 +162,7 @@ function getClassImage($type) {
                   <div style="display: flex; gap: 15px; margin-bottom: var(--sp-3); padding-bottom: var(--sp-3); border-bottom: 1px solid var(--color-border);">
                     <div style="display: flex; align-items: center; gap: 6px; color: var(--color-text);">
                       <i class="far fa-calendar-alt" style="color: var(--color-gold);"></i>
-                      <span><?php echo htmlspecialchars($class['day_of_week']); ?></span>
+                      <span><?php echo htmlspecialchars($class['day_of_week']); ?> (<?php echo $formattedDate; ?>)</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 6px; color: var(--color-text);">
                       <i class="far fa-clock" style="color: var(--color-gold);"></i>
@@ -161,29 +171,42 @@ function getClassImage($type) {
                   </div>
 
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
-                    <span style="color: var(--color-text-muted); font-size: 0.9rem;">
-                      <i class="fas fa-users" style="margin-right: 5px;"></i> 
-                      <?php echo $class['current_spots']; ?> / <?php echo $class['capacity']; ?> spots
-                    </span>
                     
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                      <form action="enroll.php" method="POST" style="margin: 0;">
-                        <input type="hidden" name="class_id" value="<?php echo $class['id']; ?>">
+                    <?php if ($hasEnded): ?>
+                        <span style="color: var(--color-text-muted); font-size: 0.85rem;">
+                          <i class="fas fa-users" style="color: var(--color-gold); margin-right: 5px;"></i> <?php echo $class['current_spots']; ?> attended
+                        </span>
                         
-                        <?php if (in_array($class['id'], $user_enrollments)): ?>
-                          <input type="hidden" name="action" value="cancel">
-                          <button type="submit" class="btn btn--ghost btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: var(--color-accent); color: var(--color-accent);">Cancel Booking</button>
-                        <?php else: ?>
-                          <input type="hidden" name="action" value="book">
-                          <?php if ($class['current_spots'] >= $class['capacity']): ?>
-                            <button type="button" class="btn btn--ghost btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem; opacity: 0.5;" disabled>Full</button>
-                          <?php else: ?>
-                            <button type="submit" class="btn btn--primary btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Book Now</button>
-                          <?php endif; ?>
-                        <?php endif; ?>
-                      </form>
+                        <span style="color: var(--color-text-muted); font-size: 0.85rem; font-weight: 600;">
+                          <i class="fas fa-star" style="color: var(--color-gold); margin-right: 3px;"></i> 
+                          <?php echo $class['review_count'] > 0 ? round($class['avg_rating'], 1) . ' (' . $class['review_count'] . ' revs)' : 'No reviews'; ?>
+                        </span>
+
                     <?php else: ?>
-                      <a href="login.php" class="btn btn--primary btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Book Now</a>
+                        <span style="color: var(--color-text-muted); font-size: 0.9rem;">
+                          <i class="fas fa-users" style="margin-right: 5px;"></i> 
+                          <?php echo $class['current_spots']; ?> / <?php echo $class['capacity']; ?> spots
+                        </span>
+                        
+                        <?php if (isset($_SESSION['user_id'])): ?>
+                          <form action="enroll.php" method="POST" style="margin: 0;">
+                            <input type="hidden" name="class_id" value="<?php echo $class['id']; ?>">
+                            
+                            <?php if (in_array($class['id'], $user_enrollments)): ?>
+                              <input type="hidden" name="action" value="cancel">
+                              <button type="submit" class="btn btn--ghost btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: var(--color-accent); color: var(--color-accent);">Cancel Booking</button>
+                            <?php else: ?>
+                              <input type="hidden" name="action" value="book">
+                              <?php if ($class['current_spots'] >= $class['capacity']): ?>
+                                <button type="button" class="btn btn--ghost btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem; opacity: 0.5;" disabled>Full</button>
+                              <?php else: ?>
+                                <button type="submit" class="btn btn--primary btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Book Now</button>
+                              <?php endif; ?>
+                            <?php endif; ?>
+                          </form>
+                        <?php else: ?>
+                          <a href="login.php" class="btn btn--primary btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Book Now</a>
+                        <?php endif; ?>
                     <?php endif; ?>
                   </div>
                 </div>
