@@ -100,5 +100,16 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Inserir um utilizador de teste (Password é '12345' encriptada com bcrypt)
-INSERT INTO users (name, username, email, password, is_admin) 
+INSERT OR IGNORE INTO users (name, username, email, password, is_admin) 
 VALUES ('John Doe', 'johndoe', 'john@forgegym.pt', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0);
+
+-- Criar a tabela de Inscrições (Enrollments)
+CREATE TABLE IF NOT EXISTS enrollments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    class_id INTEGER NOT NULL,
+    enrollment_date TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (class_id) REFERENCES classes(id),
+    UNIQUE(user_id, class_id) -- Impede que o mesmo membro se inscreva duas vezes na mesma aula
+);

@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 define('DB_PATH', __DIR__ . '/../database/forge_gym.db');
 
 try {
@@ -12,7 +14,8 @@ try {
 $typeFilter = $_GET['type'] ?? 'all';
 $dayFilter = $_GET['day'] ?? '';
 
-$query = "SELECT c.*, t.name as trainer_name 
+$query = "SELECT c.*, t.name as trainer_name,
+                 (SELECT COUNT(*) FROM enrollments WHERE class_id = c.id) as current_spots
           FROM classes c 
           JOIN trainers t ON c.trainer_id = t.id 
           WHERE 1=1";
@@ -34,6 +37,12 @@ $query .= " ORDER BY CASE
             ELSE 7 END, start_time ASC";
 
 $classes = $pdo->query($query)->fetchAll(PDO::FETCH_ASSOC);
+
+if (isset($_SESSION['user_id'])) {
+    $stmtUserEnrolled = $pdo->prepare("SELECT class_id FROM enrollments WHERE user_id = ?");
+    $stmtUserEnrolled->execute([$_SESSION['user_id']]);
+    $user_enrollments = $stmtUserEnrolled->fetchAll(PDO::FETCH_COLUMN);
+}
 
 function getClassImage($type) {
     switch(strtolower($type)) {
@@ -153,9 +162,29 @@ function getClassImage($type) {
 
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
                     <span style="color: var(--color-text-muted); font-size: 0.9rem;">
-                      <i class="fas fa-users" style="margin-right: 5px;"></i> 0 / <?php echo $class['capacity']; ?> spots
+                      <i class="fas fa-users" style="margin-right: 5px;"></i> 
+                      <?php echo $class['current_spots']; ?> / <?php echo $class['capacity']; ?> spots
                     </span>
-                    <button class="btn btn--primary btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Book Now</button>
+                    
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                      <form action="enroll.php" method="POST" style="margin: 0;">
+                        <input type="hidden" name="class_id" value="<?php echo $class['id']; ?>">
+                        
+                        <?php if (in_array($class['id'], $user_enrollments)): ?>
+                          <input type="hidden" name="action" value="cancel">
+                          <button type="submit" class="btn btn--ghost btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: var(--color-accent); color: var(--color-accent);">Cancel Booking</button>
+                        <?php else: ?>
+                          <input type="hidden" name="action" value="book">
+                          <?php if ($class['current_spots'] >= $class['capacity']): ?>
+                            <button type="button" class="btn btn--ghost btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem; opacity: 0.5;" disabled>Full</button>
+                          <?php else: ?>
+                            <button type="submit" class="btn btn--primary btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Book Now</button>
+                          <?php endif; ?>
+                        <?php endif; ?>
+                      </form>
+                    <?php else: ?>
+                      <a href="login.php" class="btn btn--primary btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Book Now</a>
+                    <?php endif; ?>
                   </div>
                 </div>
 
@@ -178,7 +207,6 @@ function getClassImage($type) {
           <h3 style="margin-bottom: var(--sp-4); text-transform: uppercase;"><i class="fas fa-sliders-h" style="color: var(--color-gold); margin-right: 8px;"></i> Filters</h3>
           
           <form action="plan.php" method="GET" style="display: flex; flex-direction: column; gap: var(--sp-4);">
-            
             <div class="input-group">
               <label for="filter-day" style="display: block; margin-bottom: 5px; color: var(--color-text-muted); font-size: 0.9rem;">Day of the week</label>
               <select id="filter-day" name="day" class="form-control" style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--color-border); color: white; padding: 10px; border-radius: 4px;">

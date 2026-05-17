@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Se o utilizador não estiver logado, é mandado para o login
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
@@ -20,7 +19,6 @@ $user_id = $_SESSION['user_id'];
 $success_msg = '';
 $error_msg = '';
 
-// Processar a edição do perfil
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $username = trim($_POST['username'] ?? '');
@@ -31,13 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $query = "UPDATE users SET name = ?, username = ?, email = ? WHERE id = ?";
         $params = [$name, $username, $email, $user_id];
         
-        // Se preencheu uma nova password, atualiza o hash
         if (!empty($password)) {
             $query = "UPDATE users SET name = ?, username = ?, email = ?, password = ? WHERE id = ?";
             $params = [$name, $username, $email, password_hash($password, PASSWORD_DEFAULT), $user_id];
         }
         
-        // Processar o upload da foto de perfil
         if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
             $fileTmpPath = $_FILES['profile_photo']['tmp_name'];
             $fileName = $_FILES['profile_photo']['name'];
@@ -47,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (in_array($fileExtension, $allowedExtensions)) {
                 $uploadDir = __DIR__ . '/../images/profiles/';
                 
-                // Garantir que a pasta existe
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0755, true);
                 }
@@ -72,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $stmt = $pdo->prepare($query);
             $stmt->execute($params);
-            $_SESSION['username'] = $username; // Atualiza o nome na sessão
+            $_SESSION['username'] = $username; 
             $success_msg = "Profile updated successfully!";
         } catch (PDOException $e) {
             $error_msg = "Username or Email already exists.";
@@ -82,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Buscar os dados atualizados do utilizador
+// Buscar dados do utilizador
 $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -93,15 +88,31 @@ if (!$user) {
     exit;
 }
 
+// Buscar as aulas em que o utilizador está inscrito
+$stmtEnrolled = $pdo->prepare("
+    SELECT c.*, t.name as trainer_name 
+    FROM enrollments e 
+    JOIN classes c ON e.class_id = c.id 
+    JOIN trainers t ON c.trainer_id = t.id 
+    WHERE e.user_id = ?
+    ORDER BY CASE 
+        WHEN day_of_week = 'Monday' THEN 1 
+        WHEN day_of_week = 'Tuesday' THEN 2 
+        WHEN day_of_week = 'Wednesday' THEN 3 
+        WHEN day_of_week = 'Thursday' THEN 4 
+        WHEN day_of_week = 'Friday' THEN 5 
+        WHEN day_of_week = 'Saturday' THEN 6 
+        ELSE 7 END, start_time ASC
+");
+$stmtEnrolled->execute([$user_id]);
+$enrolledClasses = $stmtEnrolled->fetchAll(PDO::FETCH_ASSOC);
+
 $photoPath = $user['profile_photo'];
-// Verifica se é o caminho padrão da base de dados OU se o ficheiro físico não existe
 if ($photoPath === 'images/profiles/default.png' || !file_exists(__DIR__ . '/../' . $photoPath)) {
-    // Gera um avatar com as iniciais do nome, fundo cor-de-laranja e letras brancas
     $avatar_url = "https://ui-avatars.com/api/?name=" . urlencode($user['name']) . "&background=CBA052&color=fff&size=150&bold=true";
 } else {
     $avatar_url = '../' . $photoPath;
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -111,14 +122,29 @@ if ($photoPath === 'images/profiles/default.png' || !file_exists(__DIR__ . '/../
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Profile — FORGE GYM</title>
   <link rel="icon" type="image/png" href="../images/logo32x32.png" />
-  <link rel="icon" type="image/png" href="../images/logo16x16.png" />
-  <link rel="icon" type="image/png" href="../images/logo-appletouch.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
-  
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <style>
+    /* Estilo da barra de scroll fina para a lista de inscrições */
+    .profile-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .profile-scrollbar::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02); 
+      border-radius: 10px;
+    }
+    .profile-scrollbar::-webkit-scrollbar-thumb {
+      background: var(--color-gold); 
+      border-radius: 10px;
+    }
+    .profile-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #e6b800; 
+    }
+  </style>
 </head>
 <body>
 
@@ -173,12 +199,48 @@ if ($photoPath === 'images/profiles/default.png' || !file_exists(__DIR__ . '/../
         </aside>
 
         <div class="profile-main-content">
-          <section class="planner-card">
+          
+          <section class="planner-card" style="padding: var(--sp-6);">
             <div class="planner-card__content">
-              <h3>Next Session</h3>
-              <p>Ready to push your limits? Check out the active schedules.</p>
-              <a href="plan.php" class="button-aesthetic">
-                <i class="fas fa-calendar-alt"></i> Open Workout Planner
+              <h3 style="font-family: var(--font-display); font-size: 1.5rem; text-transform: uppercase; color: var(--color-text); border-bottom: 1px solid var(--color-border); padding-bottom: 8px; margin-bottom: var(--sp-4);">
+                <i class="fas fa-list-alt" style="color: var(--color-gold); margin-right: 5px;"></i> My Schedule
+              </h3>
+              
+              <?php if (count($enrolledClasses) > 0): ?>
+                <div class="profile-scrollbar" style="display: flex; flex-direction: column; gap: 12px; max-height: 200px; overflow-y: auto; padding-right: 8px; margin-bottom: var(--sp-4);">
+                  
+                  <?php foreach ($enrolledClasses as $class): ?>
+                    <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--color-border); border-left: 4px solid var(--color-gold); padding: 15px; border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                      
+                      <div>
+                        <h4 style="font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 5px; color: var(--color-text); text-transform: uppercase;">
+                          <?php echo htmlspecialchars($class['name']); ?>
+                        </h4>
+                        <p style="font-size: 0.9rem; color: var(--color-text-muted);">
+                          <i class="far fa-calendar-alt" style="color: var(--color-gold); margin-right: 5px;"></i> <?php echo htmlspecialchars($class['day_of_week']); ?> at <?php echo htmlspecialchars($class['start_time']); ?>
+                          &nbsp;|&nbsp;
+                          <i class="fas fa-user" style="color: var(--color-gold); margin-right: 5px;"></i> <?php echo htmlspecialchars($class['trainer_name']); ?>
+                        </p>
+                      </div>
+                      
+                      <form action="enroll.php" method="POST" style="margin: 0;">
+                        <input type="hidden" name="class_id" value="<?php echo $class['id']; ?>">
+                        <input type="hidden" name="action" value="cancel">
+                        <button type="submit" class="btn btn--ghost btn--sm" style="border-color: var(--color-accent); color: var(--color-accent); font-size: 0.8rem; padding: 6px 12px;">
+                          Cancel Booking
+                        </button>
+                      </form>
+
+                    </div>
+                  <?php endforeach; ?>
+                  
+                </div>
+              <?php else: ?>
+                <p style="color: var(--color-text-muted); margin-bottom: var(--sp-4);">You are not enrolled in any classes yet. Ready to push your limits?</p>
+              <?php endif; ?>
+              
+              <a href="plan.php" class="button-aesthetic" style="display: inline-flex; width: fit-content; background-color: var(--color-bg-surface); border: 1px solid var(--color-border); color: var(--color-text);">
+                <i class="fas fa-calendar-plus" style="color: var(--color-gold);"></i> Book Classes
               </a>
             </div>
           </section>
@@ -238,24 +300,17 @@ if ($photoPath === 'images/profiles/default.png' || !file_exists(__DIR__ . '/../
 
   <footer class="footer">
     <div class="container footer__inner">
-      
       <a href="../index.php" class="logo footer__logo" aria-label="FORGE GYM homepage">
         <img src="../images/logo.png" alt="FORGE GYM" class="logo__img" />
       </a>
-
       <ul class="footer__nav">
         <li><a href="../index.php">Home</a></li>
         <li><a href="../index.php#equipment">Equipment</a></li>
-        <li><a href="../index.php#plans">Plans</a></li>
+        <li><a href="plan.php">Plans</a></li>
         <li><a href="../index.php#reviews">Reviews</a></li>
       </ul>
-
-      <p class="footer__address">
-        Rua Dr. Roberto Frias, 4200-465 Porto &nbsp;|&nbsp; info@forgegym.pt
-      </p>
-
+      <p class="footer__address">Rua Dr. Roberto Frias, 4200-465 Porto &nbsp;|&nbsp; info@forgegym.pt</p>
     </div>
-    
     <div class="footer__bottom">
       <p>&copy; 2026 FORGE GYM. All rights reserved.</p>
     </div>
