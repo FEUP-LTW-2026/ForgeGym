@@ -22,10 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Guardar os dados na sessão
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
-            $_SESSION['is_admin'] = $user['is_admin'];
+            
+            // AS NOVAS COLUNAS PARA OS 3 NÍVEIS DE ACESSO
+            $_SESSION['role'] = $user['role']; 
+            $_SESSION['trainer_id'] = $user['trainer_id']; 
             
             header("Location: ../index.php");
-            exit;
+            exit;        
         } else {
             $error = "Invalid username or password.";
         }

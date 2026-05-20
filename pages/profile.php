@@ -187,6 +187,7 @@ foreach ($enrolledClasses as $class) {
       <nav class="nav" id="main-nav" aria-label="Primary navigation">
         <ul class="nav__list">
           <li><a href="plan.php" class="nav__link">Classes</a></li>
+          <li><a href="shop.php" class="nav__link">Shop</a></li>
           <li><a href="profile.php" class="nav__link">Profile</a></li>
         </ul>
         <div class="nav__actions">

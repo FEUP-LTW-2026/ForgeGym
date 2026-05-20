@@ -70,18 +70,28 @@ INSERT INTO classes (name, type, trainer_id, class_date, day_of_week, start_time
 ('Vinyasa Flow', 'Yoga', 3, '2026-05-20', 'Wednesday', '18:00', '19:00', 12);
 
 -- Criar a tabela de Utilizadores
-CREATE TABLE IF NOT EXISTS users (
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     username TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL, -- Aqui vamos guardar a password encriptada (hash)
+    password TEXT NOT NULL, 
     profile_photo TEXT DEFAULT 'images/profiles/default.png',
-    is_admin INTEGER DEFAULT 0 -- 0 para membro normal, 1 para administrador
+    role TEXT DEFAULT 'user', -- Pode ser 'admin', 'trainer', ou 'user'
+    trainer_id INTEGER DEFAULT NULL, -- Se for um 'trainer', guarda o ID correspondente da tabela trainers
+    FOREIGN KEY (trainer_id) REFERENCES trainers(id)
 );
 
+-- Exemplo de inserção de utilizadores com roles diferentes
+INSERT INTO users (name, username, email, password, role, trainer_id) VALUES 
+('Admin Supremo', 'admin', 'admin@gym.com', 'HASH_DA_PASSWORD_AQUI', 'admin', NULL),
+('Diogo Quaresma', 'quaresma_pt', 'quaresma@gym.com', 'HASH_DA_PASSWORD_AQUI', 'trainer', 2),
+('Cliente Normal', 'cliente1', 'cliente@email.com', 'HASH_DA_PASSWORD_AQUI', 'user', NULL);
+
 -- Criar a tabela de Inscrições (Enrollments)
-CREATE TABLE IF NOT EXISTS enrollments (
+DROP TABLE IF EXISTS enrollments;
+CREATE TABLE enrollments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     class_id INTEGER NOT NULL,
@@ -92,7 +102,8 @@ CREATE TABLE IF NOT EXISTS enrollments (
 );
 
 -- Criar a tabela de Avaliações (Reviews)
-CREATE TABLE IF NOT EXISTS reviews (
+DROP TABLE IF EXISTS reviews;
+CREATE TABLE reviews (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     class_id INTEGER NOT NULL,

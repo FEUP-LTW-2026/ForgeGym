@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+// Guardar quem é o utilizador de forma fácil para usar no HTML
+$userRole = $_SESSION['role'] ?? 'user';
+$userTrainerId = $_SESSION['trainer_id'] ?? null;
+
 define('DB_PATH', __DIR__ . '/../database/forge_gym.db');
 
 try {
@@ -101,6 +105,7 @@ function getClassImage($type) {
       <nav class="nav" id="main-nav" aria-label="Primary navigation">
         <ul class="nav__list">
           <li><a href="plan.php" class="nav__link">Classes</a></li>
+          <li><a href="shop.php" class="nav__link">Shop</a></li>
           <li><a href="profile.php" class="nav__link">Profile</a></li>
         </ul>
         <div class="nav__actions">
@@ -209,8 +214,33 @@ function getClassImage($type) {
                         <?php endif; ?>
                     <?php endif; ?>
                   </div>
-                </div>
 
+                  <?php 
+                    $canEdit = false;
+                    if ($userRole === 'admin') {
+                        $canEdit = true; // Admin pode tudo
+                    } elseif ($userRole === 'trainer' && $userTrainerId == $class['trainer_id']) {
+                        $canEdit = true; // Trainer só pode se a aula for dele
+                    }
+                  ?>
+
+                  <?php if ($canEdit): ?>
+                    <div style="display: flex; gap: 10px; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                      
+                      <a href="edit_class.php?id=<?php echo $class['id']; ?>" class="btn btn--ghost btn--sm" style="flex: 1; text-align: center; font-size: 0.8rem; padding: 0.4rem;">
+                        <i class="fas fa-edit"></i> Edit
+                      </a>
+                      
+                      <form action="../api/action_delete_class.php" method="POST" style="flex: 1; margin: 0;" onsubmit="return confirm('Are you sure you want to delete this class?');">
+                         <input type="hidden" name="class_id" value="<?php echo $class['id']; ?>">
+                         <button type="submit" class="btn btn--ghost btn--sm" style="width: 100%; color: #ff8a75; border-color: #ff8a75; font-size: 0.8rem; padding: 0.4rem;">
+                           <i class="fas fa-trash"></i> Delete
+                         </button>
+                      </form>
+
+                    </div>
+                  <?php endif; ?>
+                  </div>
               </article>
             <?php endforeach; ?>
             
@@ -227,6 +257,15 @@ function getClassImage($type) {
 
       <aside style="flex: 0 0 300px; width: 100%; position: sticky; top: 100px;">
         <section class="card" style="border-top: 4px solid var(--color-gold);" aria-label="Filter classes">
+          
+          <?php if ($userRole === 'admin' || $userRole === 'trainer'): ?>
+            <div style="margin-bottom: var(--sp-4); padding-bottom: var(--sp-4); border-bottom: 1px solid rgba(255,255,255,0.1);">
+              <a href="create_class.php" class="btn btn--primary" style="width: 100%; background: var(--color-accent); border-color: var(--color-accent);">
+                <i class="fas fa-plus"></i> Add New Class
+              </a>
+            </div>
+          <?php endif; ?>
+
           <h3 style="margin-bottom: var(--sp-4); text-transform: uppercase;"><i class="fas fa-sliders-h" style="color: var(--color-gold); margin-right: 8px;"></i> Filters</h3>
           
           <form action="plan.php" method="GET" style="display: flex; flex-direction: column; gap: var(--sp-4);">
