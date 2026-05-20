@@ -28,12 +28,14 @@
         <span></span>
         <span></span>
       </label>
-
+      
       <nav class="nav" id="main-nav" aria-label="Primary navigation">
         <ul class="nav__list">
           <li><a href="pages/plan.php" class="nav__link">Classes</a></li>
+          <li><a href="pages/shop.php" class="nav__link">Shop</a></li>
           <li><a href="pages/profile.php" class="nav__link">Profile</a></li>
         </ul>
+        
         <div class="nav__actions">
           <?php if (isset($_SESSION['user_id'])): ?>
             <a href="pages/profile.php" class="btn btn--ghost">Profile</a>
