@@ -33,6 +33,11 @@ session_start();
           <li><a href="profile.php" class="nav__link">Profile</a></li>
         </ul>
         <div class="nav__actions">
+          <button type="button" class="btn btn--ghost cart-toggle" id="cart-btn" aria-label="Open cart" style="position: relative; padding: 0.625rem;">
+            <i class="fas fa-shopping-bag" style="font-size: 1.2rem;"></i>
+            <span class="cart-badge" id="cart-count">0</span>
+          </button>
+
           <?php if (isset($_SESSION['user_id'])): ?>
             <a href="profile.php" class="btn btn--ghost">Profile</a>
             <a href="logout.php" class="btn btn--primary">Log out</a>
@@ -44,6 +49,29 @@ session_start();
       </nav>
     </div>
   </header>
+
+  <div id="cart-sidebar" class="cart-sidebar">
+    <div class="cart-sidebar__header">
+      <h2 class="font-display">YOUR CART</h2>
+      <button id="close-cart" class="cart-sidebar__close">&times;</button>
+    </div>
+    
+    <div id="cart-items-container" class="cart-sidebar__items">
+      <p class="cart-empty-msg text-muted">Your cart is empty.</p>
+    </div>
+
+    <div class="cart-sidebar__footer">
+      <div class="cart-total-row">
+        <span>Total:</span>
+        <span id="cart-total-price">0.00€</span>
+      </div>
+      <div class="cart-actions-row">
+        <button id="clear-cart-btn" class="btn btn--ghost" style="width: 100%;">Clear Cart</button>
+        <button id="checkout-btn" class="btn btn--primary" style="width: 100%;">Checkout</button>
+      </div>
+    </div>
+  </div>
+  <div id="cart-overlay" class="cart-overlay"></div>
 
   <main class="page-spacing">
     <div class="container">
@@ -67,7 +95,7 @@ session_start();
             </div>
             <div class="product-card__footer">
               <span class="product-price">45.00€</span>
-              <button type="button" class="btn btn--primary btn--sm" aria-label="Add Premium Oversized Hoodie to cart">
+              <button type="button" class="btn btn--primary btn--sm add-to-cart-btn" data-id="1" data-name="Premium Oversized Hoodie" data-price="45.00" aria-label="Add Premium Oversized Hoodie to cart">
                 <i class="fas fa-shopping-cart"></i> Add
               </button>
             </div>
@@ -85,7 +113,7 @@ session_start();
             </div>
             <div class="product-card__footer">
               <span class="product-price">25.00€</span>
-              <button type="button" class="btn btn--primary btn--sm" aria-label="Add Forge Pump T-Shirt to cart">
+              <button type="button" class="btn btn--primary btn--sm add-to-cart-btn" data-id="2" data-name="Forge Pump T-Shirt" data-price="25.00" aria-label="Add Forge Pump T-Shirt to cart">
                 <i class="fas fa-shopping-cart"></i> Add
               </button>
             </div>
@@ -104,7 +132,7 @@ session_start();
             </div>
             <div class="product-card__footer">
               <span class="product-price">12.50€</span>
-              <button type="button" class="btn btn--primary btn--sm" aria-label="Add Pro Shaker 700ml to cart">
+              <button type="button" class="btn btn--primary btn--sm add-to-cart-btn" data-id="3" data-name="Pro Shaker 700ml" data-price="12.50" aria-label="Add Pro Shaker 700ml to cart">
                 <i class="fas fa-shopping-cart"></i> Add
               </button>
             </div>
@@ -151,5 +179,149 @@ session_start();
     </div>
   </footer>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Estado da aplicação (Carrinho em memória)
+      let cart = [];
+
+      // Elementos do DOM
+      const cartBtn = document.getElementById('cart-btn');
+      const closeCartBtn = document.getElementById('close-cart');
+      const cartSidebar = document.getElementById('cart-sidebar');
+      const cartOverlay = document.getElementById('cart-overlay');
+      const cartItemsContainer = document.getElementById('cart-items-container');
+      const cartCountEl = document.getElementById('cart-count');
+      const cartTotalPriceEl = document.getElementById('cart-total-price');
+      const clearCartBtn = document.getElementById('clear-cart-btn');
+      const checkoutBtn = document.getElementById('checkout-btn');
+      const addButtons = document.querySelectorAll('.add-to-cart-btn');
+
+      // 1. Abrir e Fechar Menu Lateral
+      const toggleCart = () => {
+        cartSidebar.classList.toggle('open');
+        cartOverlay.classList.toggle('open');
+      };
+
+      cartBtn.addEventListener('click', toggleCart);
+      closeCartBtn.addEventListener('click', toggleCart);
+      cartOverlay.addEventListener('click', toggleCart);
+
+      // 2. Renderizar os itens do carrinho na Sidebar
+      const renderCart = () => {
+        cartItemsContainer.innerHTML = '';
+        
+        if (cart.length === 0) {
+          cartItemsContainer.innerHTML = '<p class="cart-empty-msg text-muted">Your cart is empty.</p>';
+          cartCountEl.textContent = '0';
+          cartTotalPriceEl.textContent = '0.00€';
+          return;
+        }
+
+        let totalItems = 0;
+        let totalPrice = 0;
+
+        cart.forEach(item => {
+          totalItems += item.quantity;
+          totalPrice += item.price * item.quantity;
+
+          const itemRow = document.createElement('div');
+          itemRow.classList.add('cart-item-row');
+          itemRow.innerHTML = `
+            <div class="cart-item-details">
+              <span class="cart-item-title">${item.name}</span>
+              <span class="cart-item-price">${(item.price * item.quantity).toFixed(2)}€</span>
+            </div>
+            <div class="cart-item-controls">
+              <div class="quantity-picker">
+                <button class="qty-btn minus-qty" data-id="${item.id}">-</button>
+                <span class="qty-value">${item.quantity}</span>
+                <button class="qty-btn plus-qty" data-id="${item.id}">+</button>
+              </div>
+              <button class="cart-remove-btn" data-id="${item.id}" aria-label="Remove item"><i class="fas fa-trash-alt"></i></button>
+            </div>
+          `;
+          cartItemsContainer.appendChild(itemRow);
+        });
+
+        cartCountEl.textContent = totalItems;
+        cartTotalPriceEl.textContent = totalPrice.toFixed(2) + '€';
+      };
+
+      // 3. Adicionar item ao Carrinho
+      addButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const id = btn.getAttribute('data-id');
+          const name = btn.getAttribute('data-name');
+          const price = parseFloat(btn.getAttribute('data-price'));
+
+          const existingItem = cart.find(item => item.id === id);
+
+          if (existingItem) {
+            existingItem.quantity++;
+          } else {
+            cart.push({ id, name, price, quantity: 1 });
+          }
+
+          renderCart();
+
+          // Feedback visual de animação do badge
+          cartCountEl.classList.add('pop');
+          setTimeout(() => cartCountEl.classList.remove('pop'), 300);
+
+          // Feedback visual no botão clicado
+          const originalHTML = btn.innerHTML;
+          btn.innerHTML = '<i class="fas fa-check"></i> Added';
+          btn.style.backgroundColor = '#4caf50';
+          btn.style.borderColor = '#4caf50';
+          setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.style.backgroundColor = '';
+            btn.style.borderColor = '';
+          }, 1200);
+        });
+      });
+
+      // 4. Detetar Cliques dentro do Carrinho (Mais, Menos e Eliminar)
+      cartItemsContainer.addEventListener('click', (e) => {
+        const target = e.target.closest('button');
+        if (!target) return;
+
+        const id = target.getAttribute('data-id');
+        const item = cart.find(item => item.id === id);
+
+        if (target.classList.contains('plus-qty')) {
+          item.quantity++;
+        } else if (target.classList.contains('minus-qty')) {
+          if (item.quantity > 1) {
+            item.quantity--;
+          } else {
+            cart = cart.filter(i => i.id !== id);
+          }
+        } else if (target.classList.contains('cart-remove-btn')) {
+          cart = cart.filter(i => i.id !== id);
+        }
+
+        renderCart();
+      });
+
+      // 5. Botão de Limpar Carrinho
+      clearCartBtn.addEventListener('click', () => {
+        if (cart.length > 0) {
+          cart = [];
+          renderCart();
+        }
+      });
+
+      // 6. Botão de Checkout (Simulação)
+      checkoutBtn.addEventListener('click', () => {
+        if (cart.length === 0) {
+          alert('Your cart is empty!');
+          return;
+        }
+        alert('Proceeding to checkout! Integration coming soon.');
+      });
+    });
+  </script>
 </body>
 </html>
