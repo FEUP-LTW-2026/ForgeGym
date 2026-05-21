@@ -85,20 +85,19 @@ $specializations = explode(',', $trainer['specializations']);
       <label for="nav-toggle" class="nav__toggle" aria-label="Open navigation menu">
         <span></span><span></span><span></span>
       </label>
-        <nav class="nav" id="main-nav" aria-label="Primary navigation">
+      <nav class="nav" id="main-nav" aria-label="Primary navigation">
         <ul class="nav__list">
           <li><a href="plan.php" class="nav__link">Classes</a></li>
           <li><a href="shop.php" class="nav__link">Shop</a></li>
-          <li><a href="profile.php" class="nav__link">Profile</a></li>
         </ul>
         <div class="nav__actions">
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="profile.php" class="btn btn--ghost">Profile</a>
-                <a href="logout.php" class="btn btn--primary">Log out</a>
-            <?php else: ?>
-                <a href="login.php" class="btn btn--ghost">Log in</a>
-                <a href="register.php" class="btn btn--primary">Join now</a>
-            <?php endif; ?>
+          <?php if (isset($_SESSION['user_id'])): ?>
+            <a href="profile.php" class="btn btn--ghost">Profile</a>
+            <a href="logout.php" class="btn btn--primary">Log out</a>
+          <?php else: ?>
+            <a href="login.php" class="btn btn--ghost">Log in</a>
+            <a href="register.php" class="btn btn--primary">Join now</a>
+          <?php endif; ?>
         </div>
       </nav>
     </div>

@@ -16,26 +16,19 @@
 <body>
   <header class="header">
     <div class="container header__inner">
-
       <a href="index.php" class="logo" aria-label="FORGE GYM homepage">
         <img src="images/logo.png" alt="FORGE GYM" class="logo__img" />
         <span class="logo__text">FORGE GYM</span>
       </a>
-
       <input type="checkbox" id="nav-toggle" class="sr-only peer-nav" />
       <label for="nav-toggle" class="nav__toggle" aria-label="Open navigation menu">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span>
       </label>
-      
       <nav class="nav" id="main-nav" aria-label="Primary navigation">
         <ul class="nav__list">
           <li><a href="pages/plan.php" class="nav__link">Classes</a></li>
           <li><a href="pages/shop.php" class="nav__link">Shop</a></li>
-          <li><a href="pages/profile.php" class="nav__link">Profile</a></li>
         </ul>
-        
         <div class="nav__actions">
           <?php if (isset($_SESSION['user_id'])): ?>
             <a href="pages/profile.php" class="btn btn--ghost">Profile</a>
@@ -46,7 +39,6 @@
           <?php endif; ?>
         </div>
       </nav>
-
     </div>
   </header>
 

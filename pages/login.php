@@ -12,20 +12,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
         
-        // Procurar o utilizador na base de dados
         $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
         $stmt->execute([$username]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        // Verificar se o utilizador existe e se a password está correta
-        if ($user && password_verify($password, $user['password'])) {
-            // Guardar os dados na sessão
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            
-            // AS NOVAS COLUNAS PARA OS 3 NÍVEIS DE ACESSO
-            $_SESSION['role'] = $user['role']; 
-            $_SESSION['trainer_id'] = $user['trainer_id']; 
+        // CORREÇÃO CRÍTICA: Se a BD estiver corrompida, a password vem como Array. Tiramos só o texto!
+        $db_password = isset($user['password']) ? (is_array($user['password']) ? $user['password'][0] : $user['password']) : '';
+        
+        if ($user && password_verify($password, $db_password)) {
+            // Prevenir arrays em todas as variáveis de sessão também
+            $_SESSION['user_id'] = is_array($user['id']) ? $user['id'][0] : $user['id'];
+            $_SESSION['username'] = is_array($user['username']) ? $user['username'][0] : $user['username'];
+            $_SESSION['role'] = is_array($user['role'] ?? null) ? ($user['role'][0] ?? 'member') : ($user['role'] ?? 'member');
+            $_SESSION['trainer_id'] = is_array($user['trainer_id'] ?? null) ? ($user['trainer_id'][0] ?? null) : ($user['trainer_id'] ?? null);
             
             header("Location: ../index.php");
             exit;        

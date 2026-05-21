@@ -65,9 +65,9 @@ INSERT INTO classes (name, type, trainer_id, class_date, day_of_week, start_time
 ('Weekend Warrior Strong', 'Strength', 1, '2026-05-16', 'Saturday', '10:00', '11:30', 20),
 
 -- AULAS FUTURAS (Segunda a Quarta)
-('Powerlifting Foundation', 'Strength', 1, '2026-05-18', 'Monday', '09:00', '10:00', 15),
-('Core & Stability', 'Pilates', 4, '2026-05-19', 'Tuesday', '09:00', '10:00', 10),
-('Vinyasa Flow', 'Yoga', 3, '2026-05-20', 'Wednesday', '18:00', '19:00', 12);
+('Powerlifting Foundation', 'Strength', 1, '2026-05-25', 'Monday', '09:00', '10:00', 15),
+('Core & Stability', 'Pilates', 4, '2026-05-26', 'Tuesday', '09:00', '10:00', 10),
+('Vinyasa Flow', 'Yoga', 3, '2026-05-27', 'Wednesday', '18:00', '19:00', 12);
 
 -- Criar a tabela de Utilizadores
 DROP TABLE IF EXISTS users;

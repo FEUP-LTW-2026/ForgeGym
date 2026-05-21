@@ -124,12 +124,14 @@ $workoutHistory = [];
 foreach ($enrolledClasses as $class) {
     $hasEnded = false;
 
+    // 1. Usa a data real da base de dados (YYYY-MM-DD) para saber se já passou
     if ($class['class_date'] < $currentDate) {
         $hasEnded = true; 
     } elseif ($class['class_date'] === $currentDate && $currentTime >= $class['end_time']) {
         $hasEnded = true; 
     }
 
+    // 2. Formata a data vinda da base de dados (ex: "18/05")
     $class['formatted_date'] = date('d/m', strtotime($class['class_date']));
 
     if ($hasEnded) {
@@ -138,8 +140,6 @@ foreach ($enrolledClasses as $class) {
         $upcomingSessions[] = $class;
     }
 }
-?>
-
 ?>
 
 <!DOCTYPE html>
@@ -188,11 +188,15 @@ foreach ($enrolledClasses as $class) {
         <ul class="nav__list">
           <li><a href="plan.php" class="nav__link">Classes</a></li>
           <li><a href="shop.php" class="nav__link">Shop</a></li>
-          <li><a href="profile.php" class="nav__link">Profile</a></li>
         </ul>
         <div class="nav__actions">
-          <a href="profile.php" class="btn btn--ghost">Profile</a>
-          <a href="logout.php" class="btn btn--primary">Log out</a>
+          <?php if (isset($_SESSION['user_id'])): ?>
+            <a href="profile.php" class="btn btn--ghost">Profile</a>
+            <a href="logout.php" class="btn btn--primary">Log out</a>
+          <?php else: ?>
+            <a href="login.php" class="btn btn--ghost">Log in</a>
+            <a href="register.php" class="btn btn--primary">Join now</a>
+          <?php endif; ?>
         </div>
       </nav>
     </div>

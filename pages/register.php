@@ -15,25 +15,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password = $_POST['password'] ?? '';
         
         if ($name && $username && $email && $password) {
-            // Encriptar a password
             $hash = password_hash($password, PASSWORD_DEFAULT);
             
-            // Inserir na base de dados
-            $stmt = $pdo->prepare("INSERT INTO users (name, username, email, password) VALUES (?, ?, ?, ?)");
+            $stmt = $pdo->prepare("INSERT INTO users (name, username, email, password, role) VALUES (?, ?, ?, ?, 'member')");
             try {
                 $stmt->execute([$name, $username, $email, $hash]);
-                // Redirecionar para o login com sucesso
                 header("Location: login.php?registered=1");
                 exit;
             } catch (PDOException $e) {
-                // Se der erro, provavelmente o username ou email já existem (têm UNIQUE no SQL)
-                $error = "Username or Email already exists. Please try another.";
+                // AGORA MOSTRAMOS O ERRO REAL DA BASE DE DADOS!
+                $error = "DB ERROR: " . $e->getMessage();
             }
         } else {
             $error = "Please fill in all the fields.";
         }
     } catch (PDOException $e) {
-        $error = "Database error. Please try again later.";
+        $error = "Connection error: " . $e->getMessage();
     }
 }
 ?>
