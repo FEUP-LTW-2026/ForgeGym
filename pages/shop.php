@@ -80,7 +80,7 @@ session_start();
         <article class="product-card card">
           <div class="product-card__image">
             <span class="badge badge--danger product-badge">New</span>
-            <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=800&auto=format&fit=crop" alt="Forge Premium Hoodie" loading="lazy">
+            <img src="../images/merch/PremiumOversizedHoodie.png" alt="Forge Premium Hoodie" loading="lazy">
           </div>
           <div class="product-card__info">
             <div>
@@ -98,7 +98,7 @@ session_start();
 
         <article class="product-card card">
           <div class="product-card__image">
-            <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop" alt="Forge Pump T-Shirt" loading="lazy">
+            <img src="../images/merch/ForgePumpTShirt.png" alt="Forge Pump T-Shirt" loading="lazy">
           </div>
           <div class="product-card__info">
             <div>
@@ -117,7 +117,7 @@ session_start();
         <article class="product-card card">
           <div class="product-card__image">
             <span class="badge badge--dark product-badge">Best Seller</span>
-            <img src="https://images.unsplash.com/photo-1622543925917-763c34d1a86e?q=80&w=800&auto=format&fit=crop" alt="Pro Shaker 700ml" loading="lazy">
+            <img src="../images/merch/ProShaker.png" alt="Pro Shaker 700ml" loading="lazy">
           </div>
           <div class="product-card__info">
             <div>
@@ -136,7 +136,7 @@ session_start();
         <article class="product-card card" style="opacity: 0.7;">
           <div class="product-card__image">
             <span class="badge badge--warning product-badge" style="background: var(--color-bg); color: var(--color-text-muted); border: 1px solid var(--color-border);">Out of Stock</span>
-            <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=800&auto=format&fit=crop" alt="Tactical Gym Duffle" style="filter: grayscale(80%);" loading="lazy">
+            <img src="../images/merch/TacticalGymDuffle.png" alt="Tactical Gym Duffle" style="filter: grayscale(80%);" loading="lazy">
           </div>
           <div class="product-card__info">
             <div>

@@ -15,9 +15,9 @@
 - [X] Leave ratings and reviews for classes they have attended.
 
 **Trainers:**
-- [ ] Manage their public profile, including bio, specializations, and certifications.
+- [X] Manage their public profile, including bio, specializations, and certifications.
 - [ ] View the roster of members enrolled in their classes.
-- [ ] Track and manage their assigned class schedule.
+- [X] Track and manage their assigned class schedule.
 
 **Admins:**
 - [ ] Manage members and trainers (create, update, and deactivate accounts).

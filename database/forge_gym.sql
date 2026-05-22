@@ -83,12 +83,6 @@ CREATE TABLE users (
     FOREIGN KEY (trainer_id) REFERENCES trainers(id)
 );
 
--- Exemplo de inserção de utilizadores com roles diferentes
-INSERT INTO users (name, username, email, password, role, trainer_id) VALUES 
-('Admin Supremo', 'admin', 'admin@gym.com', 'HASH_DA_PASSWORD_AQUI', 'admin', NULL),
-('Diogo Quaresma', 'quaresma_pt', 'quaresma@gym.com', 'HASH_DA_PASSWORD_AQUI', 'trainer', 2),
-('Cliente Normal', 'cliente1', 'cliente@email.com', 'HASH_DA_PASSWORD_AQUI', 'user', NULL);
-
 -- Criar a tabela de Inscrições (Enrollments)
 DROP TABLE IF EXISTS enrollments;
 CREATE TABLE enrollments (
