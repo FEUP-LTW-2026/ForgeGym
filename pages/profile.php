@@ -320,6 +320,11 @@ foreach ($enrolledClasses as $class) {
               <a href="plan.php" class="button-aesthetic" style="display: inline-flex; width: fit-content; background-color: var(--color-bg-surface); border: 1px solid var(--color-border); color: var(--color-text); margin-top: var(--sp-2);">
                 <i class="fas fa-calendar-plus" style="color: var(--color-gold);"></i> Book Classes
               </a>
+              <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                <a href="admin_dashboard.php" class="button-aesthetic" style="display: inline-flex; width: fit-content; background-color: var(--color-accent); border: 1px solid var(--color-accent); color: white; margin-top: var(--sp-2);">
+                  <i class="fas fa-user-shield"></i> Admin Dashboard
+                </a>
+              <?php endif; ?>
             </div>
           </section>
 
