@@ -1,4 +1,5 @@
 <?php
+session_start();
 define('DB_PATH', __DIR__ . '/../database/forge_gym.db');
 
 try {
@@ -8,10 +9,14 @@ try {
     die("Database connection failed.");
 }
 
-$id = isset($_GET['id']) ? (int)$_GET['id'] : 1;
+$trainer_id = isset($_GET['id']) ? (int)$_GET['id'] : 1;
+
+$isOwnProfile = isset($_SESSION['user_id']) && 
+                isset($_SESSION['role']) && $_SESSION['role'] === 'trainer' && 
+                isset($_SESSION['trainer_id']) && $_SESSION['trainer_id'] == $trainer_id;
 
 $stmt = $pdo->prepare("SELECT * FROM trainers WHERE id = ?");
-$stmt->execute([$id]);
+$stmt->execute([$trainer_id]);
 $trainer = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$trainer) {
@@ -27,7 +32,7 @@ $stmtClasses = $pdo->prepare("
     AND (class_date > ? OR (class_date = ? AND end_time > ?))
     ORDER BY class_date ASC, start_time ASC
 ");
-$stmtClasses->execute([$id, $currentDate, $currentDate, $currentTime]);
+$stmtClasses->execute([$trainer_id, $currentDate, $currentDate, $currentTime]);
 $classes = $stmtClasses->fetchAll(PDO::FETCH_ASSOC);
 
 $stmtReviews = $pdo->prepare("
@@ -38,7 +43,7 @@ $stmtReviews = $pdo->prepare("
     WHERE c.trainer_id = ?
     ORDER BY r.created_at DESC
 ");
-$stmtReviews->execute([$id]);
+$stmtReviews->execute([$trainer_id]);
 $reviews = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
 
 $specializations = explode(',', $trainer['specializations']);
@@ -134,39 +139,71 @@ $specializations = explode(',', $trainer['specializations']);
               </div>
             </div>
 
-            <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: var(--sp-8); justify-content: center;">
+            <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; justify-content: center;">
               
-              <div style="display: flex; gap: var(--sp-4); align-items: flex-start;">
-                <i class="fas fa-quote-left" style="color: var(--color-gold); font-size: 3rem; opacity: 0.6; margin-top: -5px;"></i>
+              <?php if ($isOwnProfile): ?>
+                <form action="../api/update_trainer.php" method="POST" style="width: 100%;">
+                    <input type="hidden" name="trainer_id" value="<?php echo $trainer_id; ?>">
+
+                    <div style="display: flex; gap: var(--sp-4); align-items: flex-start;">
+                        <i class="fas fa-quote-left" style="color: var(--color-gold); font-size: 3rem; opacity: 0.6; margin-top: -5px;"></i>
+                        <div style="width: 100%;">
+                            <p style="font-size: 0.85rem; color: var(--color-gold); margin-bottom: 5px; text-transform: uppercase;">Edit Motivational Quote:</p>
+                            <textarea name="quote" style="width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--color-gold); color: var(--color-text); font-family: var(--font-display); font-size: 1.5rem; font-style: italic; padding: 10px; border-radius: 4px;"><?php echo htmlspecialchars($trainer['quote']); ?></textarea>
+                        </div>
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px solid var(--color-border); width: 100%; margin: var(--sp-6) 0;">
+
+                    <div>
+                        <h3 style="margin-bottom: var(--sp-3); font-size: 1.3rem; text-transform: uppercase; color: var(--color-text);">Edit About & Specialties</h3>
+                        <textarea name="bio" style="width: 100%; height: 120px; background: rgba(255,255,255,0.03); border: 1px solid var(--color-gold); color: var(--color-text-muted); padding: 10px; border-radius: 4px;"><?php echo htmlspecialchars($trainer['bio']); ?></textarea>
+                        
+                        <div style="margin-top: var(--sp-4);">
+                            <p style="color: var(--color-text); font-weight: 600; margin-bottom: var(--sp-2);">Core Training Focus (separar por vírgulas):</p>
+                            <input type="text" name="specializations" value="<?php echo htmlspecialchars($trainer['specializations']); ?>" style="width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--color-gold); color: var(--color-text-muted); padding: 10px; border-radius: 4px;">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn--primary" style="margin-top: 25px; width: 100%; cursor: pointer; background: var(--color-gold); border-color: var(--color-gold);">
+                        <i class="fas fa-save"></i> Save Profile Changes
+                    </button>
+                </form>
+
+              <?php else: ?>
+                <div style="display: flex; gap: var(--sp-4); align-items: flex-start;">
+                  <i class="fas fa-quote-left" style="color: var(--color-gold); font-size: 3rem; opacity: 0.6; margin-top: -5px;"></i>
+                  <div>
+                    <p style="font-family: var(--font-display); font-size: 1.8rem; line-height: 1.3; color: var(--color-text); font-style: italic;">
+                      <?php echo htmlspecialchars($trainer['quote']); ?>
+                    </p>
+                    <p style="color: var(--color-text-muted); margin-top: var(--sp-3); font-size: var(--text-sm); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                      — Message from <?php echo htmlspecialchars(explode(' ', trim($trainer['name']))[0]); ?>
+                    </p>
+                  </div>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid var(--color-border); width: 100%; margin: var(--sp-6) 0;">
+
                 <div>
-                  <p style="font-family: var(--font-display); font-size: 1.8rem; line-height: 1.3; color: var(--color-text); font-style: italic;">
-                    <?php echo htmlspecialchars($trainer['quote']); ?>
+                  <h3 style="margin-bottom: var(--sp-3); font-size: 1.3rem; text-transform: uppercase; color: var(--color-text);">
+                     About & Specialties
+                  </h3>
+                  <p style="color: var(--color-text-muted); font-size: 1.1rem; line-height: 1.8; white-space: pre-line;">
+                    <?php echo htmlspecialchars($trainer['bio']); ?>
                   </p>
-                  <p style="color: var(--color-text-muted); margin-top: var(--sp-3); font-size: var(--text-sm); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
-                    — Message from <?php echo htmlspecialchars(explode(' ', trim($trainer['name']))[0]); ?>
-                  </p>
+                  
+                  <div style="margin-top: var(--sp-4);">
+                    <p style="color: var(--color-text); font-weight: 600; margin-bottom: var(--sp-2);">Core Training Focus:</p>
+                    <ul style="color: var(--color-text-muted); padding-left: 1.5rem; list-style-type: disc;">
+                      <?php foreach ($specializations as $spec): ?>
+                        <li style="margin-bottom: 5px;"><?php echo htmlspecialchars(trim($spec)); ?></li>
+                      <?php endforeach; ?>
+                    </ul>
+                  </div>
                 </div>
-              </div>
 
-              <hr style="border: 0; border-top: 1px solid var(--color-border); width: 100%; margin: 0;">
-
-              <div>
-                <h3 style="margin-bottom: var(--sp-3); font-size: 1.3rem; text-transform: uppercase; color: var(--color-text);">
-                   About & Specialties
-                </h3>
-                <p style="color: var(--color-text-muted); font-size: 1.1rem; line-height: 1.8;">
-                  <?php echo htmlspecialchars($trainer['bio']); ?>
-                </p>
-                
-                <div style="margin-top: var(--sp-4);">
-                  <p style="color: var(--color-text); font-weight: 600; margin-bottom: var(--sp-2);">Core Training Focus:</p>
-                  <ul style="color: var(--color-text-muted); padding-left: 1.5rem; list-style-type: disc;">
-                    <?php foreach ($specializations as $spec): ?>
-                      <li style="margin-bottom: 5px;"><?php echo htmlspecialchars(trim($spec)); ?></li>
-                    <?php endforeach; ?>
-                  </ul>
-                </div>
-              </div>
+              <?php endif; ?>
               
             </div>
             

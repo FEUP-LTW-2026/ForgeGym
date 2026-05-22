@@ -19,65 +19,7 @@ $user_id = $_SESSION['user_id'];
 $success_msg = '';
 $error_msg = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name'] ?? '');
-    $username = trim($_POST['username'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
-    
-    if ($name && $username && $email) {
-        $query = "UPDATE users SET name = ?, username = ?, email = ? WHERE id = ?";
-        $params = [$name, $username, $email, $user_id];
-        
-        if (!empty($password)) {
-            $query = "UPDATE users SET name = ?, username = ?, email = ?, password = ? WHERE id = ?";
-            $params = [$name, $username, $email, password_hash($password, PASSWORD_DEFAULT), $user_id];
-        }
-        
-        if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
-            $fileTmpPath = $_FILES['profile_photo']['tmp_name'];
-            $fileName = $_FILES['profile_photo']['name'];
-            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-            
-            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-            if (in_array($fileExtension, $allowedExtensions)) {
-                $uploadDir = __DIR__ . '/../images/profiles/';
-                
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0755, true);
-                }
-                
-                $newFileName = 'user_' . $user_id . '_' . time() . '.' . $fileExtension;
-                $dest_path = $uploadDir . $newFileName;
-                
-                if (move_uploaded_file($fileTmpPath, $dest_path)) {
-                    $photo_path = 'images/profiles/' . $newFileName;
-                    
-                    if (!empty($password)) {
-                        $query = "UPDATE users SET name = ?, username = ?, email = ?, password = ?, profile_photo = ? WHERE id = ?";
-                        $params = [$name, $username, $email, password_hash($password, PASSWORD_DEFAULT), $photo_path, $user_id];
-                    } else {
-                        $query = "UPDATE users SET name = ?, username = ?, email = ?, profile_photo = ? WHERE id = ?";
-                        $params = [$name, $username, $email, $photo_path, $user_id];
-                    }
-                }
-            }
-        }
-        
-        try {
-            $stmt = $pdo->prepare($query);
-            $stmt->execute($params);
-            $_SESSION['username'] = $username; 
-            $success_msg = "Profile updated successfully!";
-        } catch (PDOException $e) {
-            $error_msg = "Username or Email already exists.";
-        }
-    } else {
-        $error_msg = "Please fill in all required fields.";
-    }
-}
-
-// Buscar dados do utilizador
+// 1. PRIMEIRO: Procurar os dados do utilizador para que fiquem disponíveis no POST
 $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -88,7 +30,89 @@ if (!$user) {
     exit;
 }
 
-// Buscar as aulas em que o utilizador está inscrito
+// 2. SEGUNDO: Processar o envio do formulário (POST)
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = trim($_POST['name'] ?? '');
+    $username = trim($_POST['username'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    
+    if ($name && $username && $email) {
+        
+        $photo_path = $user['profile_photo']; // Agora está 100% seguro e preenchido!
+        $upload_error = '';
+
+        if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] !== UPLOAD_ERR_NO_FILE) {
+            $errCode = $_FILES['profile_photo']['error'];
+            
+            if ($errCode === UPLOAD_ERR_OK) {
+                $fileTmpPath = $_FILES['profile_photo']['tmp_name'];
+                $fileName = $_FILES['profile_photo']['name'];
+                $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                
+                $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                
+                if (in_array($fileExtension, $allowedExtensions)) {
+                    $uploadDir = __DIR__ . '/../images/profiles/';
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
+                    
+                    $newFileName = 'user_' . $user_id . '_' . time() . '.' . $fileExtension;
+                    $dest_path = $uploadDir . $newFileName;
+                    
+                    if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                        $photo_path = 'images/profiles/' . $newFileName;
+                    } else {
+                        $upload_error = " Permission error while saving the image.";
+                    }
+                } else {
+                    $upload_error = " Unsupported format. Please use JPG, PNG, GIF, or WEBP.";
+                }
+            } else {
+                if ($errCode == 1 || $errCode == 2) {
+                    $upload_error = " The image is too large (server limit reached). Please try a smaller photo.";
+                } else {
+                    $upload_error = " Upload error (Code: $errCode).";
+                }
+            }
+        }
+
+        $query = "UPDATE users SET name = ?, username = ?, email = ?, profile_photo = ?";
+        $params = [$name, $username, $email, $photo_path];
+
+        if (!empty($password)) {
+            $query .= ", password = ?";
+            $params[] = password_hash($password, PASSWORD_DEFAULT);
+        }
+
+        $query .= " WHERE id = ?";
+        $params[] = $user_id;
+
+        try {
+            $stmt = $pdo->prepare($query);
+            $stmt->execute($params);
+            $_SESSION['username'] = $username; 
+            
+            // Atualizar os dados locais do utilizador imediatamente após o update
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+            $stmt->execute([$user_id]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($upload_error) {
+                $error_msg = "Profile updated, BUT the photo upload failed:" . $upload_error;
+            } else {
+                $success_msg = "Profile updated successfully!";
+            }
+        } catch (PDOException $e) {
+            $error_msg = "Username or Email already exists.";
+        }
+    } else {
+        $error_msg = "Please fill in all required fields.";
+    }
+}
+
+// 3. TERCEIRO: Buscar as aulas em que o utilizador está inscrito
 $stmtEnrolled = $pdo->prepare("
     SELECT c.*, t.name as trainer_name, r.rating, r.comment
     FROM enrollments e 
@@ -109,7 +133,7 @@ $stmtEnrolled->execute([$user_id]);
 $enrolledClasses = $stmtEnrolled->fetchAll(PDO::FETCH_ASSOC);
 
 $photoPath = $user['profile_photo'];
-if ($photoPath === 'images/profiles/default.png' || !file_exists(__DIR__ . '/../' . $photoPath)) {
+if (empty($photoPath) || $photoPath === 'images/profiles/default.png' || !file_exists(__DIR__ . '/../' . $photoPath)) {
     $avatar_url = "https://ui-avatars.com/api/?name=" . urlencode($user['name']) . "&background=CBA052&color=fff&size=150&bold=true";
 } else {
     $avatar_url = '../' . $photoPath;
@@ -124,14 +148,12 @@ $workoutHistory = [];
 foreach ($enrolledClasses as $class) {
     $hasEnded = false;
 
-    // 1. Usa a data real da base de dados (YYYY-MM-DD) para saber se já passou
     if ($class['class_date'] < $currentDate) {
         $hasEnded = true; 
     } elseif ($class['class_date'] === $currentDate && $currentTime >= $class['end_time']) {
         $hasEnded = true; 
     }
 
-    // 2. Formata a data vinda da base de dados (ex: "18/05")
     $class['formatted_date'] = date('d/m', strtotime($class['class_date']));
 
     if ($hasEnded) {
@@ -213,7 +235,7 @@ foreach ($enrolledClasses as $class) {
         <aside class="profile-sidebar">
           <section class="profile-card">
             <div class="profile-avatar-wrapper">
-              <img src="<?php echo htmlspecialchars($avatar_url); ?>" alt="<?php echo htmlspecialchars($user['name']); ?>" class="profile-avatar-img">
+              <img src="<?php echo htmlspecialchars($avatar_url); ?>?t=<?php echo time(); ?>" alt="<?php echo htmlspecialchars($user['name']); ?>" class="profile-avatar-img">
             </div>
             <h2 class="profile-name"><?php echo htmlspecialchars($user['name']); ?></h2>
             <p class="user-handle">@<?php echo htmlspecialchars($user['username']); ?></p>

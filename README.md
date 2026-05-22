@@ -45,5 +45,5 @@ To see the rendered result properly via PHP, open your terminal in the root fold
 ## Credentials
 
 - admin/p4s5w0rd
-- jonhdoe/password
-- trainer/1234
+- gonçaloafonso/56789
+- mafalda_pt/ptmafalda

@@ -30,14 +30,8 @@ session_start();
         <ul class="nav__list">
           <li><a href="plan.php" class="nav__link">Classes</a></li>
           <li><a href="shop.php" class="nav__link">Shop</a></li>
-          <li><a href="profile.php" class="nav__link">Profile</a></li>
         </ul>
         <div class="nav__actions">
-          <button type="button" class="btn btn--ghost cart-toggle" id="cart-btn" aria-label="Open cart" style="position: relative; padding: 0.625rem;">
-            <i class="fas fa-shopping-bag" style="font-size: 1.2rem;"></i>
-            <span class="cart-badge" id="cart-count">0</span>
-          </button>
-
           <?php if (isset($_SESSION['user_id'])): ?>
             <a href="profile.php" class="btn btn--ghost">Profile</a>
             <a href="logout.php" class="btn btn--primary">Log out</a>
