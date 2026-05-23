@@ -39,22 +39,28 @@ try {
 
                 // Lógica Inteligente de Transição
                 if ($new_role === 'trainer' && $old_role !== 'trainer') {
-                    // Foi promovido a Trainer agora! Criar perfil novo.
-                    $stmtInsertTrainer = $pdo->prepare("
-                        INSERT INTO trainers (name, role, bio, specializations, quote, image_path) 
-                        VALUES (?, 'Fitness Coach', 'Bio under construction...', 'General Fitness', 'Let''s train!', 'images/personal trainers/pt-quaresma.jpeg')
-                    ");
-                    $stmtInsertTrainer->execute([$user_name]);
-                    $final_trainer_id = $pdo->lastInsertId();
+                    // Ver se já existe um perfil com este nome na tabela trainers (para reutilizar o ID antigo)
+                    $stmtCheckTrainer = $pdo->prepare("SELECT id FROM trainers WHERE name = ?");
+                    $stmtCheckTrainer->execute([$user_name]);
+                    $existing_trainer_id = $stmtCheckTrainer->fetchColumn();
+
+                    if ($existing_trainer_id) {
+                        // Reutiliza o perfil existente
+                        $final_trainer_id = $existing_trainer_id;
+                    } else {
+                        // Se for mesmo a primeira vez deste nome, cria um perfil novo do zero
+                        $stmtInsertTrainer = $pdo->prepare("
+                            INSERT INTO trainers (name, role, bio, specializations, quote, image_path) 
+                            VALUES (?, 'Fitness Coach', 'Bio under construction...', 'General Fitness', 'Let''s train!', 'images/personal trainers/pt-quaresma.jpeg')
+                        ");
+                        $stmtInsertTrainer->execute([$user_name]);
+                        $final_trainer_id = $pdo->lastInsertId();
+                    }
                 } 
                 elseif ($new_role !== 'trainer' && $old_role === 'trainer' && !empty($old_trainer_id)) {
-                    // Era Trainer e agora desceu. Limpar o perfil antigo.
-                    $pdo->prepare("UPDATE classes SET trainer_id = NULL WHERE trainer_id = ?")->execute([$old_trainer_id]);
-                    $pdo->prepare("DELETE FROM trainers WHERE id = ?")->execute([$old_trainer_id]);
                     $final_trainer_id = null;
                 }
                 elseif ($new_role !== 'trainer') {
-                    // Garantir que fica NULL se for Admin ou User
                     $final_trainer_id = null;
                 }
 
@@ -180,7 +186,7 @@ try {
                                 <option value="admin" <?php echo $u['role'] === 'admin' ? 'selected' : ''; ?>>Admin</option>
                             </select>
 
-                            <button type="submit" name="action" value="update_role" class="btn btn--primary btn--sm" style="padding: 5px 12px; font-size: 0.8rem; background: #4caf50; border-color: #4caf50; color: white;">
+                            <button type="submit" name="action" value="update_role" class="btn btn--primary btn--sm" style="padding: 5px 12px; font-size: 0.8rem; background: var(--color-gold); border-color: var(--color-gold); color: black; font-weight: bold;">
                                 <i class="fas fa-save"></i> Save
                             </button>
                         </form>
