@@ -1,7 +1,7 @@
-<<?php
+<?php
 session_start();
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'trainer') {
     header("Location: login.php");
     exit;
 }
@@ -15,41 +15,27 @@ try {
     die("Database connection failed.");
 }
 
-// 🪄 TRUQUE MÁGICO: Força a base de dados a transformar ESTA conta na Mafalda (ID 3)
 $user_id = $_SESSION['user_id'];
-$pdo->exec("UPDATE users SET role = 'trainer', trainer_id = 3 WHERE id = $user_id");
-
-// Atualiza a sessão à força para o teu browser não ter dúvidas
-$_SESSION['role'] = 'trainer';
-$_SESSION['trainer_id'] = 3;
-$trainer_id = 3;
+$trainer_id = $_SESSION['trainer_id'] ?? 0;
 
 $success_msg = '';
 $error_msg = '';
 
-// --- PROCESSAR PEDIDOS POST ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-    
-    // 1. AÇÃO: ATUALIZAR PERFIL PÚBLICO
     if ($_POST['action'] === 'update_profile') {
         $bio = trim($_POST['bio'] ?? '');
         $specializations = trim($_POST['specializations'] ?? '');
         $quote = trim($_POST['quote'] ?? '');
         
         if ($bio && $specializations) {
-            try {
-                $stmt = $pdo->prepare("UPDATE trainers SET bio = ?, specializations = ?, quote = ? WHERE id = ?");
-                $stmt->execute([$bio, $specializations, $quote, $trainer_id]);
-                $success_msg = "Public profile updated successfully!";
-            } catch (PDOException $e) {
-                $error_msg = "Failed to update profile: " . $e->getMessage();
-            }
+            $stmt = $pdo->prepare("UPDATE trainers SET bio = ?, specializations = ?, quote = ? WHERE id = ?");
+            $stmt->execute([$bio, $specializations, $quote, $trainer_id]);
+            $success_msg = "Public profile updated successfully!";
         } else {
             $error_msg = "Biography and Specializations are required.";
         }
     }
     
-    // 2. AÇÃO: CRIAR NOVA CLASSE
     if ($_POST['action'] === 'create_class') {
         $name = trim($_POST['name'] ?? '');
         $type = trim($_POST['type'] ?? '');
@@ -59,18 +45,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $capacity = (int)($_POST['capacity'] ?? 10);
         
         if ($name && $type && $class_date && $start_time && $end_time && $capacity > 0) {
-            try {
-                $day_of_week = date('l', strtotime($class_date));
-                
-                $stmt = $pdo->prepare("
-                    INSERT INTO classes (name, type, trainer_id, class_date, day_of_week, start_time, end_time, capacity) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                ");
-                $stmt->execute([$name, $type, $trainer_id, $class_date, $day_of_week, $start_time, $end_time, $capacity]);
-                $success_msg = "New class '$name' created successfully!";
-            } catch (PDOException $e) {
-                $error_msg = "Failed to create class: " . $e->getMessage();
-            }
+            $day_of_week = date('l', strtotime($class_date));
+            $stmt = $pdo->prepare("
+                INSERT INTO classes (name, type, trainer_id, class_date, day_of_week, start_time, end_time, capacity) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ");
+            $stmt->execute([$name, $type, $trainer_id, $class_date, $day_of_week, $start_time, $end_time, $capacity]);
+            $success_msg = "New class '$name' created successfully!";
         } else {
             $error_msg = "Please fill in all fields correctly.";
         }
@@ -81,17 +62,7 @@ $stmt = $pdo->prepare("SELECT * FROM trainers WHERE id = ?");
 $stmt->execute([$trainer_id]);
 $trainer = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$trainer) {
-    die("Trainer records not found in database.");
-}
-
-$stmtClasses = $pdo->prepare("
-    SELECT c.*, 
-           (SELECT COUNT(*) FROM enrollments WHERE class_id = c.id) as total_enrolled
-    FROM classes c
-    WHERE c.trainer_id = ?
-    ORDER BY c.class_date DESC, c.start_time DESC
-");
+$stmtClasses = $pdo->prepare("SELECT * FROM classes WHERE trainer_id = ? ORDER BY class_date DESC, start_time DESC");
 $stmtClasses->execute([$trainer_id]);
 $myClasses = $stmtClasses->fetchAll(PDO::FETCH_ASSOC);
 
@@ -111,7 +82,6 @@ $currentTime = date('H:i');
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  
   <style>
     .trainer-grid { display: grid; grid-template-columns: 1fr; gap: var(--sp-6); }
     @media (min-width: 992px) { .trainer-grid { grid-template-columns: 320px 1fr; } }
@@ -124,7 +94,7 @@ $currentTime = date('H:i');
     .profile-scrollbar::-webkit-scrollbar-thumb { background: var(--color-gold); border-radius: 10px; }
   </style>
 </head>
-<body>
+<body style="background: var(--color-bg); color: white;">
 
   <header class="header">
     <div class="container header__inner">
@@ -138,17 +108,8 @@ $currentTime = date('H:i');
           <li><a href="shop.php" class="nav__link">Shop</a></li>
         </ul>
         <div class="nav__actions">
-          <?php if (isset($_SESSION['user_id'])): ?>
-            <?php if ($_SESSION['role'] === 'trainer'): ?>
-              <a href="pages/trainer_dashboard.php" class="btn btn--ghost">Trainer Portal</a>
-            <?php else: ?>
-              <a href="pages/profile.php" class="btn btn--ghost">Profile</a>
-            <?php endif; ?>
-            <a href="pages/logout.php" class="btn btn--primary">Log out</a>
-          <?php else: ?>
-            <a href="pages/login.php" class="btn btn--ghost">Log in</a>
-            <a href="pages/register.php" class="btn btn--primary">Join now</a>
-          <?php endif; ?>
+          <a href="trainer_dashboard.php" class="btn btn--ghost">Trainer Portal</a>
+          <a href="logout.php" class="btn btn--primary">Log out</a>
         </div>
       </nav>
     </div>
@@ -190,19 +151,18 @@ $currentTime = date('H:i');
 
           <section class="info-card" style="border-top: 4px solid var(--color-accent);">
             <h3><i class="fas fa-plus-circle" style="color: var(--color-accent); margin-right: 8px;"></i> Create a New Fitness Class</h3>
-            <p class="text-muted" style="margin-bottom: var(--sp-4);">Host a new training session. It will be automatically assigned to you as the trainer.</p>
             
             <form action="trainer_dashboard.php" method="POST" class="form" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4);">
               <input type="hidden" name="action" value="create_class">
 
               <div class="form-group" style="grid-column: span 2;">
-                <label class="form-label" for="class-name">Class Title / Name</label>
-                <input type="text" id="class-name" name="name" class="form-control" required placeholder="e.g., Advanced Hypertrophy, Yoga Stretch">
+                <label class="form-label">Class Title / Name</label>
+                <input type="text" name="name" class="form-control" required>
               </div>
 
               <div class="form-group">
-                <label class="form-label" for="class-type">Class Type</label>
-                <select id="class-type" name="type" class="form-control" required style="width: 100%; background: rgba(0,0,0,0.3); color: white; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px;">
+                <label class="form-label">Class Type</label>
+                <select name="type" class="form-control" required style="width: 100%; background: rgba(0,0,0,0.3); color: white; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px;">
                   <option value="Strength">Strength</option>
                   <option value="HIIT">HIIT & Cardio</option>
                   <option value="Yoga">Yoga & Mobility</option>
@@ -212,23 +172,23 @@ $currentTime = date('H:i');
               </div>
 
               <div class="form-group">
-                <label class="form-label" for="class-capacity">Capacity (Max Spots)</label>
-                <input type="number" id="class-capacity" name="capacity" class="form-control" min="5" max="50" value="15" required>
+                <label class="form-label">Capacity</label>
+                <input type="number" name="capacity" class="form-control" min="5" max="50" value="15" required>
               </div>
 
               <div class="form-group" style="grid-column: span 2;">
-                <label class="form-label" for="class-date">Date of the Class</label>
-                <input type="date" id="class-date" name="class_date" class="form-control" required min="<?php echo date('Y-m-d'); ?>">
+                <label class="form-label">Date</label>
+                <input type="date" name="class_date" class="form-control" required min="<?php echo date('Y-m-d'); ?>">
               </div>
 
               <div class="form-group">
-                <label class="form-label" for="start-time">Start Time</label>
-                <input type="time" id="start-time" name="start_time" class="form-control" required>
+                <label class="form-label">Start Time</label>
+                <input type="time" name="start_time" class="form-control" required>
               </div>
 
               <div class="form-group">
-                <label class="form-label" for="end-time">End Time</label>
-                <input type="time" id="end-time" name="end_time" class="form-control" required>
+                <label class="form-label">End Time</label>
+                <input type="time" name="end_time" class="form-control" required>
               </div>
 
               <div style="grid-column: span 2; display: flex; justify-content: flex-end; margin-top: var(--sp-2);">
@@ -250,7 +210,6 @@ $currentTime = date('H:i');
                         $isPast = true;
                     }
 
-                    // Buscar Roster de alunos inscritos
                     $stmtRoster = $pdo->prepare("
                         SELECT u.name, u.username, u.email, u.profile_photo 
                         FROM enrollments e
@@ -328,21 +287,18 @@ $currentTime = date('H:i');
               <input type="hidden" name="action" value="update_profile">
 
               <div class="form-group">
-                <label class="form-label" for="specializations">Specializations & Focus Areas (Separate with commas)</label>
-                <input type="text" id="specializations" name="specializations" class="form-control" 
-                       value="<?php echo htmlspecialchars($trainer['specializations']); ?>" required placeholder="e.g., Powerlifting, Bodybuilding, HIIT">
+                <label class="form-label">Specializations & Focus Areas</label>
+                <input type="text" name="specializations" class="form-control" value="<?php echo htmlspecialchars($trainer['specializations']); ?>" required>
               </div>
 
               <div class="form-group">
-                <label class="form-label" for="quote">Motivational Punchline / Quote</label>
-                <input type="text" id="quote" name="quote" class="form-control" 
-                       value="<?php echo htmlspecialchars($trainer['quote']); ?>" placeholder="e.g., Shape your body, forge your steel.">
+                <label class="form-label">Motivational Punchline / Quote</label>
+                <input type="text" name="quote" class="form-control" value="<?php echo htmlspecialchars($trainer['quote']); ?>">
               </div>
 
               <div class="form-group">
-                <label class="form-label" for="bio">Professional Biography (Bio)</label>
-                <textarea id="bio" name="bio" class="form-control" rows="5" required 
-                          style="resize: vertical; background: rgba(0,0,0,0.3); color: #fff; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px; font-family: inherit; width: 100%;"><?php echo htmlspecialchars($trainer['bio']); ?></textarea>
+                <label class="form-label">Professional Biography (Bio)</label>
+                <textarea name="bio" class="form-control" rows="5" required style="resize: vertical; background: rgba(0,0,0,0.3); color: #fff; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px; width: 100%;"><?php echo htmlspecialchars($trainer['bio']); ?></textarea>
               </div>
 
               <div style="display: flex; justify-content: flex-end; margin-top: var(--sp-4);">

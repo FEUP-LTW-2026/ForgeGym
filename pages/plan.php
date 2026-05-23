@@ -193,25 +193,35 @@ function getClassImage($type) {
                         </span>
                         
                         <?php if (isset($_SESSION['user_id'])): ?>
+                          <div style="display: flex; flex-direction: column; gap: 5px; margin-top: 10px;">
+    
                           <?php if ($userRole === 'trainer' && $userTrainerId == $class['trainer_id']): ?>
-                            <span class="btn btn--ghost btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: var(--color-gold); color: var(--color-gold); cursor: default; opacity: 0.8;">Your Class</span>
-                          <?php else: ?>
-                            <form action="enroll.php" method="POST" style="margin: 0;">
-                              <input type="hidden" name="class_id" value="<?php echo $class['id']; ?>">
-                              
-                              <?php if (in_array($class['id'], $user_enrollments)): ?>
-                                <input type="hidden" name="action" value="cancel">
-                                <button type="submit" class="btn btn--ghost btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: var(--color-accent); color: var(--color-accent);">Cancel Booking</button>
-                              <?php else: ?>
-                                <input type="hidden" name="action" value="book">
-                                <?php if ($class['current_spots'] >= $class['capacity']): ?>
-                                  <button type="button" class="btn btn--ghost btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem; opacity: 0.5;" disabled>Full</button>
-                                <?php else: ?>
-                                  <button type="submit" class="btn btn--primary btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Book Now</button>
-                                <?php endif; ?>
-                              <?php endif; ?>
-                            </form>
+                              <span class="btn btn--ghost btn--sm" style="padding: 0.3rem 0.8rem; font-size: 0.8rem; border-color: var(--color-gold); color: var(--color-gold); cursor: default; opacity: 0.8; text-align: center;">Your Class</span>
                           <?php endif; ?>
+
+                          <?php if (($userRole === 'trainer' && $userTrainerId == $class['trainer_id']) || $userRole === 'admin'): ?>
+                              <button type="button" onclick="openRosterModal(<?php echo $class['id']; ?>)" class="btn btn--ghost btn--sm" style="padding: 0.2rem 0.6rem; font-size: 0.75rem; border-color: #666; color: #ddd; width: 100%;">
+                                  <i class="fas fa-users-cog"></i> View Roster
+                              </button>
+                          <?php endif; ?>
+
+                          <?php if (!($userRole === 'trainer' && $userTrainerId == $class['trainer_id'])): ?>
+                              <form action="enroll.php" method="POST" style="margin: 0; margin-top: 5px;">
+                                  <input type="hidden" name="class_id" value="<?php echo $class['id']; ?>">
+                                  <?php if (in_array($class['id'], $user_enrollments)): ?>
+                                      <input type="hidden" name="action" value="cancel">
+                                      <button type="submit" class="btn btn--ghost btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: var(--color-accent); color: var(--color-accent); width: 100%;">Cancel Booking</button>
+                                  <?php else: ?>
+                                      <input type="hidden" name="action" value="book">
+                                      <?php if ($class['current_spots'] >= $class['capacity']): ?>
+                                          <button type="button" class="btn btn--ghost btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem; opacity: 0.5; width: 100%;" disabled>Full</button>
+                                      <?php else: ?>
+                                          <button type="submit" class="btn btn--primary btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem; width: 100%;">Book Now</button>
+                                      <?php endif; ?>
+                                  <?php endif; ?>
+                              </form>
+                          <?php endif; ?>
+                      </div>
                         <?php else: ?>
                           <a href="login.php" class="btn btn--primary btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Book Now</a>
                         <?php endif; ?>
@@ -440,6 +450,42 @@ function getClassImage($type) {
         closeDeleteModal();
       }
     }
-  </script>          
+  </script>    
+  <div id="roster-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center;">
+  <div class="card" style="width: 400px; padding: 20px; background: #1a1a1a;">
+    <h3 style="color: var(--color-gold);">Class Roster</h3>
+    <div id="roster-list" style="margin-top: 15px; max-height: 300px; overflow-y: auto;"></div>
+    <button onclick="document.getElementById('roster-modal').style.display='none'" class="btn btn--ghost" style="margin-top: 15px; width: 100%;">Close</button>
+  </div>
+</div>
+
+<script>
+function openRosterModal(classId) {
+  const modal = document.getElementById('roster-modal');
+  const list = document.getElementById('roster-list');
+  list.innerHTML = '<p style="text-align:center;">Loading...</p>';
+  modal.style.display = 'flex';
+  
+  fetch('../api/get_roster.php?class_id=' + classId)
+    .then(r => r.json())
+    .then(data => {
+      if (!data || data.length === 0) {
+        list.innerHTML = '<p style="text-align:center; color:#888; font-style:italic;">No members enrolled yet.</p>';
+      } else {
+        list.innerHTML = data.map(u => `
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; padding:10px; border-bottom:1px solid #333;">
+            <img src="${u.profile_photo ? '../' + u.profile_photo : '../images/profiles/profile1.png'}" 
+                 style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
+                 onerror="this.src='../images/profiles/profile1.png';">
+            <div><strong>${u.name}</strong><br><small style="color:var(--color-gold)">${u.email}</small></div>
+          </div>
+        `).join('');
+      }
+    })
+    .catch(err => {
+      list.innerHTML = '<p style="text-align:center; color:red;">Error loading list.</p>';
+    });
+}
+</script>     
 </body>
 </html>
