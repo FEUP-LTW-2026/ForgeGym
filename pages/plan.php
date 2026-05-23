@@ -193,21 +193,25 @@ function getClassImage($type) {
                         </span>
                         
                         <?php if (isset($_SESSION['user_id'])): ?>
-                          <form action="enroll.php" method="POST" style="margin: 0;">
-                            <input type="hidden" name="class_id" value="<?php echo $class['id']; ?>">
-                            
-                            <?php if (in_array($class['id'], $user_enrollments)): ?>
-                              <input type="hidden" name="action" value="cancel">
-                              <button type="submit" class="btn btn--ghost btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: var(--color-accent); color: var(--color-accent);">Cancel Booking</button>
-                            <?php else: ?>
-                              <input type="hidden" name="action" value="book">
-                              <?php if ($class['current_spots'] >= $class['capacity']): ?>
-                                <button type="button" class="btn btn--ghost btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem; opacity: 0.5;" disabled>Full</button>
+                          <?php if ($userRole === 'trainer' && $userTrainerId == $class['trainer_id']): ?>
+                            <span class="btn btn--ghost btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: var(--color-gold); color: var(--color-gold); cursor: default; opacity: 0.8;">Your Class</span>
+                          <?php else: ?>
+                            <form action="enroll.php" method="POST" style="margin: 0;">
+                              <input type="hidden" name="class_id" value="<?php echo $class['id']; ?>">
+                              
+                              <?php if (in_array($class['id'], $user_enrollments)): ?>
+                                <input type="hidden" name="action" value="cancel">
+                                <button type="submit" class="btn btn--ghost btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: var(--color-accent); color: var(--color-accent);">Cancel Booking</button>
                               <?php else: ?>
-                                <button type="submit" class="btn btn--primary btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Book Now</button>
+                                <input type="hidden" name="action" value="book">
+                                <?php if ($class['current_spots'] >= $class['capacity']): ?>
+                                  <button type="button" class="btn btn--ghost btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem; opacity: 0.5;" disabled>Full</button>
+                                <?php else: ?>
+                                  <button type="submit" class="btn btn--primary btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Book Now</button>
+                                <?php endif; ?>
                               <?php endif; ?>
-                            <?php endif; ?>
-                          </form>
+                            </form>
+                          <?php endif; ?>
                         <?php else: ?>
                           <a href="login.php" class="btn btn--primary btn--sm" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Book Now</a>
                         <?php endif; ?>
