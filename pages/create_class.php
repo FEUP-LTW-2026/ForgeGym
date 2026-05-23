@@ -39,7 +39,7 @@ try {
         $trainer_id = ($userRole === 'admin') ? $_POST['trainer_id'] : $userTrainerId;
         
         $class_date = $_POST['class_date'] ?? '';
-        $day_of_week = $_POST['day_of_week'] ?? '';
+        $day_of_week = date('l', strtotime($class_date));
         $start_time = $_POST['start_time'] ?? '';
         $end_time = $_POST['end_time'] ?? '';
         $capacity = (int)($_POST['capacity'] ?? 0);
@@ -141,20 +141,12 @@ try {
         <div style="display: flex; gap: 15px;">
             <div class="form-group" style="flex: 1;">
               <label for="class_date" class="form-label">Date</label>
-              <input type="date" id="class_date" name="class_date" class="form-control" required min="<?php echo date('Y-m-d'); ?>">
+              <input type="date" id="class_date" name="class_date" class="form-control" required min="<?php echo date('Y-m-d'); ?>" onchange="updateDay()">
             </div>
 
             <div class="form-group" style="flex: 1;">
-              <label for="day_of_week" class="form-label">Day of the Week</label>
-              <select id="day_of_week" name="day_of_week" class="form-control" required style="background: rgba(0,0,0,0.3); color: white;">
-                <option value="">Select day...</option>
-                <option value="Monday">Monday</option>
-                <option value="Tuesday">Tuesday</option>
-                <option value="Wednesday">Wednesday</option>
-                <option value="Thursday">Thursday</option>
-                <option value="Friday">Friday</option>
-                <option value="Saturday">Saturday</option>
-              </select>
+              <label for="day_display" class="form-label">Day of the Week</label>
+              <input type="text" id="day_display" class="form-control" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--color-gold); border-radius: 4px; cursor: not-allowed; font-weight: bold;" value="Select a date..." disabled>
             </div>
         </div>
 
@@ -182,6 +174,19 @@ try {
       
     </section>
   </main>
+
+  <script>
+    function updateDay() {
+      const dateVal = document.getElementById('class_date').value;
+      if (dateVal) {
+        const dateObj = new Date(dateVal + 'T12:00:00'); 
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        document.getElementById('day_display').value = days[dateObj.getDay()];
+      } else {
+        document.getElementById('day_display').value = 'Select a date...';
+      }
+    }
+  </script>
 
 </body>
 </html>
