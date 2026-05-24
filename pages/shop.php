@@ -157,6 +157,80 @@ session_start();
           </div>
         </article>
 
+        <article class="product-card card">
+          <div class="product-card__image">
+            <span class="badge badge--danger product-badge">Hot</span>
+            <img src="../images/merch/ForgePumpTShirt.png" alt="Forge Performance Shorts" loading="lazy">
+          </div>
+          <div class="product-card__info">
+            <div>
+              <h3 class="product-title">Performance Shorts</h3>
+              <p class="text-muted" style="font-size: var(--text-sm);">Black / Lightweight</p>
+            </div>
+            <div class="product-card__footer">
+              <span class="product-price">30.00€</span>
+              <button type="button" class="btn btn--primary btn--sm add-to-cart-btn" data-id="4" data-name="Performance Shorts" data-price="30.00" aria-label="Add Performance Shorts to cart">
+                <i class="fas fa-shopping-cart"></i> Add
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="product-card card">
+          <div class="product-card__image">
+            <img src="../images/merch/ProShaker.png" alt="Lifting Straps" loading="lazy">
+          </div>
+          <div class="product-card__info">
+            <div>
+              <h3 class="product-title">Heavy Lifting Straps</h3>
+              <p class="text-muted" style="font-size: var(--text-sm);">Red & Black / Pair</p>
+            </div>
+            <div class="product-card__footer">
+              <span class="product-price">15.00€</span>
+              <button type="button" class="btn btn--primary btn--sm add-to-cart-btn" data-id="5" data-name="Heavy Lifting Straps" data-price="15.00" aria-label="Add Heavy Lifting Straps to cart">
+                <i class="fas fa-shopping-cart"></i> Add
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="product-card card">
+          <div class="product-card__image">
+            <img src="../images/merch/PremiumOversizedHoodie.png" alt="Women's Crop Top" loading="lazy">
+          </div>
+          <div class="product-card__info">
+            <div>
+              <h3 class="product-title">Forge Crop Top</h3>
+              <p class="text-muted" style="font-size: var(--text-sm);">White / Form-fitting</p>
+            </div>
+            <div class="product-card__footer">
+              <span class="product-price">22.50€</span>
+              <button type="button" class="btn btn--primary btn--sm add-to-cart-btn" data-id="6" data-name="Forge Crop Top" data-price="22.50" aria-label="Add Forge Crop Top to cart">
+                <i class="fas fa-shopping-cart"></i> Add
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="product-card card">
+          <div class="product-card__image">
+            <span class="badge badge--dark product-badge">Restocked</span>
+            <img src="../images/merch/ProShaker.png" alt="Metal Water Jug" loading="lazy">
+          </div>
+          <div class="product-card__info">
+            <div>
+              <h3 class="product-title">Metal Water Jug 2L</h3>
+              <p class="text-muted" style="font-size: var(--text-sm);">Matte Black / Insulated</p>
+            </div>
+            <div class="product-card__footer">
+              <span class="product-price">35.00€</span>
+              <button type="button" class="btn btn--primary btn--sm add-to-cart-btn" data-id="7" data-name="Metal Water Jug 2L" data-price="35.00" aria-label="Add Metal Water Jug to cart">
+                <i class="fas fa-shopping-cart"></i> Add
+              </button>
+            </div>
+          </div>
+        </article>
+
       </section>
     </div>
   </main>
