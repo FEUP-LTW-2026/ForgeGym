@@ -83,10 +83,6 @@ CREATE TABLE users (
     FOREIGN KEY (trainer_id) REFERENCES trainers(id)
 );
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 3aa7af8e3c33319eda6faf936056a42989417ff7
 -- Criar a tabela de Inscrições (Enrollments)
 DROP TABLE IF EXISTS enrollments;
 CREATE TABLE enrollments (

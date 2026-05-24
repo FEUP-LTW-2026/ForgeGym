@@ -1,4 +1,4 @@
-<?php
+pages/shop.php<?php
 session_start();
 ?>
 <!DOCTYPE html>
@@ -32,6 +32,11 @@ session_start();
           <li><a href="shop.php" class="nav__link">Shop</a></li>
         </ul>
         <div class="nav__actions">
+          <button id="cart-btn" class="nav__cart-btn" aria-label="Abrir carrinho">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cart-count" class="cart-badge">0</span>
+          </button>
+
           <?php if (isset($_SESSION['user_id'])): ?>
             <a href="profile.php" class="btn btn--ghost">Profile</a>
             <a href="logout.php" class="btn btn--primary">Log out</a>
