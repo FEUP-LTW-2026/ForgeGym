@@ -69,6 +69,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </a>
       <nav class="nav" id="main-nav" aria-label="Primary navigation" style="justify-content: flex-end;">
         <div class="nav__actions">
+          <a href="shop.php?open_cart=1" class="nav__cart-btn" aria-label="Ir para o carrinho">
+            <i class="fas fa-shopping-cart"></i>
+          </a>
           <a href="profile.php" class="btn btn--ghost">Profile</a>
           <a href="logout.php" class="btn btn--primary">Log out</a>
         </div>

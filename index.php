@@ -1,377 +1,386 @@
 <?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FORGE GYM — Forge Your Best Self</title>
-  <link rel="icon" type="image/png" href="images/logo32x32.png" />
-  <link rel="icon" type="image/png" href="images/logo16x16.png" />
-  <link rel="icon" type="image/png" href="images/logo-appletouch.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
-  <header class="header">
-    <div class="container header__inner">
-      <a href="index.php" class="logo" aria-label="FORGE GYM homepage">
-        <img src="images/logo.png" alt="FORGE GYM" class="logo__img" />
-        <span class="logo__text">FORGE GYM</span>
-      </a>
-      <input type="checkbox" id="nav-toggle" class="sr-only peer-nav" />
-      <label for="nav-toggle" class="nav__toggle" aria-label="Open navigation menu">
-        <span></span><span></span><span></span>
-      </label>
-      <nav class="nav" id="main-nav" aria-label="Primary navigation">
-        <ul class="nav__list">
-          <li><a href="pages/plan.php" class="nav__link">Classes</a></li>
-          <li><a href="pages/shop.php" class="nav__link">Shop</a></li>
-        </ul>
-        <div class="nav__actions">
-          <?php if (isset($_SESSION['user_id'])): ?>
-            <a href="pages/profile.php" class="btn btn--ghost">Profile</a>
-            <a href="pages/logout.php" class="btn btn--primary">Log out</a>
-          <?php else: ?>
-            <a href="pages/login.php" class="btn btn--ghost">Log in</a>
-            <a href="pages/register.php" class="btn btn--primary">Join now</a>
-          <?php endif; ?>
-        </div>
-      </nav>
-    </div>
-  </header>
 
-  <main>
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="hero__bg" aria-hidden="true"></div>
-
-      <div class="container hero__content">
-        <p class="eyebrow">No excuses, No shortcuts.</p>
-        <h1 class="hero__title" id="hero-title">
-          FORGE<br />
-          <span class="hero__title--outline">YOUR</span><br />
-          BEST SELF
-        </h1>
-        <p class="hero__sub">
-          Book classes, see our equipment, and train with coaches
-          who push you further than you thought possible.
-        </p>
-        <div class="hero__cta">
-          <a href="pages/register.html" class="btn btn--primary btn--lg">Start for free</a>
-          <a href="#classes"           class="btn btn--ghost   btn--lg">Explore classes</a>
-        </div>
-      </div>
-
-      <div class="stats" aria-label="Gym highlights">
-        <div class="container stats__inner">
-          <div class="stat">
-            <strong class="stat__number">40<span>+</span></strong>
-            <span class="stat__label">Weekly classes</span>
-          </div>
-          <div class="stat">
-            <strong class="stat__number">5</strong>
-            <span class="stat__label">Expert trainers</span>
-          </div>
-          <div class="stat">
-            <strong class="stat__number">98<span>%</span></strong>
-            <span class="stat__label">Member satisfaction</span>
-          </div>
-          <div class="stat">
-            <strong class="stat__number">50<span>+</span></strong>
-            <span class="stat__label">Equipment pieces</span>
-          </div>
-        </div>
-      </div>
-     </section>
-     <section class="section" id="equipment" aria-labelledby="equipment-title">
-      <div class="container">
-
-        <header class="section__header">
-          <h1 class="equipment__title">
-            GYM <span class="equipment__title--outline">FLOOR</span>
-          </h1>
-          <h2 class="section__title" id="equipment-title">Our Equipment</h2>
-          <p class="section__desc">
-            Everything you need to train the way you want —
-            cardio, strength, functional and more.
-          </p>
-        </header>
-
-        <ul class="equip-grid" aria-label="Equipment catalogue">
- 
-          <li class="equip-card" data-id="1">
-            <div class="equip-card__image">
-              <img src="images/equipment/treadMills.png" alt="Treadmills" loading="lazy" />
-            </div>
-            <div class="equip-card__info">
-              <h3 class="equip-card__name">Treadmills</h3>
-              <p class="equip-card__detail">
-                <span aria-hidden="true">📍</span> 12 units · Cardio zone
-              </p>
-            </div>
-          </li>
- 
-          <li class="equip-card" data-id="2">
-            <div class="equip-card__image">
-              <img src="images/equipment/stationaryBikes.png" alt="Stationary Bikes" loading="lazy" />
-            </div>
-            <div class="equip-card__info">
-              <h3 class="equip-card__name">Stationary Bikes</h3>
-              <p class="equip-card__detail">
-                <span aria-hidden="true">📍</span> 8 units · Cardio zone
-              </p>
-            </div>
-          </li>
-
-          <li class="equip-card" data-id="3">
-            <div class="equip-card__image">
-              <img src="images/equipment/legPress.png" alt="Leg Press" loading="lazy" />
-            </div>
-            <div class="equip-card__info">
-              <h3 class="equip-card__name">Leg Press</h3>
-              <p class="equip-card__detail">
-                <span aria-hidden="true">📍</span> 2 units · Strength zone
-              </p>
-            </div>
-          </li>
-
-          <li class="equip-card" data-id="4">
-            <div class="equip-card__image">
-              <img src="images/equipment/chestPress.png" alt="Chest Press" loading="lazy" />
-            </div>
-            <div class="equip-card__info">
-              <h3 class="equip-card__name">Chest Press</h3>
-              <p class="equip-card__detail">
-                <span aria-hidden="true">📍</span> 4 units · Strength zone
-              </p>
-            </div>
-          </li>
-
-          <li class="equip-card" data-id="5">
-            <div class="equip-card__image">
-              <img src="images/equipment/weightBench.png" alt="Weight Bench" loading="lazy" />
-            </div>
-            <div class="equip-card__info">
-              <h3 class="equip-card__name">Weight Bench</h3>
-              <p class="equip-card__detail">
-                <span aria-hidden="true">📍</span> 10 units · Power zone
-              </p>
-            </div>
-          </li>
-
-          <li class="equip-card" data-id="6">
-            <div class="equip-card__image">
-              <img src="images/equipment/squatRack.png" alt="Squat Rack" loading="lazy" />
-            </div>
-            <div class="equip-card__info">
-              <h3 class="equip-card__name">Squat Rack</h3>
-              <p class="equip-card__detail">
-                <span aria-hidden="true">📍</span> 6 units · Power zone
-              </p>
-            </div>
-          </li>
-
-          <li class="equip-card" data-id="7">
-            <div class="equip-card__image">
-              <img src="images/equipment/cableMachine.png" alt="Cable Machine" loading="lazy" />
-            </div>
-            <div class="equip-card__info">
-              <h3 class="equip-card__name">Cable Machine</h3>
-              <p class="equip-card__detail">
-                <span aria-hidden="true">📍</span> 3 units · Power zone
-              </p>
-            </div>
-          </li>
-
-          <li class="equip-card" data-id="8">
-            <div class="equip-card__image">
-              <img src="images/equipment/latPulldown.png" alt="Lat Pulldown" loading="lazy" />
-            </div>
-            <div class="equip-card__info">
-              <h3 class="equip-card__name">Lat Pulldown</h3>
-              <p class="equip-card__detail">
-                <span aria-hidden="true">📍</span> 5 units · Strength zone
-              </p>
-            </div>
-          </li>
-
-        </ul>
- 
-      </div>
-    </section>
-
-    <section class="section" id="plans" aria-labelledby="plans-title">
-      <div class="container">
-
-        <header class="section__header">
-          <h2 class="equipment__title">
-            FLEXIBLE <span class="equipment__title--outline">PLANS</span>
-          </h2>
-          <p class="section__desc">
-            Choose the membership that fits your goals. No hidden fees, cancel anytime.
-          </p>
-        </header>
-
-        <div class="plans-grid">
-          
-          <div class="plan-card">
-            <div class="plan-card__name">BASIC OP</div>
-            <div class="plan-card__price">
-              <span class="price-decimals">30€</span>
-              <span class="price-period">/month</span>
-            </div>
-
-            <ul class="plan-features">
-              <li class="invisible-line" aria-hidden="true">fantasma</li>
-              
-              <li>Gym floor & cardio zone</li>
-              <li>Locker room access</li>
-              <li>Off-peak hours only</li>
-              
-              <li class="invisible-line" aria-hidden="true">fantasma</li>
-            </ul>
-
-            <a href="pages/register.html" class="btn btn--primary">Join Now</a>
-          </div>
-
-          <div class="plan-card plan-card--highlight">
-            <div class="plan-card__badge">Recommended Choice</div>
-            <div class="plan-card__name">CLASSIC</div>
-            <div class="plan-card__price">
-              <span class="price-decimals">45€</span>
-              <span class="price-period">/month</span>
-            </div>
-
-            <ul class="plan-features">
-              <li>24/7 Gym access</li>
-              <li>All gym floor zones</li>
-              <li>Unlimited group classes</li>
-              <li>Locker room access</li>
-            </ul>
-
-            <a href="pages/register.html" class="btn btn--white">Join Now</a>
-          </div>
-
-          <div class="plan-card">
-            <div class="plan-card__name">PREMIUM</div>
-            <div class="plan-card__price">
-              <span class="price-decimals">60€</span>
-              <span class="price-period">/month</span>
-            </div>
-
-            <ul class="plan-features">
-              <li>24/7 Gym access</li>
-              <li>Unlimited group classes</li>
-              <li>1 PT Session / month</li>
-              <li>Free towel & water service</li>
-              <li>Bring a friend (Weekends)</li>
-            </ul>
-
-            <a href="pages/register.html" class="btn btn--primary">Join Now</a>
-          </div>
-
-        </div>
-
-      </div>
-    </section>
-
-    <section class="section" id="reviews" aria-labelledby="reviews-title">
-      <div class="container">
-
-        <header class="section__header">
-          <h2 class="equipment__title">
-            MEMBER <span class="equipment__title--outline">REVIEWS</span>
-          </h2>
-          <p class="section__desc">
-            Don't just take our word for it. Hear what our community has to say about their journey.
-          </p>
-        </header>
-
-        <div class="reviews-grid">
-          
-          <div class="review-card">
-            <div class="review-card__avatar">
-              <img src="images/profiles/profile1.png" alt="João Silva" loading="lazy" />
-            </div>
-            
-            <div class="review-card__stars" aria-label="5 out of 5 stars">
-              ★★★★★
-            </div>
-            <blockquote class="review-card__quote">
-              "The best gym I've ever joined. The trainers actually care about your progress and the equipment is top-notch. The Classic plan is totally worth it!"
-            </blockquote>
-            <div class="review-card__author">
-              <strong>João Silva</strong>
-              <span>Member for 2 years</span>
-            </div>
-          </div>
-
-          <div class="review-card">
-            <div class="review-card__avatar">
-              <img src="images/profiles/profile2.png" alt="Maria Santos" loading="lazy" />
-            </div>
-            
-            <div class="review-card__stars" aria-label="5 out of 5 stars">
-              ★★★★★
-            </div>
-            <blockquote class="review-card__quote">
-              "Love the atmosphere! No egos, just people putting in the work. The classes are brutal but exactly what I needed to break my plateau."
-            </blockquote>
-            <div class="review-card__author">
-              <strong>Maria Santos</strong>
-              <span>Classic Plan</span>
-            </div>
-          </div>
-
-          <div class="review-card">
-            <div class="review-card__avatar">
-              <img src="images/profiles/profile3.png" alt="Tiago Costa" loading="lazy" />
-            </div>
-            
-            <div class="review-card__stars" aria-label="4 out of 5 stars">
-              ★★★★☆
-            </div>
-            <blockquote class="review-card__quote">
-              "Great facilities and the staff is super helpful. It gets a bit busy on Monday evenings, but there's enough equipment for everyone."
-            </blockquote>
-            <div class="review-card__author">
-              <strong>Tiago Costa</strong>
-              <span>Premium Plan</span>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </section>
-
-  </main>
-  <footer class="footer">
-    <div class="container footer__inner">
-      
-      <a href="index.php" class="logo footer__logo" aria-label="FORGE GYM homepage">
-        <img src="images/logo.png" alt="FORGE GYM" class="logo__img" />
-      </a>
-
-      <ul class="footer__nav">
-        <li><a href="#">Home</a></li>
-        <li><a href="#equipment">Equipment</a></li>
-        <li><a href="#plans">Plans</a></li>
-        <li><a href="#reviews">Reviews</a></li>
-      </ul>
-
-      <p class="footer__address">
-        Rua Dr. Roberto Frias, 4200-465 Porto &nbsp;|&nbsp; info@forgegym.pt
-      </p>
-
-    </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FORGE GYM</title>
+    <link rel="icon" type="image/png" href="images/logo32x32.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <div class="footer__bottom">
-      <p>&copy; 2026 FORGE GYM. All rights reserved.</p>
-    </div>
-  </footer>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="container header__inner">
+        <a href="index.php" class="logo" aria-label="FORGE GYM homepage">
+          <img src="images/logo.png" alt="FORGE GYM" class="logo__img" />
+          <span class="logo__text">FORGE GYM</span>
+        </a>
+        <input type="checkbox" id="nav-toggle" class="sr-only peer-nav" />
+        <label for="nav-toggle" class="nav__toggle" aria-label="Open navigation menu">
+          <span></span><span></span><span></span>
+        </label>
+        <nav class="nav" id="main-nav" aria-label="Primary navigation">
+          <ul class="nav__list">
+            <li><a href="pages/plan.php" class="nav__link">Classes</a></li>
+            <li><a href="pages/shop.php" class="nav__link">Shop</a></li>
+          </ul>
+          <div class="nav__actions">
+            <a href="pages/shop.php?open_cart=1" class="nav__cart-btn" aria-label="Ir para o carrinho">
+              <i class="fas fa-shopping-cart"></i>
+            </a>
+            <?php if (isset($_SESSION['user_id'])): ?>
+              <a href="pages/profile.php" class="btn btn--ghost">Profile</a>
+              <a href="pages/logout.php" class="btn btn--primary">Log out</a>
+            <?php else: ?>
+              <a href="pages/login.php" class="btn btn--ghost">Log in</a>
+              <a href="pages/register.php" class="btn btn--primary">Join now</a>
+            <?php endif; ?>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero__bg" aria-hidden="true"></div>
+
+        <div class="container hero__content">
+          <p class="eyebrow">No excuses, No shortcuts.</p>
+          <h1 class="hero__title" id="hero-title">
+            FORGE<br />
+            <span class="hero__title--outline">YOUR</span><br />
+            BEST SELF
+          </h1>
+          <p class="hero__sub">
+            Book classes, see our equipment, and train with coaches
+            who push you further than you thought possible.
+          </p>
+          <div class="hero__cta">
+            <a href="pages/register.html" class="btn btn--primary btn--lg">Start for free</a>
+            <a href="#classes"           class="btn btn--ghost   btn--lg">Explore classes</a>
+          </div>
+        </div>
+
+        <div class="stats" aria-label="Gym highlights">
+          <div class="container stats__inner">
+            <div class="stat">
+              <strong class="stat__number">40<span>+</span></strong>
+              <span class="stat__label">Weekly classes</span>
+            </div>
+            <div class="stat">
+              <strong class="stat__number">5</strong>
+              <span class="stat__label">Expert trainers</span>
+            </div>
+            <div class="stat">
+              <strong class="stat__number">98<span>%</span></strong>
+              <span class="stat__label">Member satisfaction</span>
+            </div>
+            <div class="stat">
+              <strong class="stat__number">50<span>+</span></strong>
+              <span class="stat__label">Equipment pieces</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="equipment" aria-labelledby="equipment-title">
+        <div class="container">
+
+          <header class="section__header">
+            <h1 class="equipment__title">
+              GYM <span class="equipment__title--outline">FLOOR</span>
+            </h1>
+            <h2 class="section__title" id="equipment-title">Our Equipment</h2>
+            <p class="section__desc">
+              Everything you need to train the way you want —
+              cardio, strength, functional and more.
+            </p>
+          </header>
+
+          <ul class="equip-grid" aria-label="Equipment catalogue">
   
-  <script src="json/equipment-status.js"></script>
-</body>
+            <li class="equip-card" data-id="1">
+              <div class="equip-card__image">
+                <img src="images/equipment/treadMills.png" alt="Treadmills" loading="lazy" />
+              </div>
+              <div class="equip-card__info">
+                <h3 class="equip-card__name">Treadmills</h3>
+                <p class="equip-card__detail">
+                  <span aria-hidden="true">📍</span> 12 units · Cardio zone
+                </p>
+              </div>
+            </li>
+  
+            <li class="equip-card" data-id="2">
+              <div class="equip-card__image">
+                <img src="images/equipment/stationaryBikes.png" alt="Stationary Bikes" loading="lazy" />
+              </div>
+              <div class="equip-card__info">
+                <h3 class="equip-card__name">Stationary Bikes</h3>
+                <p class="equip-card__detail">
+                  <span aria-hidden="true">📍</span> 8 units · Cardio zone
+                </p>
+              </div>
+            </li>
+
+            <li class="equip-card" data-id="3">
+              <div class="equip-card__image">
+                <img src="images/equipment/legPress.png" alt="Leg Press" loading="lazy" />
+              </div>
+              <div class="equip-card__info">
+                <h3 class="equip-card__name">Leg Press</h3>
+                <p class="equip-card__detail">
+                  <span aria-hidden="true">📍</span> 2 units · Strength zone
+                </p>
+              </div>
+            </li>
+
+            <li class="equip-card" data-id="4">
+              <div class="equip-card__image">
+                <img src="images/equipment/chestPress.png" alt="Chest Press" loading="lazy" />
+              </div>
+              <div class="equip-card__info">
+                <h3 class="equip-card__name">Chest Press</h3>
+                <p class="equip-card__detail">
+                  <span aria-hidden="true">📍</span> 4 units · Strength zone
+                </p>
+              </div>
+            </li>
+
+            <li class="equip-card" data-id="5">
+              <div class="equip-card__image">
+                <img src="images/equipment/weightBench.png" alt="Weight Bench" loading="lazy" />
+              </div>
+              <div class="equip-card__info">
+                <h3 class="equip-card__name">Weight Bench</h3>
+                <p class="equip-card__detail">
+                  <span aria-hidden="true">📍</span> 10 units · Power zone
+                </p>
+              </div>
+            </li>
+
+            <li class="equip-card" data-id="6">
+              <div class="equip-card__image">
+                <img src="images/equipment/squatRack.png" alt="Squat Rack" loading="lazy" />
+              </div>
+              <div class="equip-card__info">
+                <h3 class="equip-card__name">Squat Rack</h3>
+                <p class="equip-card__detail">
+                  <span aria-hidden="true">📍</span> 6 units · Power zone
+                </p>
+              </div>
+            </li>
+
+            <li class="equip-card" data-id="7">
+              <div class="equip-card__image">
+                <img src="images/equipment/cableMachine.png" alt="Cable Machine" loading="lazy" />
+              </div>
+              <div class="equip-card__info">
+                <h3 class="equip-card__name">Cable Machine</h3>
+                <p class="equip-card__detail">
+                  <span aria-hidden="true">📍</span> 3 units · Power zone
+                </p>
+              </div>
+            </li>
+
+            <li class="equip-card" data-id="8">
+              <div class="equip-card__image">
+                <img src="images/equipment/latPulldown.png" alt="Lat Pulldown" loading="lazy" />
+              </div>
+              <div class="equip-card__info">
+                <h3 class="equip-card__name">Lat Pulldown</h3>
+                <p class="equip-card__detail">
+                  <span aria-hidden="true">📍</span> 5 units · Strength zone
+                </p>
+              </div>
+            </li>
+
+          </ul>
+  
+        </div>
+      </section>
+
+      <section class="section" id="plans" aria-labelledby="plans-title">
+        <div class="container">
+
+          <header class="section__header">
+            <h2 class="equipment__title">
+              FLEXIBLE <span class="equipment__title--outline">PLANS</span>
+            </h2>
+            <p class="section__desc">
+              Choose the membership that fits your goals. No hidden fees, cancel anytime.
+            </p>
+          </header>
+
+          <div class="plans-grid">
+            
+            <div class="plan-card">
+              <div class="plan-card__name">BASIC OP</div>
+              <div class="plan-card__price">
+                <span class="price-decimals">30€</span>
+                <span class="price-period">/month</span>
+              </div>
+
+              <ul class="plan-features">
+                <li class="invisible-line" aria-hidden="true">fantasma</li>
+                
+                <li>Gym floor & cardio zone</li>
+                <li>Locker room access</li>
+                <li>Off-peak hours only</li>
+                
+                <li class="invisible-line" aria-hidden="true">fantasma</li>
+              </ul>
+
+              <a href="pages/register.html" class="btn btn--primary">Join Now</a>
+            </div>
+
+            <div class="plan-card plan-card--highlight">
+              <div class="plan-card__badge">Recommended Choice</div>
+              <div class="plan-card__name">CLASSIC</div>
+              <div class="plan-card__price">
+                <span class="price-decimals">45€</span>
+                <span class="price-period">/month</span>
+              </div>
+
+              <ul class="plan-features">
+                <li>24/7 Gym access</li>
+                <li>All gym floor zones</li>
+                <li>Unlimited group classes</li>
+                <li>Locker room access</li>
+              </ul>
+
+              <a href="pages/register.html" class="btn btn--white">Join Now</a>
+            </div>
+
+            <div class="plan-card">
+              <div class="plan-card__name">PREMIUM</div>
+              <div class="plan-card__price">
+                <span class="price-decimals">60€</span>
+                <span class="price-period">/month</span>
+              </div>
+
+              <ul class="plan-features">
+                <li>24/7 Gym access</li>
+                <li>Unlimited group classes</li>
+                <li>1 PT Session / month</li>
+                <li>Free towel & water service</li>
+                <li>Bring a friend (Weekends)</li>
+              </ul>
+
+              <a href="pages/register.html" class="btn btn--primary">Join Now</a>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <section class="section" id="reviews" aria-labelledby="reviews-title">
+        <div class="container">
+
+          <header class="section__header">
+            <h2 class="equipment__title">
+              MEMBER <span class="equipment__title--outline">REVIEWS</span>
+            </h2>
+            <p class="section__desc">
+              Don't just take our word for it. Hear what our community has to say about their journey.
+            </p>
+          </header>
+
+          <div class="reviews-grid">
+            
+            <div class="review-card">
+              <div class="review-card__avatar">
+                <img src="images/profiles/profile1.png" alt="João Silva" loading="lazy" />
+              </div>
+              
+              <div class="review-card__stars" aria-label="5 out of 5 stars">
+                ★★★★★
+              </div>
+              <blockquote class="review-card__quote">
+                "The best gym I've ever joined. The trainers actually care about your progress and the equipment is top-notch. The Classic plan is totally worth it!"
+              </blockquote>
+              <div class="review-card__author">
+                <strong>João Silva</strong>
+                <span>Member for 2 years</span>
+              </div>
+            </div>
+
+            <div class="review-card">
+              <div class="review-card__avatar">
+                <img src="images/profiles/profile2.png" alt="Maria Santos" loading="lazy" />
+              </div>
+              
+              <div class="review-card__stars" aria-label="5 out of 5 stars">
+                ★★★★★
+              </div>
+              <blockquote class="review-card__quote">
+                "Love the atmosphere! No egos, just people putting in the work. The classes are brutal but exactly what I needed to break my plateau."
+              </blockquote>
+              <div class="review-card__author">
+                <strong>Maria Santos</strong>
+                <span>Classic Plan</span>
+              </div>
+            </div>
+
+            <div class="review-card">
+              <div class="review-card__avatar">
+                <img src="images/profiles/profile3.png" alt="Tiago Costa" loading="lazy" />
+              </div>
+              
+              <div class="review-card__stars" aria-label="4 out of 5 stars">
+                ★★★★☆
+              </div>
+              <blockquote class="review-card__quote">
+                "Great facilities and the staff is super helpful. It gets a bit busy on Monday evenings, but there's enough equipment for everyone."
+              </blockquote>
+              <div class="review-card__author">
+                <strong>Tiago Costa</strong>
+                <span>Premium Plan</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+    <footer class="footer">
+      <div class="container footer__inner">
+        
+        <a href="index.php" class="logo footer__logo" aria-label="FORGE GYM homepage">
+          <img src="images/logo.png" alt="FORGE GYM" class="logo__img" />
+        </a>
+
+        <ul class="footer__nav">
+          <li><a href="#">Home</a></li>
+          <li><a href="#equipment">Equipment</a></li>
+          <li><a href="#plans">Plans</a></li>
+          <li><a href="#reviews">Reviews</a></li>
+        </ul>
+
+        <p class="footer__address">
+          Rua Dr. Roberto Frias, 4200-465 Porto &nbsp;|&nbsp; info@forgegym.pt
+        </p>
+
+      </div>
+      
+      <div class="footer__bottom">
+        <p>&copy; 2026 FORGE GYM. All rights reserved.</p>
+      </div>
+    </footer>
+    
+    <script src="json/equipment-status.js"></script>
+  </body>
+  
 </html>

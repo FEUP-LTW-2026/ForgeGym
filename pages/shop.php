@@ -180,10 +180,9 @@ session_start();
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Estado da aplicação (Carrinho em memória)
-      let cart = [];
+      // 1. CARREGAR ITENS DA MEMÓRIA DO NAVEGADOR (para não perder os itens ao sair da página)
+      let cart = JSON.parse(localStorage.getItem('meu_carrinho')) || [];
 
-      // Elementos do DOM
       const cartBtn = document.getElementById('cart-btn');
       const closeCartBtn = document.getElementById('close-cart');
       const cartSidebar = document.getElementById('cart-sidebar');
@@ -194,6 +193,11 @@ session_start();
       const clearCartBtn = document.getElementById('clear-cart-btn');
       const checkoutBtn = document.getElementById('checkout-btn');
       const addButtons = document.querySelectorAll('.add-to-cart-btn');
+
+      // Função para guardar o carrinho na memória
+      const saveCart = () => {
+        localStorage.setItem('meu_carrinho', JSON.stringify(cart));
+      };
 
       // 1. Abrir e Fechar Menu Lateral
       const toggleCart = () => {
@@ -213,6 +217,7 @@ session_start();
           cartItemsContainer.innerHTML = '<p class="cart-empty-msg text-muted">Your cart is empty.</p>';
           cartCountEl.textContent = '0';
           cartTotalPriceEl.textContent = '0.00€';
+          saveCart(); // Guarda vazio
           return;
         }
 
@@ -244,6 +249,7 @@ session_start();
 
         cartCountEl.textContent = totalItems;
         cartTotalPriceEl.textContent = totalPrice.toFixed(2) + '€';
+        saveCart(); // Guarda as alterações
       };
 
       // 3. Adicionar item ao Carrinho
@@ -320,6 +326,17 @@ session_start();
         }
         alert('Proceeding to checkout! Integration coming soon.');
       });
+
+      // 7. VERIFICAR SE VEIO DE OUTRA PÁGINA PARA ABRIR O CARRINHO
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('open_cart') === '1') {
+        toggleCart(); // Abre o carrinho
+        // Limpa a URL para ficar bonita (tira o ?open_cart=1)
+        window.history.replaceState({}, document.title, "shop.php");
+      }
+
+      // Renderizar o carrinho assim que a página carrega
+      renderCart();
     });
   </script>
 </body>
