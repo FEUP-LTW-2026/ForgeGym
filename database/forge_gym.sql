@@ -79,6 +79,7 @@ CREATE TABLE users (
     password TEXT NOT NULL, 
     profile_photo TEXT DEFAULT 'images/profiles/default.png',
     role TEXT DEFAULT 'user', -- Pode ser 'admin', 'trainer', ou 'user'
+    plan TEXT DEFAULT 'none', -- O plano de treino do utilizador (ex: Basic, Premium, none)
     trainer_id INTEGER DEFAULT NULL, -- Se for um 'trainer', guarda o ID correspondente da tabela trainers
     FOREIGN KEY (trainer_id) REFERENCES trainers(id)
 );

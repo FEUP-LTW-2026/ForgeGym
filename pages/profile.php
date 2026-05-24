@@ -234,7 +234,8 @@ foreach ($enrolledClasses as $class) {
         <h1 class="page-title">YOUR <span class="page-title--outline">PROFILE</span></h1>
       </header>
 
-      <div class="profile-grid">
+<div class="profile-grid">
+        
         <aside class="profile-sidebar">
           <section class="profile-card">
             <div class="profile-avatar-wrapper">
@@ -246,11 +247,37 @@ foreach ($enrolledClasses as $class) {
 
           <section class="qr-card">
             <h3 class="qr-card__title">Gym Access</h3>
-            <p class="qr-card__desc">Scan this code at the entrance to enter the forge.</p>
-            <div class="qr-code-wrapper">
-              <img src="../images/profiles/qrtherock.png" alt="Access QR Code" class="qr-img">
-            </div>
-            <p class="qr-card__id">ID: FORGE-<?php echo str_pad($user['id'], 4, '0', STR_PAD_LEFT); ?>-2026</p>
+            
+            <?php
+            $user_role = $user['role'] ?? 'user';
+            $user_plan = $user['plan'] ?? 'none';
+            
+            // Critério para validar se tem acesso livre ao QR Code
+            $has_active_plan = ($user_role === 'admin' || $user_role === 'trainer' || (!empty($user_plan) && $user_plan !== 'none'));
+            
+            if ($has_active_plan): 
+            ?>
+              <p class="qr-card__desc">Scan this code at the entrance to enter the forge.</p>
+              <div class="qr-code-wrapper">
+                <img src="../images/profiles/qrtherock.png" alt="Access QR Code" class="qr-img">
+              </div>
+              <p class="qr-card__id">ID: FORGE-<?php echo str_pad($user['id'], 4, '0', STR_PAD_LEFT); ?>-2026</p>
+
+            <?php else: ?>
+              <div style="position: relative; overflow: hidden; border-radius: var(--radius-md); background: rgba(0,0,0,0.2); margin: var(--sp-3) 0;">
+                
+                <div class="qr-code-wrapper" style="filter: blur(6px); opacity: 0.12; pointer-events: none; margin: 0; padding: var(--sp-4);">
+                  <img src="../images/profiles/qrtherock.png" alt="Access QR Code" class="qr-img" style="display: block; margin: 0 auto; max-width: 150px;">
+                </div>
+                
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: var(--sp-4); background: rgba(20, 20, 20, 0.75); backdrop-filter: blur(2px); text-align: center;">
+                  <h4 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--color-accent); text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px;">No Active Plan</h4>
+                  <p style="font-size: 0.85rem; color: #cccccc; margin-bottom: 12px; max-width: 180px; line-height: 1.3;">Membership required to unlock access</p>
+                  <a href="../index.php#plans" class="btn btn--primary btn--sm" style="padding: 6px 16px; font-size: 0.8rem; text-transform: uppercase; font-weight: 600; width: auto;">Join Now</a>
+                </div>
+                
+              </div>
+            <?php endif; ?>
           </section>
         </aside>
 
