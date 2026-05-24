@@ -22,7 +22,7 @@
 **Admins:**
 - [X] Manage members and trainers (create, update, and deactivate accounts).
 - [X] Manage the class catalog (create, edit, and remove classes) and assign trainers to them.
-- [ ] Manage equipment in the main training area (add, update availability status, and remove items).
+- [X] Manage equipment in the main training area (add, update availability status, and remove items).
 - [X] Elevate a user to admin status.
 - [X] Oversee and ensure the smooth operation of the entire sys2tem.
 
