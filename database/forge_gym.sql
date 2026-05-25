@@ -1,4 +1,5 @@
--- Tabela principal de equipamentos
+DROP TABLE IF EXISTS equipment;
+
 CREATE TABLE IF NOT EXISTS equipment (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     name        TEXT    NOT NULL,
@@ -10,15 +11,15 @@ CREATE TABLE IF NOT EXISTS equipment (
     CHECK (in_use <= total_units)
 );
 
-INSERT INTO equipment (name, zone, total_units, in_use, image_path) VALUES
-    ('Treadmills',       'Cardio zone',   12, 4, 'images/equipment/treadMills.png'),
-    ('Stationary Bikes', 'Cardio zone',    8, 3, 'images/equipment/stationaryBikes.png'),
-    ('Leg Press',        'Strength zone',  2, 1, 'images/equipment/legPress.png'),
-    ('Chest Press',      'Strength zone',  4, 2, 'images/equipment/chestPress.png'),
-    ('Weight Bench',     'Power zone',    10, 6, 'images/equipment/weightBench.png'),
-    ('Squat Rack',       'Power zone',     6, 4, 'images/equipment/squatRack.png'),
-    ('Cable Machine',    'Power zone',     3, 1, 'images/equipment/cableMachine.png'),
-    ('Lat Pulldown',     'Strength zone',  5, 2, 'images/equipment/latPulldown.png');
+INSERT INTO equipment (id, name, zone, total_units, in_use, image_path) VALUES
+    (1, 'Treadmills',       'Cardio zone',   12, 4, 'images/equipment/treadMills.png'),
+    (2, 'Stationary Bikes', 'Cardio zone',    8, 3, 'images/equipment/stationaryBikes.png'),
+    (3, 'Leg Press',        'Strength zone',  2, 1, 'images/equipment/legPress.png'),
+    (4, 'Chest Press',      'Strength zone',  4, 2, 'images/equipment/chestPress.png'),
+    (5, 'Weight Bench',     'Power zone',    10, 6, 'images/equipment/weightBench.png'),
+    (6, 'Squat Rack',       'Power zone',     6, 4, 'images/equipment/squatRack.png'),
+    (7, 'Cable Machine',    'Power zone',     3, 1, 'images/equipment/cableMachine.png'),
+    (8, 'Lat Pulldown',     'Strength zone',  5, 2, 'images/equipment/latPulldown.png');
 
 -- 1. Apagar as tabelas antigas se existirem
 DROP TABLE IF EXISTS classes;
