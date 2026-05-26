@@ -107,103 +107,34 @@
           </header>
 
           <ul class="equip-grid" aria-label="Equipment catalogue">
-  
-            <li class="equip-card" data-id="1">
+            <?php
+            // Ligar à base de dados para ir buscar os equipamentos dinamicamente
+            try {
+                $pdo = new PDO('sqlite:' . __DIR__ . '/database/forge_gym.db');
+                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                
+                // Vai buscar todos os equipamentos ordenados pela zona e depois pelo nome
+                $stmt = $pdo->query("SELECT * FROM equipment ORDER BY zone, name");
+                
+                while ($equip = $stmt->fetch(PDO::FETCH_ASSOC)):
+            ?>
+            <li class="equip-card" data-id="<?php echo $equip['id']; ?>">
               <div class="equip-card__image">
-                <img src="images/equipment/treadMills.png" alt="Treadmills" loading="lazy" />
+                <img src="<?php echo htmlspecialchars($equip['image_path']); ?>" alt="<?php echo htmlspecialchars($equip['name']); ?>" loading="lazy" />
               </div>
               <div class="equip-card__info">
-                <h3 class="equip-card__name">Treadmills</h3>
+                <h3 class="equip-card__name"><?php echo htmlspecialchars($equip['name']); ?></h3>
                 <p class="equip-card__detail">
-                  <span aria-hidden="true">📍</span> 12 units · Cardio zone
+                  <span aria-hidden="true">📍</span> <?php echo $equip['total_units']; ?> units · <?php echo htmlspecialchars($equip['zone']); ?>
                 </p>
               </div>
             </li>
-  
-            <li class="equip-card" data-id="2">
-              <div class="equip-card__image">
-                <img src="images/equipment/stationaryBikes.png" alt="Stationary Bikes" loading="lazy" />
-              </div>
-              <div class="equip-card__info">
-                <h3 class="equip-card__name">Stationary Bikes</h3>
-                <p class="equip-card__detail">
-                  <span aria-hidden="true">📍</span> 8 units · Cardio zone
-                </p>
-              </div>
-            </li>
-
-            <li class="equip-card" data-id="3">
-              <div class="equip-card__image">
-                <img src="images/equipment/legPress.png" alt="Leg Press" loading="lazy" />
-              </div>
-              <div class="equip-card__info">
-                <h3 class="equip-card__name">Leg Press</h3>
-                <p class="equip-card__detail">
-                  <span aria-hidden="true">📍</span> 2 units · Strength zone
-                </p>
-              </div>
-            </li>
-
-            <li class="equip-card" data-id="4">
-              <div class="equip-card__image">
-                <img src="images/equipment/chestPress.png" alt="Chest Press" loading="lazy" />
-              </div>
-              <div class="equip-card__info">
-                <h3 class="equip-card__name">Chest Press</h3>
-                <p class="equip-card__detail">
-                  <span aria-hidden="true">📍</span> 4 units · Strength zone
-                </p>
-              </div>
-            </li>
-
-            <li class="equip-card" data-id="5">
-              <div class="equip-card__image">
-                <img src="images/equipment/weightBench.png" alt="Weight Bench" loading="lazy" />
-              </div>
-              <div class="equip-card__info">
-                <h3 class="equip-card__name">Weight Bench</h3>
-                <p class="equip-card__detail">
-                  <span aria-hidden="true">📍</span> 10 units · Power zone
-                </p>
-              </div>
-            </li>
-
-            <li class="equip-card" data-id="6">
-              <div class="equip-card__image">
-                <img src="images/equipment/squatRack.png" alt="Squat Rack" loading="lazy" />
-              </div>
-              <div class="equip-card__info">
-                <h3 class="equip-card__name">Squat Rack</h3>
-                <p class="equip-card__detail">
-                  <span aria-hidden="true">📍</span> 6 units · Power zone
-                </p>
-              </div>
-            </li>
-
-            <li class="equip-card" data-id="7">
-              <div class="equip-card__image">
-                <img src="images/equipment/cableMachine.png" alt="Cable Machine" loading="lazy" />
-              </div>
-              <div class="equip-card__info">
-                <h3 class="equip-card__name">Cable Machine</h3>
-                <p class="equip-card__detail">
-                  <span aria-hidden="true">📍</span> 3 units · Power zone
-                </p>
-              </div>
-            </li>
-
-            <li class="equip-card" data-id="8">
-              <div class="equip-card__image">
-                <img src="images/equipment/latPulldown.png" alt="Lat Pulldown" loading="lazy" />
-              </div>
-              <div class="equip-card__info">
-                <h3 class="equip-card__name">Lat Pulldown</h3>
-                <p class="equip-card__detail">
-                  <span aria-hidden="true">📍</span> 5 units · Strength zone
-                </p>
-              </div>
-            </li>
-
+            <?php 
+                endwhile;
+            } catch (PDOException $e) {
+                echo "<p style='color: white;'>Error loading equipment catalogue.</p>";
+            }
+            ?>
           </ul>
   
         </div>
