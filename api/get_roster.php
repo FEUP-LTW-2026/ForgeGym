@@ -10,7 +10,7 @@ try {
 
     // Query robusta para ir buscar os dados dos utilizadores
     $stmt = $pdo->prepare("
-        SELECT u.name, u.email, u.profile_photo 
+        SELECT e.id as enrollment_id, u.id as user_id, u.name, u.email, u.profile_photo 
         FROM users u 
         JOIN enrollments e ON u.id = e.user_id 
         WHERE e.class_id = ?

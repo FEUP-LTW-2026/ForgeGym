@@ -176,7 +176,15 @@ try {
                   
                   <?php if ($u['id'] !== $_SESSION['user_id']): ?>
                       <div style="display: flex; gap: 10px; justify-content: flex-end; align-items: center;">
-                          
+                          <?php if ($u['role'] !== 'admin'): ?>
+                              <a href="profile.php?edit_user_id=<?php echo $u['id']; ?>" class="btn btn--primary btn--sm" style="padding: 5px 12px; font-size: 0.8rem; background: transparent; border: 1px solid var(--color-gold); color: var(--color-gold);" title="Edit Profile">
+                                  <i class="fas fa-user-edit"></i>
+                              </a>
+                          <?php else: ?>
+                              <button type="button" class="btn btn--ghost btn--sm" disabled style="padding: 5px 12px; font-size: 0.8rem; opacity: 0.3; cursor: not-allowed;" title="Cannot edit another Admin">
+                                  <i class="fas fa-user-shield"></i>
+                              </button>
+                          <?php endif; ?>
                           <form action="admin_dashboard.php" method="POST" style="margin: 0; display: flex; gap: 8px; align-items: center;">
                               <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
                               

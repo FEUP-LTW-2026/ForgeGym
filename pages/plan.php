@@ -11,7 +11,20 @@ try {
     $pdo = new PDO('sqlite:' . DB_PATH);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    die("Database connection failed.");
+    die("Database connection failed: " . $e->getMessage());
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'remove_student') {
+    $enrollment_id = (int)$_POST['enrollment_id'];
+    try {
+        $stmt = $pdo->prepare("DELETE FROM enrollments WHERE id = ?");
+        $stmt->execute([$enrollment_id]);
+        
+        header("Location: plan.php"); 
+        exit;
+    } catch (PDOException $e) {
+        $error_msg = "Failed to remove member: " . $e->getMessage();
+    }
 }
 
 // Lógica de Filtros
@@ -475,20 +488,38 @@ function openRosterModal(classId) {
       if (!data || data.length === 0) {
         list.innerHTML = '<p style="text-align:center; color:#888; font-style:italic;">No members enrolled yet.</p>';
       } else {
-        list.innerHTML = data.map(u => `
-          <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; padding:10px; border-bottom:1px solid #333;">
-            <img src="${u.profile_photo ? '../' + u.profile_photo : '../images/profiles/profile1.png'}" 
-                 style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
-                 onerror="this.src='../images/profiles/profile1.png';">
-            <div><strong>${u.name}</strong><br><small style="color:var(--color-gold)">${u.email}</small></div>
+        list.innerHTML = data.map(u => {
+          const photo = u.avatar || u.profile_photo || 'images/profiles/profile1.png';
+          
+          return `
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; padding:10px; border-bottom:1px solid #333;">
+            
+            <div style="display:flex; align-items:center; gap:10px;">
+              <img src="../${photo}" 
+                   style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
+                   onerror="this.src='../images/profiles/profile1.png';">
+              <div>
+                <strong style="color: white;">${u.name}</strong><br>
+                <small style="color:var(--color-text-muted)">${u.email}</small>
+              </div>
+            </div>
+
+            <form action="plan.php" method="POST" style="margin:0;" onsubmit="return confirm('Remove ${u.name} from this class?');">
+              <input type="hidden" name="action" value="remove_student">
+              <input type="hidden" name="enrollment_id" value="${u.enrollment_id}">
+              <button type="submit" class="btn btn--sm" style="background: rgba(231, 76, 60, 0.1); border: 1px solid #e74c3c; color: #e74c3c; padding: 4px 8px; font-size: 0.8rem; cursor: pointer; border-radius: 4px;" title="Remove Member">
+                  <i class="fas fa-user-times"></i>
+              </button>
+            </form>
+
           </div>
-        `).join('');
+        `}).join('');
       }
     })
     .catch(err => {
       list.innerHTML = '<p style="text-align:center; color:red;">Error loading list.</p>';
     });
 }
-</script>     
+</script>   
 </body>
 </html>

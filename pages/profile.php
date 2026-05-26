@@ -15,11 +15,31 @@ try {
     die("Database connection failed.");
 }
 
-$user_id = $_SESSION['user_id'];
 $success_msg = '';
 $error_msg = '';
+$is_admin_editing = false;
+$user_id = $_SESSION['user_id']; 
 
-// 1. PRIMEIRO: Procurar os dados do utilizador para que fiquem disponíveis no POST
+if (isset($_GET['edit_user_id']) && isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+    $target_id = (int)$_GET['edit_user_id'];
+    
+    $stmtCheck = $pdo->prepare("SELECT role FROM users WHERE id = ?");
+    $stmtCheck->execute([$target_id]);
+    $target_role = $stmtCheck->fetchColumn();
+    
+    if ($target_role === 'admin' && $target_id !== $_SESSION['user_id']) {
+        die("<h3>Security Alert</h3><p>Administrators cannot modify other administrators' profiles.</p><a href='admin_dashboard.php'>Go back</a>");
+    }
+    
+    $user_id = $target_id;
+    $is_admin_editing = true;
+}
+
+if (isset($_POST['target_user_id']) && isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+    $user_id = (int)$_POST['target_user_id'];
+    $is_admin_editing = true;
+}
+
 $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -374,6 +394,13 @@ foreach ($enrolledClasses as $class) {
             <?php endif; ?>
 
             <form action="profile.php" method="POST" enctype="multipart/form-data" class="form">
+              <?php if ($is_admin_editing): ?>
+                  <input type="hidden" name="target_user_id" value="<?php echo $user_id; ?>">
+                  <div style="background: rgba(231, 76, 60, 0.15); border: 1px solid var(--color-accent); padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+                      <p style="color: var(--color-accent); margin: 0; font-weight: bold;"><i class="fas fa-exclamation-triangle"></i> ADMIN OVERRIDE MODE</p>
+                      <p style="font-size: 0.85rem; color: #fff; margin: 0;">You are editing <strong><?php echo htmlspecialchars($user['name']); ?>'s</strong> profile.</p>
+                  </div>
+              <?php endif; ?>
               <div class="profile-details-grid">
                 <div class="form-group">
                   <label class="form-label" for="name">Full Name</label>

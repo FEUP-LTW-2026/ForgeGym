@@ -56,6 +56,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $error_msg = "Please fill in all fields correctly.";
         }
     }
+
+    if ($_POST['action'] === 'remove_student') {
+        $enrollment_id = (int)$_POST['enrollment_id'];
+        try {
+            $stmt = $pdo->prepare("DELETE FROM enrollments WHERE id = ?");
+            $stmt->execute([$enrollment_id]);
+            $success_msg = "Member successfully removed from the class!";
+        } catch (PDOException $e) {
+            $error_msg = "Failed to remove member: " . $e->getMessage();
+        }
+    }
 }
 
 $stmt = $pdo->prepare("SELECT * FROM trainers WHERE id = ?");
@@ -211,7 +222,7 @@ $currentTime = date('H:i');
                     }
 
                     $stmtRoster = $pdo->prepare("
-                        SELECT u.name, u.username, u.email, u.profile_photo 
+                        SELECT e.id as enrollment_id, u.name, u.username, u.email, u.profile_photo 
                         FROM enrollments e
                         JOIN users u ON e.user_id = u.id
                         WHERE e.class_id = ?
@@ -263,7 +274,18 @@ $currentTime = date('H:i');
                                   <span style="font-size: 0.8rem; color: var(--color-text-muted); display: block;">@<?php echo htmlspecialchars($member['username']); ?></span>
                                 </div>
                               </div>
-                              <span style="font-size: 0.85rem; color: var(--color-text-muted);"><i class="far fa-envelope"></i> <?php echo htmlspecialchars($member['email']); ?></span>
+                              
+                              <div style="display: flex; align-items: center; gap: 15px;">
+                                <span style="font-size: 0.85rem; color: var(--color-text-muted);"><i class="far fa-envelope"></i> <?php echo htmlspecialchars($member['email']); ?></span>
+                                
+                                <form action="trainer_dashboard.php" method="POST" style="margin: 0;" onsubmit="return confirm('Are you sure you want to remove <?php echo htmlspecialchars($member['name']); ?> from this class?');">
+                                    <input type="hidden" name="action" value="remove_student">
+                                    <input type="hidden" name="enrollment_id" value="<?php echo $member['enrollment_id']; ?>">
+                                    <button type="submit" class="btn btn--sm" style="background: rgba(231, 76, 60, 0.1); border: 1px solid #e74c3c; color: #e74c3c; padding: 4px 8px; font-size: 0.8rem; cursor: pointer; border-radius: 4px;" title="Remove Member">
+                                        <i class="fas fa-user-times"></i>
+                                    </button>
+                                </form>
+                              </div>
                             </div>
                           <?php endforeach; ?>
                         </div>

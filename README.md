@@ -44,6 +44,6 @@ To see the rendered result properly via PHP, open your terminal in the root fold
 
 ## Credentials
 
-- the_cpo/therock
+- the_cpo/the_rock
 - gonçaloafonso/56789
 - mafalda_pt/ptmafalda
