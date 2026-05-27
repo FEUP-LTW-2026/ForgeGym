@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// 1. BARREIRA DE SEGURANÇA (RBAC)
 // Se não tiver login feito, ou se for apenas um 'user' normal, é expulso para o plan.php
 if (!isset($_SESSION['user_id']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'trainer')) {
     header("Location: plan.php");
