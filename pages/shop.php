@@ -252,9 +252,73 @@ session_start();
     </div>
   </footer>
 
+  <div id="checkout-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 10000; justify-content: center; align-items: center;">
+    <div class="card" style="width: 90%; max-width: 500px; padding: var(--sp-6); background: #1a1a1a; border-top: 4px solid var(--color-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-4);">
+        <h2 style="font-family: var(--font-display); color: white; margin: 0; letter-spacing: 1px;">SECURE CHECKOUT</h2>
+        <button type="button" id="close-checkout" style="background: none; border: none; color: var(--color-text-muted); font-size: 1.5rem; cursor: pointer;">&times;</button>
+      </div>
+      
+      <form id="checkout-form" style="display: flex; flex-direction: column; gap: var(--sp-3);">
+        
+        <div class="form-group">
+          <label for="ch-name" class="form-label">Full Name</label>
+          <input type="text" id="ch-name" class="form-control" required placeholder="e.g. John Doe">
+        </div>
+        
+        <div class="form-group">
+          <label for="ch-address" class="form-label">Shipping Address</label>
+          <input type="text" id="ch-address" class="form-control" required placeholder="e.g. Rua Dr. Roberto Frias, Porto">
+        </div>
+        
+        <h3 style="margin-top: var(--sp-2); color: var(--color-gold); font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;">Payment Details</h3>
+        
+        <div class="form-group">
+          <label for="ch-card" class="form-label">Card Number</label>
+          <input type="text" id="ch-card" class="form-control" required placeholder="0000 0000 0000 0000" pattern="\d{16}" title="Please enter a 16-digit card number" maxlength="16">
+        </div>
+        
+        <div style="display: flex; gap: var(--sp-3);">
+          <div class="form-group" style="flex: 1;">
+            <label for="ch-exp" class="form-label">Expiry Date</label>
+            <input type="text" id="ch-exp" class="form-control" required placeholder="MM/YY" maxlength="5">
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label for="ch-cvv" class="form-label">CVV / CVC</label>
+            <input type="password" id="ch-cvv" class="form-control" required placeholder="123" pattern="\d{3,4}" title="3 or 4 digit security code" maxlength="4">
+          </div>
+        </div>
+        
+        <button type="submit" class="btn btn--primary" style="margin-top: var(--sp-4); width: 100%; font-size: 1.1rem;">
+          <i class="fas fa-lock"></i> Pay <span id="checkout-modal-total"></span>
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+  <div id="success-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 10001; justify-content: center; align-items: center;">
+    <div class="card" style="width: 90%; max-width: 400px; padding: var(--sp-6); background: #1a1a1a; border-top: 4px solid #4caf50; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+      
+      <i class="fas fa-check-circle" style="font-size: 4rem; color: #4caf50; margin-bottom: var(--sp-4);"></i>
+      
+      <h2 style="font-family: var(--font-display); color: white; margin-bottom: var(--sp-2); letter-spacing: 1px;">PAYMENT SUCCESSFUL</h2>
+      
+      <p style="color: var(--color-text-muted); margin-bottom: var(--sp-6); line-height: 1.5;">
+        Thank you for representing the Forge! <br> Please check your email for the receipt and shipping updates.
+      </p>
+      
+      <button type="button" id="close-success-modal" class="btn btn--primary" style="width: 100%; background: #4caf50; border-color: #4caf50;">
+        Continue Shopping
+      </button>
+      
+    </div>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. CARREGAR ITENS DA MEMÓRIA DO NAVEGADOR (para não perder os itens ao sair da página)
+      // CARREGAR ITENS DA MEMÓRIA DO NAVEGADOR (para não perder os itens ao sair da página)
       let cart = JSON.parse(localStorage.getItem('meu_carrinho')) || [];
 
       const cartBtn = document.getElementById('cart-btn');
@@ -267,13 +331,19 @@ session_start();
       const clearCartBtn = document.getElementById('clear-cart-btn');
       const checkoutBtn = document.getElementById('checkout-btn');
       const addButtons = document.querySelectorAll('.add-to-cart-btn');
+      const checkoutModal = document.getElementById('checkout-modal');
+      const closeCheckoutBtn = document.getElementById('close-checkout');
+      const checkoutForm = document.getElementById('checkout-form');
+      const checkoutModalTotal = document.getElementById('checkout-modal-total');
+      const successModal = document.getElementById('success-modal');
+      const closeSuccessBtn = document.getElementById('close-success-modal');
 
       // Função para guardar o carrinho na memória
       const saveCart = () => {
         localStorage.setItem('meu_carrinho', JSON.stringify(cart));
       };
 
-      // 1. Abrir e Fechar Menu Lateral
+      // Abrir e Fechar Menu Lateral
       const toggleCart = () => {
         cartSidebar.classList.toggle('open');
         cartOverlay.classList.toggle('open');
@@ -283,7 +353,7 @@ session_start();
       closeCartBtn.addEventListener('click', toggleCart);
       cartOverlay.addEventListener('click', toggleCart);
 
-      // 2. Renderizar os itens do carrinho na Sidebar
+      // Renderizar os itens do carrinho na Sidebar
       const renderCart = () => {
         cartItemsContainer.innerHTML = '';
         
@@ -323,10 +393,10 @@ session_start();
 
         cartCountEl.textContent = totalItems;
         cartTotalPriceEl.textContent = totalPrice.toFixed(2) + '€';
-        saveCart(); // Guarda as alterações
+        saveCart(); 
       };
 
-      // 3. Adicionar item ao Carrinho
+      // Adicionar item ao Carrinho
       addButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.preventDefault();
@@ -361,7 +431,7 @@ session_start();
         });
       });
 
-      // 4. Detetar Cliques dentro do Carrinho (Mais, Menos e Eliminar)
+      // Detetar Cliques dentro do Carrinho (Mais, Menos e Eliminar)
       cartItemsContainer.addEventListener('click', (e) => {
         const target = e.target.closest('button');
         if (!target) return;
@@ -384,7 +454,7 @@ session_start();
         renderCart();
       });
 
-      // 5. Botão de Limpar Carrinho
+      // Botão de Limpar Carrinho
       clearCartBtn.addEventListener('click', () => {
         if (cart.length > 0) {
           cart = [];
@@ -392,19 +462,53 @@ session_start();
         }
       });
 
-      // 6. Botão de Checkout (Simulação)
+      // Botão de Checkout (Abrir o Menu)
       checkoutBtn.addEventListener('click', () => {
         if (cart.length === 0) {
           alert('Your cart is empty!');
           return;
         }
-        alert('Proceeding to checkout! Integration coming soon.');
+        
+        // Fecha o carrinho lateral para não ficar sobreposto
+        toggleCart();
+        
+        // Atualiza o valor total no botão de pagar
+        checkoutModalTotal.textContent = cartTotalPriceEl.textContent;
+        
+        // Abre o modal de checkout
+        checkoutModal.style.display = 'flex';
       });
 
-      // 7. VERIFICAR SE VEIO DE OUTRA PÁGINA PARA ABRIR O CARRINHO
+      // Fechar o menu no X
+      closeCheckoutBtn.addEventListener('click', () => {
+        checkoutModal.style.display = 'none';
+      });
+
+      // Submeter o formulário de pagamento
+      checkoutForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // Impede o recarregamento da página
+        
+        // Esconde o modal de checkout e limpa os dados preenchidos
+        checkoutModal.style.display = 'none';
+        checkoutForm.reset();
+        
+        // Limpa o carrinho
+        cart = [];
+        renderCart();
+        
+        // Mostra a nossa nova janela de sucesso bonitinha!
+        successModal.style.display = 'flex';
+      });
+
+      // Fechar o modal de sucesso quando clica no botão "Continue Shopping"
+      closeSuccessBtn.addEventListener('click', () => {
+        successModal.style.display = 'none';
+      });
+
+      // VERIFICAR SE VEIO DE OUTRA PÁGINA PARA ABRIR O CARRINHO
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('open_cart') === '1') {
-        toggleCart(); // Abre o carrinho
+        toggleCart(); 
         // Limpa a URL para ficar bonita (tira o ?open_cart=1)
         window.history.replaceState({}, document.title, "shop.php");
       }
@@ -412,6 +516,7 @@ session_start();
       // Renderizar o carrinho assim que a página carrega
       renderCart();
     });
+
   </script>
 </body>
 </html>

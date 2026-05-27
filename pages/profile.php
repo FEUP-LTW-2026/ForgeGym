@@ -272,30 +272,71 @@ foreach ($enrolledClasses as $class) {
             $user_role = $user['role'] ?? 'user';
             $user_plan = $user['plan'] ?? 'none';
             
-            // Critério para validar se tem acesso livre ao QR Code
-            $has_active_plan = ($user_role === 'admin' || $user_role === 'trainer' || (!empty($user_plan) && $user_plan !== 'none'));
+            // Se for admin ou trainer, o plano é automaticamente Premium
+            if ($user_role === 'admin' || $user_role === 'trainer') {
+                $user_plan = 'Premium';
+            }
+            
+            $has_active_plan = (!empty($user_plan) && $user_plan !== 'none');
             
             if ($has_active_plan): 
+                // ID único
+                $user_qr_data = "FORGE-" . str_pad($user['id'], 4, '0', STR_PAD_LEFT) . "-2026";
+                
+                $qr_color = "1a1a1a";
+                $qr_bg = "ffffff";
+                $wrapper_style = "";
+                $text_style = "color: white;";
+                $badge = "";
+
+                if ($user_plan === 'Basic') {
+                    $qr_bg = "e0e0e0"; // Prata/Cinza claro
+                    $wrapper_style = "border: 2px solid #888; box-shadow: 0 4px 10px rgba(255,255,255,0.05);";
+                    $text_style = "color: #b0b0b0;"; // Texto prateado
+                } 
+                elseif ($user_plan === 'Classic') {
+                    $qr_bg = "CBA052"; // Dourado normal
+                    $wrapper_style = "border: 3px solid var(--color-gold); box-shadow: 0 8px 25px rgba(203, 160, 82, 0.3);";
+                    $text_style = "color: var(--color-gold);"; // Texto dourado
+                } 
+                elseif ($user_plan === 'Premium') {
+                    $qr_bg = "CBA052";
+                    $wrapper_style = "border: 4px solid #fff; outline: 3px solid var(--color-gold); outline-offset: 4px; box-shadow: 0 0 35px rgba(203, 160, 82, 0.5); margin-bottom: 8px;";
+                    $text_style = "color: var(--color-gold); text-shadow: 0 0 15px rgba(203, 160, 82, 0.4); font-weight: 900;";
+                    $badge = "<div style='position:absolute; top:-18px; right:-18px; background:#1a1a1a; color:var(--color-gold); border:2px solid var(--color-gold); border-radius:50%; width:45px; height:45px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; z-index:2; box-shadow: 0 4px 10px rgba(0,0,0,0.5);'><i class='fas fa-crown'></i></div>";
+                }
+
+                // Geração do link com as cores escolhidas dinamicamente
+                $qr_code_url = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($user_qr_data) . "&color={$qr_color}&bgcolor={$qr_bg}&margin=10";
             ?>
               <p class="qr-card__desc">Scan this code at the entrance to enter the forge.</p>
-              <div class="qr-code-wrapper">
-                <img src="../images/profiles/qrtherock.png" alt="Access QR Code" class="qr-img">
+              
+              <div style="text-align: center; margin: 25px 0 30px 0;">
+                  <span style="font-size: 0.85rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-bottom: 5px;">Active Plan</span>
+                  <strong style="font-family: var(--font-display); font-size: 1.8rem; letter-spacing: 2px; text-transform: uppercase; <?php echo $text_style; ?>">
+                      <?php echo htmlspecialchars($user_plan); ?>
+                  </strong>
               </div>
-              <p class="qr-card__id">ID: FORGE-<?php echo str_pad($user['id'], 4, '0', STR_PAD_LEFT); ?>-2026</p>
+
+              <div style="display: flex; justify-content: center; position: relative; width: max-content; margin: 0 auto 30px auto;">
+                <?php echo $badge; ?>
+                <img src="<?php echo $qr_code_url; ?>" alt="Access QR Code" style="border-radius: 8px; max-width: 150px; <?php echo $wrapper_style; ?>">
+              </div>
+              
+              <p class="qr-card__id" style="text-align: center; font-family: monospace; letter-spacing: 1px; color: var(--color-text-muted);">
+                ID: <?php echo $user_qr_data; ?>
+              </p>
 
             <?php else: ?>
               <div style="position: relative; overflow: hidden; border-radius: var(--radius-md); background: rgba(0,0,0,0.2); margin: var(--sp-3) 0;">
-                
                 <div class="qr-code-wrapper" style="filter: blur(6px); opacity: 0.12; pointer-events: none; margin: 0; padding: var(--sp-4);">
                   <img src="../images/profiles/qrtherock.png" alt="Access QR Code" class="qr-img" style="display: block; margin: 0 auto; max-width: 150px;">
                 </div>
-                
                 <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: var(--sp-4); background: rgba(20, 20, 20, 0.75); backdrop-filter: blur(2px); text-align: center;">
                   <h4 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--color-accent); text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px;">No Active Plan</h4>
                   <p style="font-size: 0.85rem; color: #cccccc; margin-bottom: 12px; max-width: 180px; line-height: 1.3;">Membership required to unlock access</p>
                   <a href="../index.php#plans" class="btn btn--primary btn--sm" style="padding: 6px 16px; font-size: 0.8rem; text-transform: uppercase; font-weight: 600; width: auto;">Join Now</a>
                 </div>
-                
               </div>
             <?php endif; ?>
           </section>
