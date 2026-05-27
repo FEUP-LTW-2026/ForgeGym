@@ -188,8 +188,14 @@ if (isset($_SESSION['user_id'])) {
                 <li class="invisible-line" aria-hidden="true">fantasma</li>
               </ul>
 
-              <a href="pages/checkout_plan.php?plan=Basic" class="btn btn--primary">Join Now</a>
+              <?php if ($user_plan === 'Basic'): ?>
+                <div class="btn btn--ghost" style="width: 100%; text-align: center; opacity: 0.5; cursor: not-allowed;">Current Plan</div>
+              <?php else: ?>
+                <button type="button" class="btn btn--primary plan-checkout-btn" data-plan="Basic" data-price="30.00€" style="width: 100%;">Join Now</button>
+              <?php endif; ?>
+            
             </div>
+
 
             <div class="plan-card plan-card--highlight">
               <div class="plan-card__badge">Recommended Choice</div>
@@ -206,7 +212,12 @@ if (isset($_SESSION['user_id'])) {
                 <li>Locker room access</li>
               </ul>
 
-              <a href="pages/checkout_plan.php?plan=Classic" class="btn btn--white">Join Now</a>
+              <?php if ($user_plan === 'Classic'): ?>
+                <div class="btn btn--ghost" style="width: 100%; text-align: center; opacity: 0.6; cursor: not-allowed; border-color: white; color: white;">Current Plan</div>
+              <?php else: ?>
+                <button type="button" class="btn btn--white plan-checkout-btn" data-plan="Classic" data-price="45.00€" style="width: 100%;">Join Now</button>
+              <?php endif; ?>
+
             </div>
 
             <div class="plan-card">
@@ -223,10 +234,14 @@ if (isset($_SESSION['user_id'])) {
                 <li>Free towel & water service</li>
                 <li>Bring a friend (Weekends)</li>
               </ul>
+              
+              <?php if ($user_plan === 'Premium'): ?>
+                <div class="btn btn--ghost" style="width: 100%; text-align: center; opacity: 0.5; cursor: not-allowed;">Current Plan</div>
+              <?php else: ?>
+                <button type="button" class="btn btn--primary plan-checkout-btn" data-plan="Premium" data-price="60.00€" style="width: 100%;">Join Now</button>
+              <?php endif; ?>
 
-              <a href="pages/checkout_plan.php?plan=Premium" class="btn btn--primary">Join Now</a>
             </div>
-
           </div>
       </section>
 
@@ -326,6 +341,58 @@ if (isset($_SESSION['user_id'])) {
       </div>
     </footer>
     
+    <div id="plan-checkout-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 10000; justify-content: center; align-items: center;">
+      <div class="card" style="width: 90%; max-width: 500px; padding: 2rem; background: #1a1a1a; border-top: 4px solid var(--color-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <h2 style="font-family: var(--font-display); color: white; margin: 0; letter-spacing: 1px;">JOIN <span id="checkout-plan-name" style="color: var(--color-gold);"></span></h2>
+          <button type="button" id="close-plan-checkout" style="background: none; border: none; color: var(--color-text-muted); font-size: 1.5rem; cursor: pointer;">&times;</button>
+        </div>
+        
+        <form id="plan-checkout-form" style="display: flex; flex-direction: column; gap: 1rem;">
+          
+          <div class="form-group">
+            <label for="p-name" class="form-label" style="color: #ccc; margin-bottom: 5px; display: block;">Name on Card</label>
+            <input type="text" id="p-name" class="form-control" required placeholder="e.g. John Doe" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--color-border); color: white; border-radius: 4px;">
+          </div>
+          
+          <h3 style="margin-top: 1rem; color: var(--color-gold); font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;">Payment Details</h3>
+          
+          <div class="form-group">
+            <label for="p-card" class="form-label" style="color: #ccc; margin-bottom: 5px; display: block;">Card Number</label>
+            <input type="text" id="p-card" class="form-control" required placeholder="0000 0000 0000 0000" pattern="\d{16}" title="16-digit card number" maxlength="16" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--color-border); color: white; border-radius: 4px;">
+          </div>
+          
+          <div style="display: flex; gap: 1rem;">
+            <div class="form-group" style="flex: 1;">
+              <label for="p-exp" class="form-label" style="color: #ccc; margin-bottom: 5px; display: block;">Expiry Date</label>
+              <input type="text" id="p-exp" class="form-control" required placeholder="MM/YY" maxlength="5" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--color-border); color: white; border-radius: 4px;">
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label for="p-cvv" class="form-label" style="color: #ccc; margin-bottom: 5px; display: block;">CVV / CVC</label>
+              <input type="password" id="p-cvv" class="form-control" required placeholder="123" pattern="\d{3,4}" title="3 or 4 digit security code" maxlength="4" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--color-border); color: white; border-radius: 4px;">
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn--primary" style="margin-top: 1.5rem; width: 100%; font-size: 1.1rem;">
+            <i class="fas fa-lock"></i> Subscribe for <span id="checkout-plan-price"></span>
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+    <div id="plan-success-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 10001; justify-content: center; align-items: center;">
+      <div class="card" style="width: 90%; max-width: 400px; padding: 2rem; background: #1a1a1a; border-top: 4px solid #4caf50; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <i class="fas fa-check-circle" style="font-size: 4rem; color: #4caf50; margin-bottom: 1.5rem;"></i>
+        <h2 style="font-family: var(--font-display); color: white; margin-bottom: 1rem; letter-spacing: 1px;">WELCOME TO THE FORGE</h2>
+        <p style="color: var(--color-text-muted); margin-bottom: 1.5rem; line-height: 1.5;">
+          Your membership is now active! Redirecting to your profile to generate your VIP Pass...
+        </p>
+      </div>
+    </div>
+
+    <script src="json/plans-checkout.js"></script>
     <script src="json/equipment-status.js"></script>
   </body>
   
