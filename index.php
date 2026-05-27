@@ -2,16 +2,27 @@
 session_start();
 
 $user_plan = 'none';
+$user_role = $_SESSION['role'] ?? 'user';
 
 if (isset($_SESSION['user_id'])) {
     try {
         $pdo = new PDO('sqlite:' . __DIR__ . '/database/forge_gym.db');
-        $stmt = $pdo->prepare("SELECT plan FROM users WHERE id = ?");
+        $stmt = $pdo->prepare("SELECT plan, role FROM users WHERE id = ?");
         $stmt->execute([$_SESSION['user_id']]);
-        $user_plan = $stmt->fetchColumn() ?: 'none';
+        $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($user_data) {
+            $user_plan = $user_data['plan'] ?: 'none';
+            $user_role = $user_data['role'] ?: 'user';
+        }
     } catch (Exception $e) {
         // Ignorar erro de DB silenciosamente na homepage
     }
+}
+
+// Se for admin ou trainer, o plano é obrigatoriamente Premium e não pode ser alterado
+if ($user_role === 'admin' || $user_role === 'trainer') {
+    $user_plan = 'Premium';
 }
 ?>
 <!DOCTYPE html>
