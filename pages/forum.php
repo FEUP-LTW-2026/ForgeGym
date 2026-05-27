@@ -189,7 +189,7 @@ $current_user_id = $_SESSION['user_id'];
                                 
                                 <div id="comment-<?php echo $comment['id']; ?>" style="margin-left: <?php echo $indent; ?>;">
                                     <div style="display: flex; gap: 10px; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 6px; border-left: <?php echo !empty($comment['parent_id']) ? '2px solid var(--color-gold)' : 'none'; ?>;">
-                                        <img src="<?php echo htmlspecialchars($commentAvatar); ?>" style="width: 30px; height: 30px; border-radius: 50%;">
+                                        <img src="<?php echo htmlspecialchars($commentAvatar); ?>" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; flex-shrink: 0; display: block;">
                                         <div style="flex: 1;">
                                             <strong style="font-size: 0.8rem; color: var(--color-gold);"><?php echo htmlspecialchars($comment['name']); ?></strong>
                                             <p style="font-size: 0.85rem; margin: 2px 0; color: #fff;"><?php echo htmlspecialchars($comment['content']); ?></p>

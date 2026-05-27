@@ -16,7 +16,7 @@
 
 **Trainers:**
 - [X] Manage their public profile, including bio, specializations, and certifications.
-- [ ] View the roster of members enrolled in their classes.
+- [X] View the roster of members enrolled in their classes.
 - [X] Track and manage their assigned class schedule.
 
 **Admins:**
@@ -27,7 +27,7 @@
 - [X] Oversee and ensure the smooth operation of the entire sys2tem.
 
 **Extra:**
-- [ ] Something extra (e.g., personal training bookings, membership plans, waitlist, ...).
+- [X] Something extra (e.g., personal training bookings, membership plans, waitlist, ...).
 
 ## Running
 
