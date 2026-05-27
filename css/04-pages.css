@@ -2,7 +2,7 @@
  * Page-specific layouts (Home, Schedule, Profile).
  */
 
-/* 1. HOME PAGE (index.html) */
+/* 1. HOME PAGE (index.php) */
 
 /* Hero Section */
 .hero {
@@ -517,7 +517,7 @@ body:has(#filter-trainer option[value="joao"]:checked) .class-card:not([data-tra
 }
 
 
-/* 3. PROFILE PAGE (profile.html) */
+/* 3. PROFILE PAGE (profile.php) */
 
 .profile-page {
   padding-top: calc(var(--header-h) + var(--sp-10));

@@ -118,6 +118,7 @@ function getClassImage($type) {
       <nav class="nav" id="main-nav" aria-label="Primary navigation">
         <ul class="nav__list">
           <li><a href="plan.php" class="nav__link">Classes</a></li>
+          <li><a href="forum.php" class="nav__link">Forum</a></li>
           <li><a href="shop.php" class="nav__link">Shop</a></li>
         </ul>
         <div class="nav__actions">
