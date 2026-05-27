@@ -13,7 +13,7 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $stmt = $pdo->query("
-        SELECT fp.*, u.name as trainer_name, u.profile_photo as avatar
+        SELECT fp.*, u.name as trainer_name, u.profile_photo as avatar, u.role as author_role
         FROM forum_posts fp 
         JOIN users u ON fp.user_id = u.id 
         ORDER BY fp.created_at DESC
@@ -79,36 +79,47 @@ $current_user_id = $_SESSION['user_id'];
         <header class="page-header" style="text-align: center; margin-bottom: var(--sp-10);">
             <p class="eyebrow" style="justify-content: center;">Forge Community</p>
             <h1 class="page-title">THE FORGE FORUM</h1>
-            <p class="text-muted">Exclusive daily tips from our Elite Coaches & member discussions.</p>
+            <p class="text-muted">Exclusive updates from Management & Elite Trainers.</p>
         </header>
 
-        <?php if ($user_role === 'trainer'): ?>
-            <section class="card" style="margin-bottom: var(--sp-8); border: 1px solid var(--color-gold);">
-                <h2 style="font-family: var(--font-display); font-size: var(--text-xl); color: var(--color-gold); margin-bottom: var(--sp-4); text-transform: uppercase;">
-                    <i class="far fa-lightbulb"></i> Share Today's Elite Tip
-                </h2>
-                <form action="../api/action_forum.php" method="POST" class="form">
-                    <input type="hidden" name="action" value="create_post">
-                    
-                    <div class="form__group">
-                        <label class="form__label">Tip Topic</label>
-                        <input type="text" name="title" class="form__input" placeholder="e.g., Squat Mechanics, Hydration" required>
-                    </div>
-                    
-                    <div class="form__group">
-                        <label class="form__label">Tip Content</label>
-                        <textarea name="content" class="form__input" rows="4" placeholder="Drop your knowledge, form tips, or motivation here..." required style="resize: vertical;"></textarea>
-                    </div>
-                    
-                    <button type="submit" class="btn btn--primary" style="width: 100%;">Publish to Feed</button>
-                </form>
+        <?php if ($user_role === 'trainer' || $user_role === 'admin'): 
+            $stmt_avatar = $pdo->prepare("SELECT profile_photo, name FROM users WHERE id = ?");
+            $stmt_avatar->execute([$current_user_id]);
+            $curr_user = $stmt_avatar->fetch(PDO::FETCH_ASSOC);
+            $currAvatar = (!empty($curr_user['profile_photo']) && $curr_user['profile_photo'] !== 'images/profiles/default.png' && file_exists(__DIR__ . '/../' . $curr_user['profile_photo']))
+                            ? '../' . $curr_user['profile_photo']
+                            : "https://ui-avatars.com/api/?name=" . urlencode($curr_user['name'] ?? 'User') . "&background=CBA052&color=fff&size=128&bold=true";
+        ?>
+            <section class="card" style="margin-bottom: var(--sp-8); border: 1px solid rgba(203, 160, 82, 0.4); background: rgba(203, 160, 82, 0.03); padding: var(--sp-6);">
+                <div style="display: flex; gap: var(--sp-4); align-items: flex-start;">
+                    <img src="<?php echo htmlspecialchars($currAvatar); ?>" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-gold); flex-shrink: 0; margin-top: 4px;">
+                    <form action="../api/action_forum.php" method="POST" style="flex: 1; display: flex; flex-direction: column; gap: var(--sp-2); margin: 0;">
+                        <input type="hidden" name="action" value="create_post">
+                        
+                        <input type="text" name="title" placeholder="Topic Title (e.g., Squat Mechanics)" required
+                               style="background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); color: #fff; font-family: var(--font-display); font-size: 1.3rem; padding: 8px 0; outline: none; transition: border-color 0.3s;"
+                               onfocus="this.style.borderBottomColor='var(--color-gold)'" onblur="this.style.borderBottomColor='rgba(255,255,255,0.1)'">
+                        
+                        <textarea name="content" rows="3" placeholder="What knowledge are you dropping today?" required
+                                  style="background: transparent; border: none; color: var(--color-text); font-family: var(--font-body); font-size: 1rem; padding: 12px 0; resize: vertical; min-height: 70px; outline: none;"></textarea>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: var(--sp-3); margin-top: var(--sp-2);">
+                            <span style="font-size: 0.8rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">
+                                <i class="fas fa-bullhorn" style="color: var(--color-gold); margin-right: 4px;"></i> Official Announcement
+                            </span>
+                            <button type="submit" class="btn btn--primary" style="padding: 8px 24px; font-size: 0.9rem; border-radius: 30px;">
+                                Post to Feed <i class="fas fa-paper-plane" style="margin-left: 6px;"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </section>
         <?php endif; ?>
 
         <section>
             <?php if (empty($posts)): ?>
                 <div class="card" style="text-align: center; padding: var(--sp-10); border: 1px dashed var(--color-border);">
-                    <p class="text-muted" style="font-style: italic; margin: 0;">No knowledge drops shared yet today. Check back soon!</p>
+                    <p class="text-muted" style="font-style: italic; margin: 0;">No posts shared yet today. Check back soon!</p>
                 </div>
             <?php else: ?>
                 <?php foreach ($posts as $post): 
@@ -118,8 +129,10 @@ $current_user_id = $_SESSION['user_id'];
                     } else {
                         $postAvatar = '../' . $postPhoto;
                     }
+
+                    $authorPrefix = $post['author_role'] === 'admin' ? 'Admin' : 'Coach';
                 ?>
-                    <article class="card" style="margin-bottom: var(--sp-6);">
+                    <article class="card" style="margin-bottom: var(--sp-6); padding: var(--sp-6);">
                         
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--sp-4);">
                             <div style="display: flex; align-items: center; gap: var(--sp-3);">
@@ -128,7 +141,7 @@ $current_user_id = $_SESSION['user_id'];
                                     <h3 style="font-size: var(--text-lg); font-family: var(--font-display); color: var(--color-text); margin: 0; text-transform: uppercase;">
                                         <?php echo htmlspecialchars($post['title']); ?>
                                     </h3>
-                                    <small style="color: var(--color-gold); font-weight: 600;">Coach <?php echo htmlspecialchars($post['trainer_name']); ?> • <?php echo date('M d, H:i', strtotime($post['created_at'])); ?></small>
+                                    <small style="color: var(--color-gold); font-weight: 600;"><?php echo $authorPrefix . ' ' . htmlspecialchars($post['trainer_name']); ?> • <?php echo date('M d, H:i', strtotime($post['created_at'])); ?></small>
                                 </div>
                             </div>
                             
@@ -147,9 +160,9 @@ $current_user_id = $_SESSION['user_id'];
                             <?php echo htmlspecialchars($post['content']); ?>
                         </p>
 
-                        <div style="border-top: 1px solid var(--color-border); padding-top: var(--sp-4);">
-                            <h4 style="color: var(--color-text-muted); font-size: var(--text-sm); font-weight: 600; text-transform: uppercase; margin-bottom: var(--sp-3);">
-                                <i class="far fa-comments"></i> Community Discussion
+                        <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: var(--sp-4);">
+                            <h4 style="color: rgba(255,255,255,0.3); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--sp-3);">
+                                <i class="far fa-comments"></i> Discussion
                             </h4>
                             
                             <?php
@@ -164,58 +177,64 @@ $current_user_id = $_SESSION['user_id'];
                             $comments = $stmt_comments->fetchAll(PDO::FETCH_ASSOC);
                             ?>
 
-                            <div style="margin-bottom: var(--sp-4);">
+                            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
                                 <?php foreach ($comments as $comment): 
-                                    $commPhoto = $comment['avatar'];
-                                    if (empty($commPhoto) || $commPhoto === 'images/profiles/default.png' || !file_exists(__DIR__ . '/../' . $commPhoto)) {
-                                        $commentAvatar = "https://ui-avatars.com/api/?name=" . urlencode($comment['name']) . "&background=333&color=fff&size=64&bold=true";
-                                    } else {
-                                        $commentAvatar = '../' . $commPhoto;
-                                    }
+                                    $indent = !empty($comment['parent_id']) ? '40px' : '0px';
                                     
-                                    // Cores dinâmicas baseadas no cargo
-                                    $borderColor = $comment['role'] === 'admin' ? 'var(--color-danger)' : ($comment['role'] === 'trainer' ? 'var(--color-gold)' : 'var(--color-border)');
+                                    $commPhoto = $comment['avatar'];
+                                    $commentAvatar = (!empty($commPhoto) && file_exists(__DIR__ . '/../' . $commPhoto)) 
+                                                    ? '../' . $commPhoto 
+                                                    : "https://ui-avatars.com/api/?name=" . urlencode($comment['name']) . "&background=222&color=fff&size=64&bold=true";
                                 ?>
-                                    <div style="display: flex; gap: var(--sp-3); align-items: flex-start; padding: var(--sp-3); background: rgba(255,255,255,0.02); border-radius: var(--radius-sm); margin-bottom: 8px; border-left: 3px solid <?php echo $borderColor; ?>;">
-                                        
-                                        <img src="<?php echo htmlspecialchars($commentAvatar); ?>" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1);">
-                                        
-                                        <div style="flex: 1; min-width: 0;">
-                                            <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 2px;">
-                                                <strong style="font-size: 0.9rem; color: var(--color-text);">
-                                                    <?php echo htmlspecialchars($comment['name']); ?>
-                                                </strong>
-                                                <span class="badge" style="font-size: 0.6rem; padding: 2px 6px; background: <?php echo $borderColor; ?>; color: <?php echo $comment['role'] === 'user' ? 'var(--color-text)' : '#fff'; ?>;">
-                                                    <?php echo $comment['role']; ?>
-                                                </span>
-                                            </div>
-                                            <p style="font-size: 0.95rem; color: var(--color-text-muted); margin: 0; overflow-wrap: break-word; word-break: break-word; white-space: pre-wrap; line-height: 1.45;">
-                                                <?php echo htmlspecialchars($comment['content']); ?>
-                                            </p>
+                                
+                                <div id="comment-<?php echo $comment['id']; ?>" style="margin-left: <?php echo $indent; ?>;">
+                                    <div style="display: flex; gap: 10px; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 6px; border-left: <?php echo !empty($comment['parent_id']) ? '2px solid var(--color-gold)' : 'none'; ?>;">
+                                        <img src="<?php echo htmlspecialchars($commentAvatar); ?>" style="width: 30px; height: 30px; border-radius: 50%;">
+                                        <div style="flex: 1;">
+                                            <strong style="font-size: 0.8rem; color: var(--color-gold);"><?php echo htmlspecialchars($comment['name']); ?></strong>
+                                            <p style="font-size: 0.85rem; margin: 2px 0; color: #fff;"><?php echo htmlspecialchars($comment['content']); ?></p>
+                                            
+                                            <button onclick="document.getElementById('reply-form-<?php echo $comment['id']; ?>').style.display='block'" 
+                                                    style="background:none; border:none; color:rgba(255,255,255,0.5); font-size: 0.7rem; cursor:pointer;">
+                                                Responder
+                                            </button>
                                         </div>
-
-                                        <?php if ($user_role === 'admin' || ($user_role === 'trainer' && $comment['user_id'] == $current_user_id)): ?>
-                                            <form action="../api/action_forum.php" method="POST" style="margin:0; flex-shrink: 0;" onsubmit="return confirm('Delete this comment?');">
-                                                <input type="hidden" name="action" value="delete_comment">
-                                                <input type="hidden" name="comment_id" value="<?php echo $comment['id']; ?>">
-                                                <button type="submit" style="background: transparent; border: none; color: var(--color-danger); opacity: 0.7; cursor: pointer; padding: 4px;" title="Remove Comment">
-                                                    <i class="fas fa-times"></i>
-                                                </button>
-                                            </form>
-                                        <?php endif; ?>
                                     </div>
+
+                                    <div id="reply-form-<?php echo $comment['id']; ?>" style="display:none; margin-top: 5px; margin-left: <?php echo $indent; ?>;">
+                                        <form action="../api/action_forum.php" method="POST" style="display: flex; gap: 5px;">
+                                            <input type="hidden" name="action" value="create_comment">
+                                            <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>">
+                                            <input type="hidden" name="parent_id" value="<?php echo $comment['id']; ?>">
+                                            <input type="text" name="content" placeholder="Responder a <?php echo htmlspecialchars($comment['name']); ?>..." required 
+                                                style="flex: 1; background: #222; border: 1px solid #444; color: #fff; padding: 5px; border-radius: 4px;">
+                                            <button type="submit" style="background: var(--color-gold); border:none; padding: 0 10px; border-radius: 4px; cursor:pointer;">OK</button>
+                                        </form>
+                                    </div>
+                                </div>
                                 <?php endforeach; ?>
                             </div>
 
-                            <form action="../api/action_forum.php" method="POST" class="form" style="display: flex; gap: var(--sp-2); align-items: stretch; margin: 0;">
-                                <input type="hidden" name="action" value="create_comment">
-                                <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>">
-                                
-                                <div style="flex: 1; margin: 0;">
-                                    <input type="text" name="content" class="form__input" placeholder="Ask a question or reply..." required style="margin: 0;">
-                                </div>
-                                <button type="submit" class="btn btn--primary" style="flex-shrink: 0; margin: 0;">Reply</button>
-                            </form>
+                            <?php if ($user_role === 'admin' || $user_role === 'trainer' || $post['author_role'] === 'trainer'): ?>
+                                <form action="../api/action_forum.php" method="POST" style="display: flex; gap: var(--sp-3); align-items: flex-start; margin-top: var(--sp-4); padding: var(--sp-3); background: rgba(203, 160, 82, 0.03); border: 1px solid rgba(203, 160, 82, 0.4); border-radius: var(--radius-md);">
+                                    
+                                    <img src="<?php echo htmlspecialchars($currAvatar); ?>" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--color-gold); flex-shrink: 0;">
+                                    
+                                    <div style="flex: 1; display: flex; flex-direction: column; gap: var(--sp-2);">
+                                        <input type="hidden" name="action" value="create_comment">
+                                        <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>">
+                                        
+                                        <textarea name="content" placeholder="Write a reply..." required 
+                                                style="background: transparent; border: none; color: var(--color-text); font-family: var(--font-body); font-size: 0.9rem; resize: vertical; min-height: 40px; outline: none; width: 100%;"></textarea>
+                                        
+                                        <div style="display: flex; justify-content: flex-end;">
+                                            <button type="submit" class="btn btn--primary" style="padding: 6px 16px; font-size: 0.8rem; border-radius: 20px; text-transform: uppercase;">
+                                                Reply
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            <?php endif; ?>
                             
                         </div>
                     </article>

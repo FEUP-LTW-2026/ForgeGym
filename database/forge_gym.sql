@@ -110,3 +110,25 @@ CREATE TABLE reviews (
     FOREIGN KEY (class_id) REFERENCES classes(id),
     UNIQUE(user_id, class_id) 
 );
+
+DROP TABLE IF EXISTS forum_posts;
+CREATE TABLE forum_posts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(user_id) REFERENCES users(id)
+);
+
+DROP TABLE IF EXISTS forum_comments;
+CREATE TABLE forum_comments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    post_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    content TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(post_id) REFERENCES forum_posts(id) ON DELETE CASCADE,
+    FOREIGN KEY(user_id) REFERENCES users(id)
+);
+
