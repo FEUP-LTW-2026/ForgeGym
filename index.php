@@ -1,4 +1,19 @@
-<?php session_start(); ?>
+<?php 
+session_start();
+
+$user_plan = 'none';
+
+if (isset($_SESSION['user_id'])) {
+    try {
+        $pdo = new PDO('sqlite:' . __DIR__ . '/database/forge_gym.db');
+        $stmt = $pdo->prepare("SELECT plan FROM users WHERE id = ?");
+        $stmt->execute([$_SESSION['user_id']]);
+        $user_plan = $stmt->fetchColumn() ?: 'none';
+    } catch (Exception $e) {
+        // Ignorar erro de DB silenciosamente na homepage
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -66,8 +81,12 @@
             who push you further than you thought possible.
           </p>
           <div class="hero__cta">
-            <a href="pages/register.html" class="btn btn--primary btn--lg">Start for free</a>
-            <a href="#classes"           class="btn btn--ghost   btn--lg">Explore classes</a>
+            <?php if ($user_plan !== 'none'): ?>
+              <a href="#plans" class="btn btn--primary btn--lg">Upgrade now</a>
+            <?php else: ?>
+              <a href="#plans" class="btn btn--primary btn--lg">Start for free</a>
+            <?php endif; ?>
+            <a href="pages/plan.php" class="btn btn--ghost btn--lg">Explore classes</a>
           </div>
         </div>
 
@@ -232,15 +251,13 @@
 
               <ul class="plan-features">
                 <li class="invisible-line" aria-hidden="true">fantasma</li>
-                
                 <li>Gym floor & cardio zone</li>
                 <li>Locker room access</li>
                 <li>Off-peak hours only</li>
-                
                 <li class="invisible-line" aria-hidden="true">fantasma</li>
               </ul>
 
-              <a href="pages/register.html" class="btn btn--primary">Join Now</a>
+              <a href="pages/checkout_plan.php?plan=Basic" class="btn btn--primary">Join Now</a>
             </div>
 
             <div class="plan-card plan-card--highlight">
@@ -258,7 +275,7 @@
                 <li>Locker room access</li>
               </ul>
 
-              <a href="pages/register.html" class="btn btn--white">Join Now</a>
+              <a href="pages/checkout_plan.php?plan=Classic" class="btn btn--white">Join Now</a>
             </div>
 
             <div class="plan-card">
@@ -276,12 +293,10 @@
                 <li>Bring a friend (Weekends)</li>
               </ul>
 
-              <a href="pages/register.html" class="btn btn--primary">Join Now</a>
+              <a href="pages/checkout_plan.php?plan=Premium" class="btn btn--primary">Join Now</a>
             </div>
 
           </div>
-
-        </div>
       </section>
 
       <section class="section" id="reviews" aria-labelledby="reviews-title">

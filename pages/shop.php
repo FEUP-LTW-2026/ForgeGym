@@ -254,7 +254,7 @@ session_start();
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. CARREGAR ITENS DA MEMÓRIA DO NAVEGADOR (para não perder os itens ao sair da página)
+      // CARREGAR ITENS DA MEMÓRIA DO NAVEGADOR (para não perder os itens ao sair da página)
       let cart = JSON.parse(localStorage.getItem('meu_carrinho')) || [];
 
       const cartBtn = document.getElementById('cart-btn');
@@ -273,7 +273,7 @@ session_start();
         localStorage.setItem('meu_carrinho', JSON.stringify(cart));
       };
 
-      // 1. Abrir e Fechar Menu Lateral
+      // Abrir e Fechar Menu Lateral
       const toggleCart = () => {
         cartSidebar.classList.toggle('open');
         cartOverlay.classList.toggle('open');
@@ -283,7 +283,7 @@ session_start();
       closeCartBtn.addEventListener('click', toggleCart);
       cartOverlay.addEventListener('click', toggleCart);
 
-      // 2. Renderizar os itens do carrinho na Sidebar
+      // Renderizar os itens do carrinho na Sidebar
       const renderCart = () => {
         cartItemsContainer.innerHTML = '';
         
@@ -323,10 +323,10 @@ session_start();
 
         cartCountEl.textContent = totalItems;
         cartTotalPriceEl.textContent = totalPrice.toFixed(2) + '€';
-        saveCart(); // Guarda as alterações
+        saveCart(); 
       };
 
-      // 3. Adicionar item ao Carrinho
+      // Adicionar item ao Carrinho
       addButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.preventDefault();
@@ -361,7 +361,7 @@ session_start();
         });
       });
 
-      // 4. Detetar Cliques dentro do Carrinho (Mais, Menos e Eliminar)
+      // Detetar Cliques dentro do Carrinho (Mais, Menos e Eliminar)
       cartItemsContainer.addEventListener('click', (e) => {
         const target = e.target.closest('button');
         if (!target) return;
@@ -384,7 +384,7 @@ session_start();
         renderCart();
       });
 
-      // 5. Botão de Limpar Carrinho
+      // Botão de Limpar Carrinho
       clearCartBtn.addEventListener('click', () => {
         if (cart.length > 0) {
           cart = [];
@@ -392,19 +392,29 @@ session_start();
         }
       });
 
-      // 6. Botão de Checkout (Simulação)
+      // Botão de Checkout (Simulação)
       checkoutBtn.addEventListener('click', () => {
         if (cart.length === 0) {
           alert('Your cart is empty!');
           return;
         }
-        alert('Proceeding to checkout! Integration coming soon.');
+        
+        // Confirmação simulada
+        if(confirm(`Do you want to checkout and pay ${cartTotalPriceEl.textContent}?`)) {
+            // Limpa o carrinho
+            cart = [];
+            renderCart(); 
+            
+            toggleCart();
+            
+            alert('Order placed successfully! Your Forge Gear is on the way.');
+        }
       });
 
-      // 7. VERIFICAR SE VEIO DE OUTRA PÁGINA PARA ABRIR O CARRINHO
+      // VERIFICAR SE VEIO DE OUTRA PÁGINA PARA ABRIR O CARRINHO
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('open_cart') === '1') {
-        toggleCart(); // Abre o carrinho
+        toggleCart(); 
         // Limpa a URL para ficar bonita (tira o ?open_cart=1)
         window.history.replaceState({}, document.title, "shop.php");
       }
