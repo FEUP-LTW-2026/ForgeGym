@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$username]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        // CORREÇÃO CRÍTICA: Se a BD estiver corrompida, a password vem como Array. Tiramos só o texto!
+        // Se a BD estiver corrompida, a password vem como Array. Tiramos só o texto!
         $db_password = isset($user['password']) ? (is_array($user['password']) ? $user['password'][0] : $user['password']) : '';
         
         if ($user && password_verify($password, $db_password)) {
