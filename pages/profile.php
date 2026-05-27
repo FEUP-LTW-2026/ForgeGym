@@ -1,13 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
-
 define('DB_PATH', __DIR__ . '/../database/forge_gym.db');
-
 try {
     $pdo = new PDO('sqlite:' . DB_PATH);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -17,8 +11,8 @@ try {
 
 $success_msg = '';
 $error_msg = '';
-$is_admin_editing = false;
-$user_id = $_SESSION['user_id']; 
+$user_id = $_SESSION['user_id'];
+$is_readonly = false;
 
 if (isset($_GET['edit_user_id']) && isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
     $target_id = (int)$_GET['edit_user_id'];
@@ -28,16 +22,11 @@ if (isset($_GET['edit_user_id']) && isset($_SESSION['role']) && $_SESSION['role'
     $target_role = $stmtCheck->fetchColumn();
     
     if ($target_role === 'admin' && $target_id !== $_SESSION['user_id']) {
-        die("<h3>Security Alert</h3><p>Administrators cannot modify other administrators' profiles.</p><a href='admin_dashboard.php'>Go back</a>");
+        die("<h3>Security Alert</h3><p>Administrators cannot modify or view other administrators' profiles.</p><a href='admin_dashboard.php'>Go back</a>");
     }
     
     $user_id = $target_id;
-    $is_admin_editing = true;
-}
-
-if (isset($_POST['target_user_id']) && isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
-    $user_id = (int)$_POST['target_user_id'];
-    $is_admin_editing = true;
+    $is_readonly = true; 
 }
 
 $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
@@ -412,7 +401,7 @@ foreach ($enrolledClasses as $class) {
               <a href="plan.php" class="button-aesthetic" style="display: inline-flex; width: fit-content; background-color: var(--color-bg-surface); border: 1px solid var(--color-border); color: var(--color-text); margin-top: var(--sp-2);">
                 <i class="fas fa-calendar-plus" style="color: var(--color-gold);"></i> Book Classes
               </a>
-              <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+              <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin' && !$is_readonly): ?>
                 <a href="admin_dashboard.php" class="button-aesthetic" style="display: inline-flex; width: fit-content; background-color: var(--color-accent); border: 1px solid var(--color-accent); color: white; margin-top: var(--sp-2);">
                   <i class="fas fa-user-shield"></i> Admin Dashboard
                 </a>
@@ -436,43 +425,54 @@ foreach ($enrolledClasses as $class) {
             <?php endif; ?>
 
             <form action="profile.php" method="POST" enctype="multipart/form-data" class="form">
-              <?php if ($is_admin_editing): ?>
-                  <input type="hidden" name="target_user_id" value="<?php echo $user_id; ?>">
-                  <div style="background: rgba(231, 76, 60, 0.15); border: 1px solid var(--color-accent); padding: 10px; border-radius: 4px; margin-bottom: 20px;">
-                      <p style="color: var(--color-accent); margin: 0; font-weight: bold;"><i class="fas fa-exclamation-triangle"></i> ADMIN OVERRIDE MODE</p>
-                      <p style="font-size: 0.85rem; color: #fff; margin: 0;">You are editing <strong><?php echo htmlspecialchars($user['name']); ?>'s</strong> profile.</p>
+              
+              <?php if ($is_readonly): ?>
+                  <div style="background: rgba(0, 0, 0, 0.4); border: 1px solid var(--color-gold); padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+                      <p style="color: var(--color-gold); margin: 0; font-weight: bold;"><i class="fas fa-eye"></i> ADMIN VIEW MODE</p>
+                      <p style="font-size: 0.85rem; color: #ccc; margin: 0;">You are viewing <strong><?php echo htmlspecialchars($user['name']); ?>'s</strong> profile in read-only mode.</p>
                   </div>
               <?php endif; ?>
+
               <div class="profile-details-grid">
                 <div class="form-group">
                   <label class="form-label" for="name">Full Name</label>
-                  <input type="text" id="name" name="name" class="form-control" value="<?php echo htmlspecialchars($user['name']); ?>" required>
+                  <input type="text" id="name" name="name" class="form-control" value="<?php echo htmlspecialchars($user['name']); ?>" <?php echo $is_readonly ? 'readonly style="opacity: 0.6; cursor: not-allowed;"' : 'required'; ?>>
                 </div>
                 <div class="form-group">
                   <label class="form-label" for="username">Username</label>
-                  <input type="text" id="username" name="username" class="form-control" value="<?php echo htmlspecialchars($user['username']); ?>" required>
+                  <input type="text" id="username" name="username" class="form-control" value="<?php echo htmlspecialchars($user['username']); ?>" <?php echo $is_readonly ? 'readonly style="opacity: 0.6; cursor: not-allowed;"' : 'required'; ?>>
                 </div>
                 <div class="form-group">
                   <label class="form-label" for="email">Email Address</label>
-                  <input type="email" id="email" name="email" class="form-control" value="<?php echo htmlspecialchars($user['email']); ?>" required>
+                  <input type="email" id="email" name="email" class="form-control" value="<?php echo htmlspecialchars($user['email']); ?>" <?php echo $is_readonly ? 'readonly style="opacity: 0.6; cursor: not-allowed;"' : 'required'; ?>>
                 </div>
+                
+                <?php if (!$is_readonly): ?>
                 <div class="form-group">
                   <label class="form-label" for="profile_photo">Change Profile Photo</label>
                   <input type="file" id="profile_photo" name="profile_photo" class="form-control" style="padding: 6px;">
                 </div>
+                <?php endif; ?>
               </div>
 
-              <div class="password-section">
-                <h3>Security</h3>
-                <div class="form-group">
-                  <label class="form-label" for="password">New Password (leave blank to keep current)</label>
-                  <input type="password" id="password" name="password" class="form-control" placeholder="••••••••••••">
+              <?php if (!$is_readonly): ?>
+                <div class="password-section">
+                  <h3>Security</h3>
+                  <div class="form-group">
+                    <label class="form-label" for="password">New Password (leave blank to keep current)</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••••••">
+                  </div>
                 </div>
-              </div>
 
-              <div style="margin-top: var(--sp-6); display: flex; justify-content: flex-end;">
-                <button type="submit" class="btn btn--primary">Save Changes</button>
-              </div>
+                <div style="margin-top: var(--sp-6); display: flex; justify-content: flex-end;">
+                  <button type="submit" class="btn btn--primary">Save Changes</button>
+                </div>
+              <?php else: ?>
+                <div style="margin-top: var(--sp-6); text-align: center; padding: 15px; background: rgba(0,0,0,0.2); border: 1px dashed #666; border-radius: 4px; color: #888;">
+                  <i class="fas fa-lock"></i> Profile modifications are disabled for privacy.
+                </div>
+              <?php endif; ?>
+              
             </form>
           </section>
         </div>
