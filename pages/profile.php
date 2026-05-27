@@ -283,7 +283,6 @@ foreach ($enrolledClasses as $class) {
                 // ID único
                 $user_qr_data = "FORGE-" . str_pad($user['id'], 4, '0', STR_PAD_LEFT) . "-2026";
                 
-                // Variáveis de Estilo Dinâmico baseadas no Plano
                 $qr_color = "1a1a1a";
                 $qr_bg = "ffffff";
                 $wrapper_style = "";
@@ -301,12 +300,9 @@ foreach ($enrolledClasses as $class) {
                     $text_style = "color: var(--color-gold);"; // Texto dourado
                 } 
                 elseif ($user_plan === 'Premium') {
-                    $qr_bg = "CBA052"; // Dourado VIP
-                    // Borda dupla, glow dourado mais forte
+                    $qr_bg = "CBA052";
                     $wrapper_style = "border: 4px solid #fff; outline: 3px solid var(--color-gold); outline-offset: 4px; box-shadow: 0 0 35px rgba(203, 160, 82, 0.5); margin-bottom: 8px;";
-                    // Texto com sombra e mais ênfase
                     $text_style = "color: var(--color-gold); text-shadow: 0 0 15px rgba(203, 160, 82, 0.4); font-weight: 900;";
-                    // Coroa VIP flutuante
                     $badge = "<div style='position:absolute; top:-18px; right:-18px; background:#1a1a1a; color:var(--color-gold); border:2px solid var(--color-gold); border-radius:50%; width:45px; height:45px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; z-index:2; box-shadow: 0 4px 10px rgba(0,0,0,0.5);'><i class='fas fa-crown'></i></div>";
                 }
 
