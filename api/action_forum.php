@@ -13,6 +13,12 @@ try {
     die("Database connection failed.");
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die("Ataque CSRF bloqueado no Fórum!");
+    }
+}
+
 $action = $_POST['action'] ?? '';
 $user_id = $_SESSION['user_id'];
 $user_role = $_SESSION['role'] ?? 'user';

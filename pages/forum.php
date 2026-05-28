@@ -3,6 +3,10 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
@@ -95,6 +99,7 @@ $current_user_id = $_SESSION['user_id'];
                     <img src="<?php echo htmlspecialchars($currAvatar); ?>" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-gold); flex-shrink: 0; margin-top: 4px;">
                     <form action="../api/action_forum.php" method="POST" style="flex: 1; display: flex; flex-direction: column; gap: var(--sp-2); margin: 0;">
                         <input type="hidden" name="action" value="create_post">
+                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                         
                         <input type="text" name="title" placeholder="Topic Title (e.g., Squat Mechanics)" required
                                style="background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); color: #fff; font-family: var(--font-display); font-size: 1.3rem; padding: 8px 0; outline: none; transition: border-color 0.3s;"
@@ -149,6 +154,8 @@ $current_user_id = $_SESSION['user_id'];
                                 <form action="../api/action_forum.php" method="POST" style="margin: 0; flex-shrink: 0;" onsubmit="return confirm('Delete this entire post and all its comments?');">
                                     <input type="hidden" name="action" value="delete_post">
                                     <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>">
+                                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
                                     <button type="submit" style="background: transparent; border: none; color: var(--color-danger); cursor: pointer; padding: 4px;" title="Delete Post">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
@@ -206,6 +213,8 @@ $current_user_id = $_SESSION['user_id'];
                                             <input type="hidden" name="action" value="create_comment">
                                             <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>">
                                             <input type="hidden" name="parent_id" value="<?php echo $comment['id']; ?>">
+                                            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                                            
                                             <input type="text" name="content" placeholder="Responder a <?php echo htmlspecialchars($comment['name']); ?>..." required 
                                                 style="flex: 1; background: #222; border: 1px solid #444; color: #fff; padding: 5px; border-radius: 4px;">
                                             <button type="submit" style="background: var(--color-gold); border:none; padding: 0 10px; border-radius: 4px; cursor:pointer;">OK</button>
@@ -223,6 +232,7 @@ $current_user_id = $_SESSION['user_id'];
                                     <div style="flex: 1; display: flex; flex-direction: column; gap: var(--sp-2);">
                                         <input type="hidden" name="action" value="create_comment">
                                         <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>">
+                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                                         
                                         <textarea name="content" placeholder="Write a reply..." required 
                                                 style="background: transparent; border: none; color: var(--color-text); font-family: var(--font-body); font-size: 0.9rem; resize: vertical; min-height: 40px; outline: none; width: 100%;"></textarea>

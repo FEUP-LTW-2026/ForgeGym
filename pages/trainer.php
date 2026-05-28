@@ -1,5 +1,10 @@
 <?php
 session_start();
+
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 define('DB_PATH', __DIR__ . '/../database/forge_gym.db');
 
 try {
@@ -148,7 +153,8 @@ $specializations = explode(',', $trainer['specializations']);
               <?php if ($isOwnProfile): ?>
                 <form action="../api/update_trainer.php" method="POST" style="width: 100%;">
                     <input type="hidden" name="trainer_id" value="<?php echo $trainer_id; ?>">
-
+                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                  
                     <div style="display: flex; gap: var(--sp-4); align-items: flex-start;">
                         <i class="fas fa-quote-left" style="color: var(--color-gold); font-size: 3rem; opacity: 0.6; margin-top: -5px;"></i>
                         <div style="width: 100%;">
