@@ -62,8 +62,9 @@ if ($user_role === 'admin' || $user_role === 'trainer') {
             <li><a href="pages/shop.php" class="nav__link">Shop</a></li>
           </ul>
           <div class="nav__actions">
-            <a href="shop.php?open_cart=1" class="nav__cart-btn" aria-label="Ir para o carrinho">
+            <a href="pages/shop.php?open_cart=1" class="nav__cart-btn cart-toggle" aria-label="Ir para o carrinho">
                 <i class="fas fa-shopping-cart"></i>
+                <span class="cart-badge global-badge" style="display: none;">0</span>
             </a>
             <?php if (isset($_SESSION['user_id'])): ?>
               <a href="pages/profile.php" class="btn btn--ghost">Profile</a>
@@ -406,6 +407,20 @@ if ($user_role === 'admin' || $user_role === 'trainer') {
 
     <script src="json/plans-checkout.js"></script>
     <script src="json/equipment-status.js"></script>
+    <script>
+      // Lê a memória do browser e atualiza a bolinha noutras páginas
+      document.addEventListener('DOMContentLoaded', () => {
+        const cart = JSON.parse(localStorage.getItem('meu_carrinho')) || [];
+        let total = 0;
+        cart.forEach(item => total += item.quantity);
+        
+        const badge = document.querySelector('.global-badge');
+        if (total > 0 && badge) {
+            badge.textContent = total;
+            badge.style.display = 'flex'; // Só mostra a bolinha se houver itens
+        }
+      });
+    </script>
   </body>
   
 </html>

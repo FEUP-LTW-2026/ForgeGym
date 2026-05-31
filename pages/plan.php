@@ -117,8 +117,9 @@ function getClassImage($type) {
           <li><a href="shop.php" class="nav__link">Shop</a></li>
         </ul>
         <div class="nav__actions">
-          <a href="shop.php?open_cart=1" class="nav__cart-btn" aria-label="Ir para o carrinho">
-            <i class="fas fa-shopping-cart"></i>
+          <a href="shop.php?open_cart=1" class="nav__cart-btn cart-toggle" aria-label="Ir para o carrinho">
+              <i class="fas fa-shopping-cart"></i>
+              <span class="cart-badge global-badge" style="display: none;">0</span>
           </a>
           <?php if (isset($_SESSION['user_id'])): ?>
             <a href="profile.php" class="btn btn--ghost">Profile</a>
