@@ -128,7 +128,7 @@ try {
       </div>
     </header>
 
-    <main class="page-spacing container" style="min-height: 85vh; padding-top: 2rem;">
+    <main class="page-spacing container" style="min-height: 85vh; padding-top: 6rem;">
       <header class="page-header" style="text-align: left; margin-bottom: var(--sp-6);">
         <p class="eyebrow" style="color: var(--color-accent);">System Control</p>
         <h1 class="page-title">USER <span class="page-title--outline">MANAGEMENT</span></h1>
