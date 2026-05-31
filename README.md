@@ -36,10 +36,22 @@
 
 ## Running
 
-**Locating the HTML files:**
-- The main landing page is `index.html` (located in the root folder).
-- The workout schedule page is `plan.html` (located in the `pages/` folder).
-- The profile page is `profile.html` (located in the `pages/` folder).
+**Locating the PHP files:**
+
+- `admin_dashboard.php`: The administration dashboard page (located in the `pages/` folder).
+- `checkout_plan.php`: The plan checkout page (located in the `pages/` folder).
+- `create_class.php`: The class creation page (located in the `pages/` folder).
+- `edit_class.php`: The class editing page (located in the `pages/` folder).
+- `forum.php`: The community forum page (located in the `pages/` folder).
+- `login.php`: The user login page (located in the `pages/` folder).
+- `plan.php`: The workout schedule page (located in the `pages/` folder).
+- `profile.php`: The profile page (located in the `pages/` folder).
+- `register.php`: The user registration page (located in the `pages/` folder).
+- `review.php`: The class review page (located in the `pages/` folder).
+- `shop.php`: The gym shop and cart page (located in the `pages/` folder).
+- `trainer_dashboard.php`: The trainer dashboard page (located in the `pages/` folder).
+- `trainer.php`: The trainer profile page (located in the `pages/` folder).
+- `index.php`: The main landing page (located in the root folder).
 
 **Starting the server:**
 To see the rendered result properly via PHP, open your terminal in the root folder of the project and run the following commands:
