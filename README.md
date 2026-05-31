@@ -61,6 +61,6 @@ To see the rendered result properly via PHP, open your terminal in the root fold
 
 ## Credentials
 
-- the_cpo/the_rock
+- the_cpo/therock
 - gonçaloafonso/56789
 - mafalda_pt/ptmafalda
