@@ -15,6 +15,10 @@ try {
 }
 
 // Lógica de Filtros
+
+$trainerFilter = $_GET['trainer'] ?? '';
+$trainers = $pdo->query("SELECT id, name FROM trainers ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
+
 $typeFilter = $_GET['type'] ?? 'all';
 $dayFilter = $_GET['day'] ?? '';
 
@@ -31,6 +35,10 @@ if ($typeFilter !== 'all' && $typeFilter !== '') {
 }
 if ($dayFilter !== '') {
     $query .= " AND c.day_of_week = " . $pdo->quote($dayFilter);
+}
+
+if ($trainerFilter !== '') {
+    $query .= " AND c.trainer_id = " . (int)$trainerFilter;
 }
 
 $query .= " ORDER BY c.class_date ASC, c.start_time ASC";
@@ -290,6 +298,18 @@ function getClassImage($type) {
                 <option value="Thursday" <?php if($dayFilter == 'Thursday') echo 'selected'; ?>>Thursday</option>
                 <option value="Friday" <?php if($dayFilter == 'Friday') echo 'selected'; ?>>Friday</option>
                 <option value="Saturday" <?php if($dayFilter == 'Saturday') echo 'selected'; ?>>Saturday</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label for="filter-trainer" style="display: block; margin-bottom: 5px; color: var(--color-text-muted); font-size: 0.9rem;">Trainer</label>
+              <select id="filter-trainer" name="trainer" class="form-control" style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--color-border); color: white; padding: 10px; border-radius: 4px;">
+                <option value="">Any Trainer</option>
+                <?php foreach ($trainers as $t): ?>
+                  <option value="<?php echo $t['id']; ?>" <?php if($trainerFilter == $t['id']) echo 'selected'; ?>>
+                    <?php echo htmlspecialchars($t['name']); ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
             </div>
 

@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 define('DB_PATH', __DIR__ . '/../database/forge_gym.db');
 try {
     $pdo = new PDO('sqlite:' . DB_PATH);
@@ -457,15 +461,15 @@ foreach ($enrolledClasses as $class) {
                 <div class="profile-details-grid">
                     <div class="form-group">
                         <label class="form-label" for="name">Full Name</label>
-                        <input type="text" id="name" name="name" class="form-control" value="<?php echo htmlspecialchars($user['name']); ?>" <?php echo $is_readonly ? 'readonly style="opacity: 0.6; cursor: not-allowed;"' : 'required'; ?>>
+                        <input type="text" id="name" name="name" class="form-control" value="<?php echo htmlspecialchars($user['name'] ?? ""); ?>" <?php echo $is_readonly ? 'readonly style="opacity: 0.6; cursor: not-allowed;"' : 'required'; ?>>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="username">Username</label>
-                        <input type="text" id="username" name="username" class="form-control" value="<?php echo htmlspecialchars($user['username']); ?>" <?php echo $is_readonly ? 'readonly style="opacity: 0.6; cursor: not-allowed;"' : 'required'; ?>>
+                        <input type="text" id="username" name="username" class="form-control" value="<?php echo htmlspecialchars($user['username'] ?? ""); ?>" <?php echo $is_readonly ? 'readonly style="opacity: 0.6; cursor: not-allowed;"' : 'required'; ?>>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="email">Email Address</label>
-                        <input type="email" id="email" name="email" class="form-control" value="<?php echo htmlspecialchars($user['email']); ?>" <?php echo $is_readonly ? 'readonly style="opacity: 0.6; cursor: not-allowed;"' : 'required'; ?>>
+                        <input type="email" id="email" name="email" class="form-control" value="<?php echo htmlspecialchars($user['email'] ?? ""); ?>" <?php echo $is_readonly ? 'readonly style="opacity: 0.6; cursor: not-allowed;"' : 'required'; ?>>
                     </div>
                 </div> <?php if (!$is_readonly): ?>
                     <div class="password-section" style="margin-top: var(--sp-6);">

@@ -1,6 +1,10 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id'])) { die("Não autenticado"); }
+if (!isset($_SESSION['user_id'])) { die("Not authenticated"); }
+
+if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+    die("Invalid CSRF");
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] !== UPLOAD_ERR_OK) {
