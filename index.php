@@ -62,6 +62,9 @@ if ($user_role === 'admin' || $user_role === 'trainer') {
             <li><a href="pages/shop.php" class="nav__link">Shop</a></li>
           </ul>
           <div class="nav__actions">
+            <a href="shop.php?open_cart=1" class="nav__cart-btn" aria-label="Ir para o carrinho">
+                <i class="fas fa-shopping-cart"></i>
+            </a>
             <?php if (isset($_SESSION['user_id'])): ?>
               <a href="pages/profile.php" class="btn btn--ghost">Profile</a>
               <a href="pages/logout.php" class="btn btn--primary">Log out</a>

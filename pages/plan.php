@@ -117,6 +117,9 @@ function getClassImage($type) {
           <li><a href="shop.php" class="nav__link">Shop</a></li>
         </ul>
         <div class="nav__actions">
+          <a href="shop.php?open_cart=1" class="nav__cart-btn" aria-label="Ir para o carrinho">
+            <i class="fas fa-shopping-cart"></i>
+          </a>
           <?php if (isset($_SESSION['user_id'])): ?>
             <a href="profile.php" class="btn btn--ghost">Profile</a>
             <a href="logout.php" class="btn btn--primary">Log out</a>
@@ -441,21 +444,17 @@ function getClassImage($type) {
     </div>
   </footer>
   <div id="delete-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 9999; justify-content: center; align-items: center;">
-    <div class="card" style="max-width: 420px; width: 90%; border-top: 4px solid var(--color-accent); text-align: center; padding: var(--sp-6); background: #1a1a1a; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-      <i class="fas fa-exclamation-triangle" style="font-size: 3.5rem; color: var(--color-accent); margin-bottom: var(--sp-4);"></i>
-      <h3 style="text-transform: uppercase; font-family: 'Barlow Condensed', sans-serif; font-size: 1.8rem; letter-spacing: 1px; margin-bottom: 10px; color: white;">Delete Class?</h3>
-      <p style="color: var(--color-text-muted); font-size: 0.95rem; margin-bottom: var(--sp-6); line-height: 1.5;">Are you sure you want to permanently remove this class from the schedule? This action cannot be undone.</p>
-      
-      <div style="display: flex; gap: 15px;">
-        <button onclick="closeDeleteModal()" class="btn btn--ghost" style="flex: 1; padding: 10px; font-size: 0.9rem;">Cancel</button>
-        <form id="modal-delete-form" action="../api/action_delete_class.php" method="POST" style="flex: 1; margin: 0;">
-          <input type="hidden" name="class_id" id="modal-class-id" value="">
-          <button type="submit" class="btn btn--primary" style="width: 100%; background: var(--color-accent); border-color: var(--color-accent); padding: 10px; font-size: 0.9rem;">Delete</button>
-        </form>
+      </div>
+  
+  <div id="roster-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:var(--color-bg-surface); padding:20px; border-radius:8px; width:90%; max-width:400px; border:1px solid var(--color-border);">
+      <h3 style="margin-bottom:15px; color:var(--color-gold); font-family:var(--font-display); font-size:1.5rem;">Class Roster</h3>
+      <div id="roster-list" style="max-height:300px; overflow-y:auto; margin-bottom:15px; padding-right:5px;" class="custom-scrollbar"></div>
+      <div style="text-align:right;">
+        <button type="button" onclick="closeRosterModal()" class="btn btn--ghost">Close</button>
       </div>
     </div>
   </div>
-  
   <script src="../json/plan.js"></script>
 </body>
 </html>
