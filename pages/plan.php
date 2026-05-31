@@ -21,6 +21,7 @@ $trainers = $pdo->query("SELECT id, name FROM trainers ORDER BY name ASC")->fetc
 
 $typeFilter = $_GET['type'] ?? 'all';
 $dayFilter = $_GET['day'] ?? '';
+$timeFilter = $_GET['time'] ?? '';
 
 $query = "SELECT c.*, t.name as trainer_name,
                  (SELECT COUNT(*) FROM enrollments WHERE class_id = c.id) as current_spots,
@@ -39,6 +40,17 @@ if ($dayFilter !== '') {
 
 if ($trainerFilter !== '') {
     $query .= " AND c.trainer_id = " . (int)$trainerFilter;
+}
+
+if ($timeFilter === 'morning') {
+    // Aulas antes das 12h
+    $query .= " AND CAST(c.start_time AS INTEGER) < 12";
+} elseif ($timeFilter === 'afternoon') {
+    // Aulas entre as 12h e as 17h
+    $query .= " AND CAST(c.start_time AS INTEGER) >= 12 AND CAST(c.start_time AS INTEGER) < 17";
+} elseif ($timeFilter === 'evening') {
+    // Aulas depois das 17h
+    $query .= " AND CAST(c.start_time AS INTEGER) >= 17";
 }
 
 $query .= " ORDER BY c.class_date ASC, c.start_time ASC";
@@ -302,6 +314,16 @@ function getClassImage($type) {
                 <option value="Thursday" <?php if($dayFilter == 'Thursday') echo 'selected'; ?>>Thursday</option>
                 <option value="Friday" <?php if($dayFilter == 'Friday') echo 'selected'; ?>>Friday</option>
                 <option value="Saturday" <?php if($dayFilter == 'Saturday') echo 'selected'; ?>>Saturday</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label for="filter-time" style="display: block; margin-bottom: 5px; color: var(--color-text-muted); font-size: 0.9rem;">Time of day</label>
+              <select id="filter-time" name="time" class="form-control" style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--color-border); color: white; padding: 10px; border-radius: 4px;">
+                <option value="">Any Time</option>
+                <option value="morning" <?php if($timeFilter == 'morning') echo 'selected'; ?>>Morning (Before 12:00)</option>
+                <option value="afternoon" <?php if($timeFilter == 'afternoon') echo 'selected'; ?>>Afternoon (12:00 - 17:00)</option>
+                <option value="evening" <?php if($timeFilter == 'evening') echo 'selected'; ?>>Evening (After 17:00)</option>
               </select>
             </div>
 
