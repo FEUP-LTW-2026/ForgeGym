@@ -203,7 +203,7 @@ $current_user_id = $_SESSION['user_id'];
                                             
                                             <button onclick="document.getElementById('reply-form-<?php echo $comment['id']; ?>').style.display='block'" 
                                                     style="background:none; border:none; color:rgba(255,255,255,0.5); font-size: 0.7rem; cursor:pointer;">
-                                                Responder
+                                                Reply
                                             </button>
                                         </div>
                                     </div>
@@ -215,7 +215,7 @@ $current_user_id = $_SESSION['user_id'];
                                             <input type="hidden" name="parent_id" value="<?php echo $comment['id']; ?>">
                                             <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                                             
-                                            <input type="text" name="content" placeholder="Responder a <?php echo htmlspecialchars($comment['name']); ?>..." required 
+                                            <input type="text" name="content" placeholder="Reply to <?php echo htmlspecialchars($comment['name']); ?>..." required 
                                                 style="flex: 1; background: #222; border: 1px solid #444; color: #fff; padding: 5px; border-radius: 4px;">
                                             <button type="submit" style="background: var(--color-gold); border:none; padding: 0 10px; border-radius: 4px; cursor:pointer;">OK</button>
                                         </form>
@@ -224,7 +224,7 @@ $current_user_id = $_SESSION['user_id'];
                                 <?php endforeach; ?>
                             </div>
 
-                            <?php if ($user_role === 'admin' || $user_role === 'trainer' || $post['author_role'] === 'trainer'): ?>
+                            <?php if (($user_role === 'admin' || $user_role === 'trainer' || $post['author_role'] === 'trainer') && $post['author_role'] !== 'admin'): ?>
                                 <form action="../api/action_forum.php" method="POST" style="display: flex; gap: var(--sp-3); align-items: flex-start; margin-top: var(--sp-4); padding: var(--sp-3); background: rgba(203, 160, 82, 0.03); border: 1px solid rgba(203, 160, 82, 0.4); border-radius: var(--radius-md);">
                                     
                                     <img src="<?php echo htmlspecialchars($currAvatar); ?>" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--color-gold); flex-shrink: 0;">

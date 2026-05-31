@@ -16,9 +16,10 @@ try {
 
 $trainer_id = isset($_GET['id']) ? (int)$_GET['id'] : 1;
 
-$isOwnProfile = isset($_SESSION['user_id']) && 
-                isset($_SESSION['role']) && $_SESSION['role'] === 'trainer' && 
-                isset($_SESSION['trainer_id']) && $_SESSION['trainer_id'] == $trainer_id;
+$isOwnProfile = isset($_SESSION['user_id']) && isset($_SESSION['role']) && (
+    ($_SESSION['role'] === 'trainer' && isset($_SESSION['trainer_id']) && $_SESSION['trainer_id'] == $trainer_id) ||
+    ($_SESSION['role'] === 'admin')
+);
 
 $stmt = $pdo->prepare("SELECT * FROM trainers WHERE id = ?");
 $stmt->execute([$trainer_id]);

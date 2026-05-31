@@ -109,7 +109,7 @@ session_start();
           <div class="product-card__info">
             <div>
               <h3 class="product-title">Forge Pump T-Shirt</h3>
-              <p class="text-muted" style="font-size: var(--text-sm);">White / Breathable fit</p>
+              <p class="text-muted" style="font-size: var(--text-sm);">Black / Breathable fit</p>
             </div>
             <div class="product-card__footer">
               <span class="product-price">25.00€</span>
@@ -147,7 +147,7 @@ session_start();
           <div class="product-card__info">
             <div>
               <h3 class="product-title">Tactical Gym Duffle</h3>
-              <p class="text-muted" style="font-size: var(--text-sm);">Olive Green / Waterproof</p>
+              <p class="text-muted" style="font-size: var(--text-sm);">Black / Waterproof</p>
             </div>
             <div class="product-card__footer">
               <span class="product-price">55.00€</span>
@@ -161,7 +161,7 @@ session_start();
         <article class="product-card card">
           <div class="product-card__image">
             <span class="badge badge--danger product-badge">Hot</span>
-            <img src="../images/merch/ForgePumpTShirt.png" alt="Forge Performance Shorts" loading="lazy">
+            <img src="../images/merch/PerformanceShorts.png" alt="Forge Performance Shorts" loading="lazy">
           </div>
           <div class="product-card__info">
             <div>
@@ -179,12 +179,12 @@ session_start();
 
         <article class="product-card card">
           <div class="product-card__image">
-            <img src="../images/merch/ProShaker.png" alt="Lifting Straps" loading="lazy">
+            <img src="../images/merch/LiftingStraps.png" alt="Lifting Straps" loading="lazy">
           </div>
           <div class="product-card__info">
             <div>
               <h3 class="product-title">Heavy Lifting Straps</h3>
-              <p class="text-muted" style="font-size: var(--text-sm);">Red & Black / Pair</p>
+              <p class="text-muted" style="font-size: var(--text-sm);">Gold & Black / Pair</p>
             </div>
             <div class="product-card__footer">
               <span class="product-price">15.00€</span>
@@ -197,7 +197,7 @@ session_start();
 
         <article class="product-card card">
           <div class="product-card__image">
-            <img src="../images/merch/PremiumOversizedHoodie.png" alt="Women's Crop Top" loading="lazy">
+            <img src="../images/merch/CropTop.png" alt="Women's Crop Top" loading="lazy">
           </div>
           <div class="product-card__info">
             <div>
@@ -216,7 +216,7 @@ session_start();
         <article class="product-card card">
           <div class="product-card__image">
             <span class="badge badge--dark product-badge">Restocked</span>
-            <img src="../images/merch/ProShaker.png" alt="Metal Water Jug" loading="lazy">
+            <img src="../images/merch/WaterJug.png" alt="Metal Water Jug" loading="lazy">
           </div>
           <div class="product-card__info">
             <div>

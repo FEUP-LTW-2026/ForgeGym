@@ -142,10 +142,10 @@ $stmtEnrolled->execute([$user_id]);
 $enrolledClasses = $stmtEnrolled->fetchAll(PDO::FETCH_ASSOC);
 
 $photoPath = $user['profile_photo'];
-if (empty($photoPath) || $photoPath === 'images/profiles/default.png' || !file_exists(__DIR__ . '/../' . $photoPath)) {
-    $avatar_url = "https://ui-avatars.com/api/?name=" . urlencode($user['name']) . "&background=CBA052&color=fff&size=150&bold=true";
+if (empty($photoPath) || !file_exists(__DIR__ . '/../' . $photoPath)) {
+    $avatarPath = "https://ui-avatars.com/api/?name=" . urlencode($user['name']) . "&background=CBA052&color=fff&size=150&bold=true";
 } else {
-    $avatar_url = '../' . $photoPath;
+    $avatarPath = '../' . $photoPath . '?' . time(); 
 }
 
 $currentDate = date('Y-m-d');
@@ -249,7 +249,25 @@ foreach ($enrolledClasses as $class) {
         <aside class="profile-sidebar">
           <section class="profile-card">
             <div class="profile-avatar-wrapper">
-              <img src="<?php echo htmlspecialchars($avatar_url); ?>?t=<?php echo time(); ?>" alt="<?php echo htmlspecialchars($user['name']); ?>" class="profile-avatar-img">
+                <label for="profile-photo-upload" style="cursor: pointer; position: relative; display: block;">
+                    <img src="<?php echo htmlspecialchars($avatarPath); ?>" class="profile-avatar-img" alt="Profile Photo">
+                    <div style="position: absolute; bottom: 0; right: 0; background: var(--color-gold); border-radius: 50%; padding: 8px;">
+                        <i class="fas fa-camera" style="color: black; font-size: 0.8rem;"></i>
+                    </div>
+                </label>
+                <form id="avatar-form" action="../api/update_avatar.php" method="POST" enctype="multipart/form-data">
+                    <input type="file" id="profile-photo-upload" name="profile_photo" accept="image/*" style="display: none;" 
+                    onchange="
+                        const file = this.files[0];
+                        const maxSize = 2 * 1024 * 1024; 
+                        if (file && file.size > maxSize) {
+                            alert('The image is too large (max 2MB). Please, pick one smaller.');
+                        } else {
+                            this.form.submit();
+                        }
+                    ">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                </form>
             </div>
             <h2 class="profile-name"><?php echo htmlspecialchars($user['name']); ?></h2>
             <p class="user-handle">@<?php echo htmlspecialchars($user['username']); ?></p>
@@ -411,6 +429,12 @@ foreach ($enrolledClasses as $class) {
 
           <section class="info-card">
             <h3>Account Settings</h3>
+
+            <?php if (isset($_GET['error']) && $_GET['error'] === 'file_too_large'): ?>
+                <div style="background: rgba(254, 73, 42, 0.2); border: 1px solid var(--color-accent); padding: 10px; border-radius: 4px; color: #ff8a75; margin-bottom: 20px; text-align: center; font-weight: bold;">
+                    Error: The image is too large (max 2MB).
+                </div>
+            <?php endif; ?>
             
             <?php if ($success_msg): ?>
               <div style="background: rgba(76, 175, 130, 0.2); border: 1px solid #4caf82; padding: 10px; border-radius: 4px; color: #4caf82; margin-bottom: 20px; text-align: center; font-size: 0.9rem;">
@@ -425,54 +449,45 @@ foreach ($enrolledClasses as $class) {
             <?php endif; ?>
 
             <form action="profile.php" method="POST" enctype="multipart/form-data" class="form">
-              
-              <?php if ($is_readonly): ?>
-                  <div style="background: rgba(0, 0, 0, 0.4); border: 1px solid var(--color-gold); padding: 10px; border-radius: 4px; margin-bottom: 20px;">
-                      <p style="color: var(--color-gold); margin: 0; font-weight: bold;"><i class="fas fa-eye"></i> ADMIN VIEW MODE</p>
-                      <p style="font-size: 0.85rem; color: #ccc; margin: 0;">You are viewing <strong><?php echo htmlspecialchars($user['name']); ?>'s</strong> profile in read-only mode.</p>
-                  </div>
-              <?php endif; ?>
-
-              <div class="profile-details-grid">
-                <div class="form-group">
-                  <label class="form-label" for="name">Full Name</label>
-                  <input type="text" id="name" name="name" class="form-control" value="<?php echo htmlspecialchars($user['name']); ?>" <?php echo $is_readonly ? 'readonly style="opacity: 0.6; cursor: not-allowed;"' : 'required'; ?>>
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="username">Username</label>
-                  <input type="text" id="username" name="username" class="form-control" value="<?php echo htmlspecialchars($user['username']); ?>" <?php echo $is_readonly ? 'readonly style="opacity: 0.6; cursor: not-allowed;"' : 'required'; ?>>
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="email">Email Address</label>
-                  <input type="email" id="email" name="email" class="form-control" value="<?php echo htmlspecialchars($user['email']); ?>" <?php echo $is_readonly ? 'readonly style="opacity: 0.6; cursor: not-allowed;"' : 'required'; ?>>
-                </div>
-                
-                <?php if (!$is_readonly): ?>
-                <div class="form-group">
-                  <label class="form-label" for="profile_photo">Change Profile Photo</label>
-                  <input type="file" id="profile_photo" name="profile_photo" class="form-control" style="padding: 6px;">
-                </div>
+    
+                <?php if ($is_readonly): ?>
+                    <div style="background: rgba(0, 0, 0, 0.4); border: 1px solid var(--color-gold); padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+                        <p style="color: var(--color-gold); margin: 0; font-weight: bold;"><i class="fas fa-eye"></i> ADMIN VIEW MODE</p>
+                        <p style="font-size: 0.85rem; color: #ccc; margin: 0;">You are viewing <strong><?php echo htmlspecialchars($user['name']); ?>'s</strong> profile in read-only mode.</p>
+                    </div>
                 <?php endif; ?>
-              </div>
 
-              <?php if (!$is_readonly): ?>
-                <div class="password-section">
-                  <h3>Security</h3>
-                  <div class="form-group">
-                    <label class="form-label" for="password">New Password (leave blank to keep current)</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••••••">
-                  </div>
-                </div>
+                <div class="profile-details-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="name">Full Name</label>
+                        <input type="text" id="name" name="name" class="form-control" value="<?php echo htmlspecialchars($user['name']); ?>" <?php echo $is_readonly ? 'readonly style="opacity: 0.6; cursor: not-allowed;"' : 'required'; ?>>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="username">Username</label>
+                        <input type="text" id="username" name="username" class="form-control" value="<?php echo htmlspecialchars($user['username']); ?>" <?php echo $is_readonly ? 'readonly style="opacity: 0.6; cursor: not-allowed;"' : 'required'; ?>>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-control" value="<?php echo htmlspecialchars($user['email']); ?>" <?php echo $is_readonly ? 'readonly style="opacity: 0.6; cursor: not-allowed;"' : 'required'; ?>>
+                    </div>
+                </div> <?php if (!$is_readonly): ?>
+                    <div class="password-section" style="margin-top: var(--sp-6);">
+                        <h3>Security</h3>
+                        <div class="form-group">
+                            <label class="form-label" for="password">New Password (leave blank to keep current)</label>
+                            <input type="password" id="password" name="password" class="form-control" placeholder="••••••••••••">
+                        </div>
+                    </div>
 
-                <div style="margin-top: var(--sp-6); display: flex; justify-content: flex-end;">
-                  <button type="submit" class="btn btn--primary">Save Changes</button>
-                </div>
-              <?php else: ?>
-                <div style="margin-top: var(--sp-6); text-align: center; padding: 15px; background: rgba(0,0,0,0.2); border: 1px dashed #666; border-radius: 4px; color: #888;">
-                  <i class="fas fa-lock"></i> Profile modifications are disabled for privacy.
-                </div>
-              <?php endif; ?>
-              
+                    <div style="margin-top: var(--sp-6); display: flex; justify-content: flex-end;">
+                        <button type="submit" class="btn btn--primary">Save Changes</button>
+                    </div>
+                <?php else: ?>
+                    <div style="margin-top: var(--sp-6); text-align: center; padding: 15px; background: rgba(0,0,0,0.2); border: 1px dashed #666; border-radius: 4px; color: #888;">
+                        <i class="fas fa-lock"></i> Profile modifications are disabled for privacy.
+                    </div>
+                <?php endif; ?>
+                
             </form>
           </section>
         </div>

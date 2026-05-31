@@ -54,10 +54,12 @@ if ($action === 'create_comment') {
         $stmtCheckPost->execute([$post_id]);
         $post_author_role = $stmtCheckPost->fetchColumn();
         
-        if ($user_role === 'admin' || $user_role === 'trainer' || $post_author_role === 'trainer') {
-            $stmt = $pdo->prepare("INSERT INTO forum_comments (post_id, user_id, content, parent_id) VALUES (?, ?, ?, ?)");
-            $stmt->execute([$post_id, $user_id, $content, $parent_id]);
-        }
+        if ($post_author_role !== 'admin') {
+            if ($user_role === 'admin' || $user_role === 'trainer' || $post_author_role === 'trainer') {
+                $stmt = $pdo->prepare("INSERT INTO forum_comments (post_id, user_id, content, parent_id) VALUES (?, ?, ?, ?)");
+                $stmt->execute([$post_id, $user_id, $content, $parent_id]);
+    }
+}
     }
 }
 
