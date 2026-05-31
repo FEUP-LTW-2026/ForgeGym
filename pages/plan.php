@@ -14,19 +14,6 @@ try {
     die("Database connection failed: " . $e->getMessage());
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'remove_student') {
-    $enrollment_id = (int)$_POST['enrollment_id'];
-    try {
-        $stmt = $pdo->prepare("DELETE FROM enrollments WHERE id = ?");
-        $stmt->execute([$enrollment_id]);
-        
-        header("Location: plan.php"); 
-        exit;
-    } catch (PDOException $e) {
-        $error_msg = "Failed to remove member: " . $e->getMessage();
-    }
-}
-
 // Lógica de Filtros
 $typeFilter = $_GET['type'] ?? 'all';
 $dayFilter = $_GET['day'] ?? '';
@@ -122,9 +109,6 @@ function getClassImage($type) {
           <li><a href="shop.php" class="nav__link">Shop</a></li>
         </ul>
         <div class="nav__actions">
-          <a href="shop.php?open_cart=1" class="nav__cart-btn" aria-label="Ir para o carrinho">
-            <i class="fas fa-shopping-cart"></i>
-          </a>
           <?php if (isset($_SESSION['user_id'])): ?>
             <a href="profile.php" class="btn btn--ghost">Profile</a>
             <a href="logout.php" class="btn btn--primary">Log out</a>

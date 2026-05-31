@@ -33,26 +33,14 @@ function openRosterModal(classId) {
           const photo = u.avatar || u.profile_photo || 'images/profiles/profile1.png';
           
           return `
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; padding:10px; border-bottom:1px solid #333;">
-            
-            <div style="display:flex; align-items:center; gap:10px;">
-              <img src="../${photo}" 
-                   style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
-                   onerror="this.src='../images/profiles/profile1.png';">
-              <div>
-                <strong style="color: white;">${u.name}</strong><br>
-                <small style="color:var(--color-text-muted)">${u.email}</small>
-              </div>
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; padding:10px; border-bottom:1px solid #333;">
+            <img src="../${photo}" 
+                 style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
+                 onerror="this.src='../images/profiles/profile1.png';">
+            <div>
+              <strong style="color: white;">${u.name}</strong><br>
+              <small style="color:var(--color-text-muted)">${u.email}</small>
             </div>
-
-            <form action="plan.php" method="POST" style="margin:0;" onsubmit="return confirm('Remove ${u.name} from this class?');">
-              <input type="hidden" name="action" value="remove_student">
-              <input type="hidden" name="enrollment_id" value="${u.enrollment_id}">
-              <button type="submit" class="btn btn--sm" style="background: rgba(231, 76, 60, 0.1); border: 1px solid #e74c3c; color: #e74c3c; padding: 4px 8px; font-size: 0.8rem; cursor: pointer; border-radius: 4px;" title="Remove Member">
-                  <i class="fas fa-user-times"></i>
-              </button>
-            </form>
-
           </div>
         `}).join('');
       }

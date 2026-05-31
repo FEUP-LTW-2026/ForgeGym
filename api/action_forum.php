@@ -63,16 +63,5 @@ if ($action === 'create_comment') {
     }
 }
 
-if ($action === 'delete_comment') {
-    $comment_id = (int)$_POST['comment_id'];
-    $stmtCheck = $pdo->prepare("SELECT user_id FROM forum_comments WHERE id = ?");
-    $stmtCheck->execute([$comment_id]);
-    $comment_owner = $stmtCheck->fetchColumn();
-    
-    if ($user_role === 'admin' || ($user_role === 'trainer' && $comment_owner == $user_id)) {
-        $pdo->prepare("DELETE FROM forum_comments WHERE id = ?")->execute([$comment_id]);
-    }
-}
-
 header('Location: ../pages/forum.php');
 exit;

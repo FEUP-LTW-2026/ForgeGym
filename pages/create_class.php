@@ -10,7 +10,6 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['role'] !== 'admin' && $_SESSION[
 $userRole = $_SESSION['role'];
 $userTrainerId = $_SESSION['trainer_id'] ?? null;
 $error = '';
-$success = '';
 
 define('DB_PATH', __DIR__ . '/../database/forge_gym.db');
 

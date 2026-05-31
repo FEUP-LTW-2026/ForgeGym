@@ -33,7 +33,7 @@ session_start();
           <li><a href="shop.php" class="nav__link">Shop</a></li>
         </ul>
         <div class="nav__actions">
-          <button id="cart-btn" class="nav__cart-btn" aria-label="Abrir carrinho">
+          <button id="cart-btn" class="nav__cart-btn cart-toggle" aria-label="Abrir carrinho">
             <i class="fas fa-shopping-cart"></i>
             <span id="cart-count" class="cart-badge">0</span>
           </button>
