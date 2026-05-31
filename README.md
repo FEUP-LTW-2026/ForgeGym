@@ -27,7 +27,12 @@
 - [X] Oversee and ensure the smooth operation of the entire sys2tem.
 
 **Extra:**
-- [X] Something extra (e.g., personal training bookings, membership plans, waitlist, ...).
+- [X] Personal training bookings
+- [X] Membership plans
+- [X] Gym Shop & Cart
+- [X] Forum
+- [X] GymClasses booking
+
 
 ## Running
 
