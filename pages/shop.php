@@ -1,4 +1,4 @@
-pages/shop.php<?php
+<?php
 session_start();
 ?>
 <!DOCTYPE html>
@@ -318,9 +318,10 @@ session_start();
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // CARREGAR ITENS DA MEMÓRIA DO NAVEGADOR (para não perder os itens ao sair da página)
-      let cart = JSON.parse(localStorage.getItem('meu_carrinho')) || [];
+document.addEventListener('DOMContentLoaded', () => {
+      const currentUserId = "<?php echo $_SESSION['user_id'] ?? 'guest'; ?>";
+      const cartKey = 'meu_carrinho_' + currentUserId;
+      let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
       const cartBtn = document.getElementById('cart-btn');
       const closeCartBtn = document.getElementById('close-cart');
@@ -339,9 +340,9 @@ session_start();
       const successModal = document.getElementById('success-modal');
       const closeSuccessBtn = document.getElementById('close-success-modal');
 
-      // Função para guardar o carrinho na memória
+      // Função para guardar o carrinho na memória usando a cartkey
       const saveCart = () => {
-        localStorage.setItem('meu_carrinho', JSON.stringify(cart));
+        localStorage.setItem(cartKey, JSON.stringify(cart));
       };
 
       // Abrir e Fechar Menu Lateral
