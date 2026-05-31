@@ -31,7 +31,7 @@
 - [X] Membership plans
 - [X] Gym Shop & Cart
 - [X] Forum
-- [X] GymClasses booking
+
 
 
 ## Running
