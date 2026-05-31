@@ -254,25 +254,31 @@ foreach ($enrolledClasses as $class) {
         <aside class="profile-sidebar">
           <section class="profile-card">
             <div class="profile-avatar-wrapper">
-                <label for="profile-photo-upload" style="cursor: pointer; position: relative; display: block;">
-                    <img src="<?php echo htmlspecialchars($avatarPath); ?>" class="profile-avatar-img" alt="Profile Photo">
-                    <div style="position: absolute; bottom: 0; right: 0; background: var(--color-gold); border-radius: 50%; padding: 8px;">
-                        <i class="fas fa-camera" style="color: black; font-size: 0.8rem;"></i>
+                <?php if (!$is_readonly): ?>
+                    <label for="profile-photo-upload" style="cursor: pointer; position: relative; display: block;">
+                        <img src="<?php echo htmlspecialchars($avatarPath); ?>" class="profile-avatar-img" alt="Profile Photo">
+                        <div style="position: absolute; bottom: 0; right: 0; background: var(--color-gold); border-radius: 50%; padding: 8px;">
+                            <i class="fas fa-camera" style="color: black; font-size: 0.8rem;"></i>
+                        </div>
+                    </label>
+                    <form id="avatar-form" action="../api/update_avatar.php" method="POST" enctype="multipart/form-data">
+                        <input type="file" id="profile-photo-upload" name="profile_photo" accept="image/*" style="display: none;" 
+                        onchange="
+                            const file = this.files[0];
+                            const maxSize = 2 * 1024 * 1024; 
+                            if (file && file.size > maxSize) {
+                                alert('The image is too large (max 2MB). Please, pick one smaller.');
+                            } else {
+                                this.form.submit();
+                            }
+                        ">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                    </form>
+                <?php else: ?>
+                    <div style="position: relative; display: block;">
+                        <img src="<?php echo htmlspecialchars($avatarPath); ?>" class="profile-avatar-img" alt="Profile Photo">
                     </div>
-                </label>
-                <form id="avatar-form" action="../api/update_avatar.php" method="POST" enctype="multipart/form-data">
-                    <input type="file" id="profile-photo-upload" name="profile_photo" accept="image/*" style="display: none;" 
-                    onchange="
-                        const file = this.files[0];
-                        const maxSize = 2 * 1024 * 1024; 
-                        if (file && file.size > maxSize) {
-                            alert('The image is too large (max 2MB). Please, pick one smaller.');
-                        } else {
-                            this.form.submit();
-                        }
-                    ">
-                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
-                </form>
+                <?php endif; ?>
             </div>
             <h2 class="profile-name"><?php echo htmlspecialchars($user['name']); ?></h2>
             <p class="user-handle">@<?php echo htmlspecialchars($user['username']); ?></p>

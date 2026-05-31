@@ -111,6 +111,12 @@ try {
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--color-gold); border-radius: 10px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #e6b800; }
+  </style>
 </head>
   <body style="background: var(--color-bg);">
 
@@ -146,8 +152,14 @@ try {
         </div>
       <?php endif; ?>
 
-      <section class="card" style="border-top: 4px solid var(--color-accent); overflow-x: auto;">
-        <table style="width: 100%; text-align: left; border-collapse: collapse;">
+      <div style="margin-bottom: 20px; position: relative;">
+          <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--color-text-muted);"></i>
+          <input type="text" id="search-members" placeholder="Search by name, username or role..." class="form-control" style="width: 100%; padding: 12px 15px 12px 45px; background: rgba(0,0,0,0.3); border: 1px solid var(--color-border); color: white; border-radius: 4px; font-size: 1rem;">
+      </div>
+      <section class="card" style="border-top: 4px solid var(--color-accent); padding: 0;">
+        <div class="custom-scrollbar" style="max-height: 400px; overflow-y: auto; overflow-x: auto; padding: var(--sp-4);">
+          
+          <table id="members-table" style="width: 100%; text-align: left; border-collapse: collapse;">
           <thead>
             <tr style="border-bottom: 1px solid var(--color-border); color: var(--color-gold);">
               <th style="padding: 15px 10px;">ID</th>
@@ -212,6 +224,7 @@ try {
             <?php endforeach; ?>
           </tbody>
         </table>
+                  </div>
       </section>
 
       <section class="admin-section" style="margin-top: var(--sp-8);">
@@ -268,7 +281,6 @@ try {
                 </thead>
                 <tbody>
                   <?php
-                  // Garante que a ligação à base de dados está feita no topo do teu admin_dashboard.php
                   $stmtEq = $pdo->query("SELECT * FROM equipment ORDER BY zone, name");
                   while ($eq = $stmtEq->fetch(PDO::FETCH_ASSOC)):
                   ?>
@@ -306,5 +318,36 @@ try {
         </section>
 
     </main>
+    
+ <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          const searchInput = document.getElementById('search-members');
+          if (searchInput) {
+              searchInput.addEventListener('keyup', function() {
+                  const filter = this.value.toLowerCase();
+                  const rows = document.querySelectorAll('#members-table tbody tr');
+
+                  rows.forEach(row => {
+                      const cells = row.querySelectorAll('td');
+                      
+                      if (cells.length >= 4) {
+                          const rowText = (
+                              cells[0].textContent + ' ' + 
+                              cells[1].textContent + ' ' + 
+                              cells[2].textContent + ' ' + 
+                              cells[3].textContent
+                          ).toLowerCase();
+
+                          if (rowText.includes(filter)) {
+                              row.style.display = '';
+                          } else {
+                              row.style.display = 'none';
+                          }
+                      }
+                  });
+              });
+          }
+      });
+    </script>
   </body>
 </html>
