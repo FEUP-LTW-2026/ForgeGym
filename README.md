@@ -59,8 +59,3 @@ To see the rendered result properly via PHP, open your terminal in the root fold
     sqlite3 database/database.db < database/database.sql
     php -S localhost:9000
 
-## Credentials
-
-- cpo/therock
-- gonçaloafonso/56789
-- mafalda_pt/ptmafalda
